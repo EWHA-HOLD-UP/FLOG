@@ -1,5 +1,8 @@
 //Bottom Nacigation Bar와 Tab Bar View 구현 위함
 
+import 'package:flog/screen/floging_screen.dart';
+import 'package:flog/screen/qpuzzle_screen.dart';
+import 'memorybox_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootScreen extends StatefulWidget {
@@ -7,92 +10,50 @@ class RootScreen extends StatefulWidget {
 
   State<RootScreen> createState() => _RootScreenState();
 }
-class _RootScreenState extends State<RootScreen> with
-TickerProviderStateMixin{
-  TabController? controller;
 
-  void initState() {
-    super.initState();
+class _RootScreenState extends State<RootScreen> {
+  int _currentIndex = 0;
 
-    controller = TabController(length: 3, vsync: this);
-    controller!.addListener(tabListener);
-  }
-  tabListener() {
-    setState(() {});
-  }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    controller!.removeListener(tabListener);
-    super.dispose();
-  }
+  final _pages = const [
+    Floging_Screen(),
+    Qpuzzle_screen(),
+    Memorybox_screen(),
+  ];
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TabBarView(
-        controller: controller,
-        children: renderChildren(),
-      ),
-
-      bottomNavigationBar: renderBottomNavigation(),
-    );
-  }
-
-  List<Widget> renderChildren(){
-    return [
-      Container(
-        child: Center(
-          child: Text(
-            'floging',
+      body: _pages[_currentIndex],
+     bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.camera_alt, //floging
+            ),
+            label: 'floging',
           ),
-        ),
-      ),
-      Container(
-        child: Center(
-          child: Text(
-            'qpuzzle',
-          ),
-        ),
-      ),
-      Container(
-        child: Center(
-          child: Text(
-            'memory box',
-          ),
-        ),
-      ),
-    ];
-  }
-
-  BottomNavigationBar renderBottomNavigation(){
-    return BottomNavigationBar(
-      currentIndex: controller!.index,
-      onTap: (int index) {
-        setState(() {
-          controller!.animateTo(index);
-        });
-      },
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.camera_alt, //floging
-          ),
-          label: 'floging',
-        ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.local_play_sharp, //qpuzzle
-          ),
+            ),
           label: 'qpuzzle',
         ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.calendar_month, //추억상자
-          ),
+            ),
           label: 'memory box',
         ),
-      ],
+        ],
+      ),
     );
   }
+
+
 }
