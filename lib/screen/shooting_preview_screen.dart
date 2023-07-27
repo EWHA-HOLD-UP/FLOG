@@ -2,10 +2,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-class PhotoPreview extends StatelessWidget {
-  final String imagePath;
+class ShootingPreviewScreen extends StatelessWidget {
+  final String backImagePath;
+  final String frontImagePath;
 
-  const PhotoPreview({required this.imagePath, super.key});
+  const ShootingPreviewScreen({
+    Key? key,
+    required this.backImagePath,
+    required this.frontImagePath,
+  }) : super(key: key);
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,13 +19,24 @@ class PhotoPreview extends StatelessWidget {
           backgroundColor: Colors.green,
           centerTitle: true
       ),
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Image.file(
-            File(imagePath),
-          ),
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if(backImagePath != null)
+            Image.file(
+              File(backImagePath!),
+                  width: 200,
+                  height: 200,
+              ),
+
+          if(frontImagePath != null)
+            Image.file(
+                File(frontImagePath!),
+                    width: 200,
+                    height: 200,
+              ),
+        ],
       ),
     );
   }
