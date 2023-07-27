@@ -2,7 +2,8 @@
 
 import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/qpuzzle_screen.dart';
-import 'memorybox_screen.dart';
+import 'package:flog/screen/setting_screen.dart';
+import 'package:flog/screen/memorybox_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootScreen extends StatefulWidget {
@@ -19,12 +20,14 @@ class _RootScreenState extends State<RootScreen> {
     Floging_Screen(),
     Qpuzzle_screen(),
     Memorybox_screen(),
+    Setting_screen()
   ];
 
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
      bottomNavigationBar: BottomNavigationBar(
+       type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
@@ -48,12 +51,19 @@ class _RootScreenState extends State<RootScreen> {
           icon: Icon(
             Icons.calendar_month, //추억상자
             ),
-          label: 'memory box',
+          label: 'memory',
         ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.settings, //setting
+            ),
+            label: 'setting',
+          ),
         ],
+       iconSize: 20.0,
+       selectedLabelStyle: TextStyle(fontSize: 12.0),
+       unselectedLabelStyle: TextStyle(fontSize: 10.0),
       ),
     );
   }
-
-
 }
