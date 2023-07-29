@@ -1,5 +1,7 @@
 //Bottom Nacigation Bar와 Tab Bar View 구현 위함
 
+import 'dart:ffi';
+
 import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/qpuzzle_screen.dart';
 import 'package:flog/screen/setting_screen.dart';
@@ -64,6 +66,16 @@ class _RootScreenState extends State<RootScreen> {
        selectedLabelStyle: TextStyle(fontSize: 12.0),
        unselectedLabelStyle: TextStyle(fontSize: 10.0),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        onPressed: (){
+
+        },
+        child: Icon(
+          Icons.add,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
