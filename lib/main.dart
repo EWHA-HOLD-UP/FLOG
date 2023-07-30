@@ -6,7 +6,7 @@ import 'package:flog/screen/root_screen.dart';
 void main() {
   runApp(
       MaterialApp(
-       home: RootScreen(),//하단탭
+       home: Shooting_screen(),//하단탭
       ),
   );
 }

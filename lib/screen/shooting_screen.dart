@@ -18,14 +18,24 @@ class _ShootingScreenState extends State<Shooting_screen> {
   String? _tempBackImagePath; // 임시 후면 사진 저장
   String? _tempFrontImagePath; // 임시 전면 사진 저장
 
+
+
   void initState() {
     super.initState();
-    availableCameras().then((cameras) {
-      if (cameras.isNotEmpty && _cameraController == null) {
-        _initializeCameraController(cameras.first);
-      }
-    });
+    _initializeCamera();
   }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    for(CameraDescription camera in cameras) {
+      if(camera.lensDirection == CameraLensDirection.back) {
+        _initializeCameraController(camera);
+        break;
+          }
+        }
+      }
+
+
 
   void _initializeCameraController(CameraDescription camera) {
     _cameraController = CameraController(
@@ -40,36 +50,9 @@ class _ShootingScreenState extends State<Shooting_screen> {
     });
   }
 
-  void _onTakeBackPicture(BuildContext context) {
-    if(_cameraController == null || !_isCameraReady) return;
-    
-    _cameraController!.takePicture().then((image) {
-      setState(() {
-        _tempBackImagePath = image.path;
-      });
-
-      Timer(Duration(seconds: 2), () {
-        availableCameras().then((cameras) {
-          for (CameraDescription camera in cameras) {
-            if (camera.lensDirection == CameraLensDirection.front) {
-              _initializeCameraController(camera);
-              _cameraController!.takePicture().then((image) {
-                setState(() {
-                  _tempFrontImagePath = image.path;
-                });
-                _navigateToPreviewScreen();
-              });
-              break;
-            }
-          }
-        });
-      });
-    });
-  }
-
-  void _navigateToPreviewScreen() {
+  void _navigateToPreviewScreen(BuildContext context) {
     if (_tempBackImagePath != null && _tempFrontImagePath != null) {
-      Navigator.of(context as BuildContext).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ShootingPreviewScreen(
             backImagePath: _tempBackImagePath!,
@@ -80,10 +63,44 @@ class _ShootingScreenState extends State<Shooting_screen> {
     }
   }
 
+
+  void _onTakeBackPicture(BuildContext context) {
+    if (_cameraController == null || !_isCameraReady) return;
+    _cameraController!.takePicture().then((image) {
+      setState(() {
+        _tempBackImagePath = image.path;
+      });
+      _takeFrontPicture(context);
+    });
+  }
+
+
+  void _takeFrontPicture(BuildContext context) {
+    /*
+    availableCameras().then((cameras) {
+      for(CameraDescription camera in cameras) {
+        if(camera.lensDirection == CameraLensDirection.front) {
+          _initializeCameraController(camera);
+          break;
+        }
+      }
+    });
+    */
+    if(_cameraController == null || !_isCameraReady) return;
+    _cameraController!.takePicture().then((image) {
+      setState(() {
+        _tempFrontImagePath = image.path;
+      });
+      _navigateToPreviewScreen(context);
+    });
+
+  }
+
+
   void dispose() {
       _cameraController?.dispose();
       super.dispose();
-    }
+  }
 
 
     Widget build(BuildContext context) {
@@ -105,7 +122,8 @@ class _ShootingScreenState extends State<Shooting_screen> {
                 ),
               ),
              ElevatedButton(
-               onPressed: _cameraController != null && _isCameraReady
+               onPressed:
+               _cameraController != null && _isCameraReady
                    ? () {
                  _onTakeBackPicture(context);
                }

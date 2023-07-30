@@ -23,14 +23,14 @@ class ShootingPreviewScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if(backImagePath != null)
+          //if(backImagePath != null)
             Image.file(
               File(backImagePath!),
                   width: 200,
                   height: 200,
               ),
 
-          if(frontImagePath != null)
+          //if(frontImagePath != null)
             Image.file(
                 File(frontImagePath!),
                     width: 200,
