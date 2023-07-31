@@ -66,13 +66,15 @@ class _RootScreenState extends State<RootScreen> {
        selectedLabelStyle: TextStyle(fontSize: 12.0),
        unselectedLabelStyle: TextStyle(fontSize: 10.0),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        onPressed: (){
-
-        },
-        child: Icon(
-          Icons.add,
+      floatingActionButton: SizedBox(
+        width: 60, // 원하는 너비
+        height: 60, // 원하는 높이
+        child: FloatingActionButton(
+          backgroundColor: Color(0xFF609966),
+          onPressed: () {
+            // 버튼 클릭 시 동작
+          },
+          child: Icon(Icons.add),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
