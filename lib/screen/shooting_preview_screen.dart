@@ -19,24 +19,27 @@ class ShootingPreviewScreen extends StatelessWidget {
           backgroundColor: Colors.green,
           centerTitle: true
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //if(backImagePath != null)
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+              //if(backImagePath != null)
             Image.file(
               File(backImagePath!),
-                  width: 200,
-                  height: 200,
-              ),
+              width: 200,
+              height: 200,
+            ),
 
-          //if(frontImagePath != null)
+              //if(frontImagePath != null)
             Image.file(
-                File(frontImagePath!),
-                    width: 200,
-                    height: 200,
-              ),
-        ],
+              File(frontImagePath!),
+              width: 200,
+              height: 200,
+            ),
+          ],
+        ),
       ),
     );
   }

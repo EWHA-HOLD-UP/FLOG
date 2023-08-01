@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flog/screen/shooting_preview_screen.dart';
+import 'package:flog/screen/shooting_screen_front.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
@@ -7,8 +8,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Shooting_screen extends StatefulWidget {
-  const Shooting_screen({Key? key}) : super(key: key);
-
+  final String? backImagePath;
+  const Shooting_screen({Key? key, this.backImagePath}) : super(key: key);
   State<Shooting_screen> createState() => _ShootingScreenState();
 }
 
@@ -16,8 +17,6 @@ class _ShootingScreenState extends State<Shooting_screen> {
   CameraController? _cameraController;
   bool _isCameraReady = false;
   String? _tempBackImagePath; // 임시 후면 사진 저장
-  String? _tempFrontImagePath; // 임시 전면 사진 저장
-
 
 
   void initState() {
@@ -35,8 +34,6 @@ class _ShootingScreenState extends State<Shooting_screen> {
         }
       }
 
-
-
   void _initializeCameraController(CameraDescription camera) {
     _cameraController = CameraController(
       camera,
@@ -50,18 +47,18 @@ class _ShootingScreenState extends State<Shooting_screen> {
     });
   }
 
-  void _navigateToPreviewScreen(BuildContext context) {
-    if (_tempBackImagePath != null && _tempFrontImagePath != null) {
+  void _navigateToFrontScreen(BuildContext context) {
+    if (_tempBackImagePath != null) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ShootingPreviewScreen(
+          builder: (context) => Shooting_screen_front(
             backImagePath: _tempBackImagePath!,
-            frontImagePath: _tempFrontImagePath!,
           ),
         ),
       );
     }
   }
+
 
 
   void _onTakeBackPicture(BuildContext context) {
@@ -70,31 +67,10 @@ class _ShootingScreenState extends State<Shooting_screen> {
       setState(() {
         _tempBackImagePath = image.path;
       });
-      _takeFrontPicture(context);
+      _navigateToFrontScreen(context);
     });
   }
 
-
-  void _takeFrontPicture(BuildContext context) {
-    /*
-    availableCameras().then((cameras) {
-      for(CameraDescription camera in cameras) {
-        if(camera.lensDirection == CameraLensDirection.front) {
-          _initializeCameraController(camera);
-          break;
-        }
-      }
-    });
-    */
-    if(_cameraController == null || !_isCameraReady) return;
-    _cameraController!.takePicture().then((image) {
-      setState(() {
-        _tempFrontImagePath = image.path;
-      });
-      _navigateToPreviewScreen(context);
-    });
-
-  }
 
 
   void dispose() {
@@ -102,8 +78,7 @@ class _ShootingScreenState extends State<Shooting_screen> {
       super.dispose();
   }
 
-
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -128,7 +103,7 @@ class _ShootingScreenState extends State<Shooting_screen> {
                  _onTakeBackPicture(context);
                }
                : null,
-               child: const Text('찰칵'),
+               child: const Text('후면'),
                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
              ),
             ],

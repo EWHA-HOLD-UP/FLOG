@@ -6,6 +6,7 @@ import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/qpuzzle_screen.dart';
 import 'package:flog/screen/setting_screen.dart';
 import 'package:flog/screen/memorybox_screen.dart';
+import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootScreen extends StatefulWidget {
@@ -73,6 +74,12 @@ class _RootScreenState extends State<RootScreen> {
           backgroundColor: Color(0xFF609966),
           onPressed: () {
             // 버튼 클릭 시 동작
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Shooting_screen(),
+              ),
+            );
           },
           child: Icon(Icons.add),
         ),
