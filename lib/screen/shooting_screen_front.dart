@@ -80,16 +80,10 @@ class _ShootingScreenFrontState extends State<Shooting_screen_front> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          title: const Text('카메라로 찍으세요'),
-          backgroundColor: Colors.green
-      ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              flex: 1,
               child: _cameraController != null && _isCameraReady
                   ? CameraPreview(_cameraController!)
                   : Container(

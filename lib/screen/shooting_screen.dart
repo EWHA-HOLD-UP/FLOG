@@ -80,16 +80,11 @@ class _ShootingScreenState extends State<Shooting_screen> {
 
   Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            title: const Text('카메라로 찍으세요'),
-            backgroundColor: Colors.green
-        ),
+
         body: SafeArea(
           child: Column(
             children: [
               Expanded(
-                flex: 1,
                 child: _cameraController != null && _isCameraReady
                     ? CameraPreview(_cameraController!)
                     : Container(
@@ -104,7 +99,7 @@ class _ShootingScreenState extends State<Shooting_screen> {
                }
                : null,
                child: const Text('후면'),
-               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+               style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF609966)),
              ),
             ],
           ),

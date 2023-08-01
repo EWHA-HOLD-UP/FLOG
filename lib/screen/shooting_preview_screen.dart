@@ -16,7 +16,7 @@ class ShootingPreviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: const Text('찍은 사진을 확인하세요'),
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF609966),
           centerTitle: true
       ),
       body: Padding(
