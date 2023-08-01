@@ -1,5 +1,6 @@
 ///찍은 사진 확인용
 import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class ShootingPreviewScreen extends StatelessWidget {
@@ -33,14 +34,20 @@ class ShootingPreviewScreen extends StatelessWidget {
             ),
 
               //if(frontImagePath != null)
-            Image.file(
-              File(frontImagePath!),
-              width: 200,
-              height: 200,
+            Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.rotationY(math.pi),
+              child: Image.file(
+                File(frontImagePath!),
+                width: 200,
+                height: 200,
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+
 }

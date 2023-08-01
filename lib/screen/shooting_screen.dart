@@ -84,6 +84,21 @@ class _ShootingScreenState extends State<Shooting_screen> {
         body: SafeArea(
           child: Column(
             children: [
+              SizedBox(height:30),
+              Image.asset(
+                "assets/flog_logo.png",
+                width: 55,
+                height: 55,
+              ),
+              Text(
+                "FLOGing",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF609966), // #609966 색상 지정
+                ),
+              ),
+              SizedBox(height:20), // 간격
               Expanded(
                 child: _cameraController != null && _isCameraReady
                     ? CameraPreview(_cameraController!)
@@ -91,16 +106,16 @@ class _ShootingScreenState extends State<Shooting_screen> {
                   color: Colors.white,
                 ),
               ),
-             ElevatedButton(
-               onPressed:
-               _cameraController != null && _isCameraReady
-                   ? () {
-                 _onTakeBackPicture(context);
-               }
-               : null,
-               child: const Text('후면'),
-               style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF609966)),
-             ),
+              ElevatedButton(
+                onPressed:
+                _cameraController != null && _isCameraReady
+                    ? () {
+                  _onTakeBackPicture(context);
+                }
+                : null,
+                child: const Text('후면'),
+                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF609966)),
+              ),
             ],
           ),
         ),

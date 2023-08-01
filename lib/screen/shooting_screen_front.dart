@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flog/screen/shooting_preview_screen.dart';
+import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flog/screen/setting_screen.dart';
@@ -60,16 +61,31 @@ class _ShootingScreenFrontState extends State<Shooting_screen_front> {
     }
   }
 
-
+  /*
+  void _onBackPressed(BuildContext context) {
+    // Shooting_screen으로 이동하면서 현재 화면을 스택에서 제거
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Shooting_screen()),
+          (route) => false, // 모든 이전 route를 제거하도록 설정
+    );
+  }
+   */
 
   void _takeFrontPicture(BuildContext context) {
 
     if(_cameraController == null || !_isCameraReady) return;
+
+
     _cameraController!.takePicture().then((image) {
       setState(() {
         _tempFrontImagePath = image.path;
       });
       _navigateToPreviewScreen(context);
+    });
+
+    setState(() {
+
     });
   }
 
@@ -77,6 +93,7 @@ class _ShootingScreenFrontState extends State<Shooting_screen_front> {
     _cameraController?.dispose();
     super.dispose();
   }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,3 +123,4 @@ class _ShootingScreenFrontState extends State<Shooting_screen_front> {
     );
   }
 }
+
