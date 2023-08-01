@@ -80,43 +80,87 @@ class _ShootingScreenState extends State<Shooting_screen> {
 
   Widget build(BuildContext context) {
       return Scaffold(
+        body: Center(
+          child : SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(height:30),
+                  Image.asset(
+                    "assets/flog_logo.png",
+                    width: 55,
+                    height: 55,
+                  ),
+                  Text(
+                    "FLOGing",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF609966), // #609966 색상 지정
+                    ),
+                  ),
+                  SizedBox(height:20), // 간격
 
-        body: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(height:30),
-              Image.asset(
-                "assets/flog_logo.png",
-                width: 55,
-                height: 55,
+                  Container(
+                    width: 350,
+                    height: 400,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0), // 모서리 둥글기 조절
+                    ),
+                    child: _cameraController != null && _isCameraReady
+                        ? CameraPreview(_cameraController!)
+                        :Container(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height:20),
+                  Text('가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'),
+                  SizedBox(height:20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(50, 50),
+                            shape: const CircleBorder(),
+                            shadowColor: Colors.white,
+                            backgroundColor: Color(0xE1EBE1),
+                          ),
+                          child: Icon(Icons.flash_on),
+                      ),
+                      SizedBox(width: 35),
+                      ElevatedButton(
+                        onPressed:
+                        _cameraController != null && _isCameraReady
+                            ? () {
+                          _onTakeBackPicture(context);
+                        }
+                        : null,
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(60, 60),
+                            shape: const CircleBorder(),
+                            shadowColor: Colors.white,
+                            backgroundColor: Color(0xFF609966),
+                        ),
+                        child: null,
+                      ),
+                      SizedBox(width: 35),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(50, 50),
+                          shape: const CircleBorder(),
+                          shadowColor: Colors.white,
+                          backgroundColor: Color(0xE1EBE1),
+                        ),
+                        child: Icon(Icons.change_circle_outlined),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Text(
-                "FLOGing",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF609966), // #609966 색상 지정
-                ),
-              ),
-              SizedBox(height:20), // 간격
-              Expanded(
-                child: _cameraController != null && _isCameraReady
-                    ? CameraPreview(_cameraController!)
-                    : Container(
-                  color: Colors.white,
-                ),
-              ),
-              ElevatedButton(
-                onPressed:
-                _cameraController != null && _isCameraReady
-                    ? () {
-                  _onTakeBackPicture(context);
-                }
-                : null,
-                child: const Text('후면'),
-                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF609966)),
-              ),
-            ],
           ),
         ),
       );
