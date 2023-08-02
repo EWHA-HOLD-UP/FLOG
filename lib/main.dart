@@ -7,13 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 
-
 void main() {
   runApp(
-      MaterialApp(
-       home: NicknameScreen(),//하단탭
-      ),
+    //Firebase 초기화 코드
+
+    // await Firebase.initializeApp(
+    //     options: DefaultFirebaseOptions.currentPlatform,
+    // );
+
+    MaterialApp(
+      home: NicknameScreen(), //하단탭
+    ),
   );
 }
-
-
