@@ -1,12 +1,11 @@
-import 'package:flog/screen/nickname_screen.dart';
+import 'package:flog/screen/family_matching_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 
+class BirthScreen extends StatelessWidget {
+  const BirthScreen({Key? key}) : super(key: key);
 
-class birth_screen extends StatelessWidget {
-  const birth_screen({Key? key}) : super(key: key);
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -42,7 +41,7 @@ class birth_screen extends StatelessWidget {
                     width: 340,
                     child: TextField(
                       keyboardType: TextInputType.number,
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                           hintText: 'DD MM YYYY',
                           hintStyle: TextStyle(
                               color: Colors.black12,
@@ -62,7 +61,12 @@ class birth_screen extends StatelessWidget {
                   SizedBox(height: 50),
                   ElevatedButton(
                     onPressed: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FamilyMatchingScreen(),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

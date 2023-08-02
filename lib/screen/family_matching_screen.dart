@@ -1,10 +1,12 @@
 import 'package:flog/screen/matching_code_entering_screen.dart';
 import 'package:flutter/material.dart';
 
-class matching_screen extends StatelessWidget {
-  const matching_screen({Key? key}) : super(key: key);
+class FamilyMatchingScreen extends StatelessWidget {
+  const FamilyMatchingScreen({Key? key}) : super(key: key);
 
-  final String family_code = "alxlsk203lx";
+  final String familycode = "alxlsk203lx";
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -30,7 +32,7 @@ class matching_screen extends StatelessWidget {
                     fontSize: 15),
               ),
               SizedBox(height:5),
-              Text('$family_code',
+              Text('$familycode',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
@@ -61,7 +63,7 @@ class matching_screen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => matching_code_entering_screen(),
+                      builder: (context) => MatchingCodeEnteringScreen(),
                     ),
                   );
                 },

@@ -2,9 +2,10 @@
 import 'package:flutter/material.dart';
 import 'floging_detail_screen.dart'; // 다른 파일의 Floging_Detail_Screen import
 
-class Floging_Screen extends StatelessWidget {
-  const Floging_Screen({Key? key}) : super(key: key);
+class FlogingScreen extends StatelessWidget {
+  const FlogingScreen({Key? key}) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -46,7 +47,7 @@ class Floging_Screen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Floging_Detail_Screen(),
+                          builder: (context) => FlogingDetailScreen(),
                         ),
                       );
                     },

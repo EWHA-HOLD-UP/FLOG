@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Floging_Detail_Screen extends StatelessWidget {
-  const Floging_Detail_Screen({Key? key}) : super(key: key);
+class FlogingDetailScreen extends StatelessWidget {
+  const FlogingDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

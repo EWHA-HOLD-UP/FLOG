@@ -1,7 +1,6 @@
 //Bottom Nacigation Bar와 Tab Bar View 구현 위함
 
 import 'dart:ffi';
-
 import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/qpuzzle_screen.dart';
 import 'package:flog/screen/setting_screen.dart';
@@ -11,63 +10,59 @@ import 'package:flutter/material.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({Key? key}) : super(key: key);
-
+  @override
   State<RootScreen> createState() => _RootScreenState();
 }
 
 class _RootScreenState extends State<RootScreen> {
   int _currentIndex = 0;
 
-
   final _pages = const [
-    Floging_Screen(),
-    Qpuzzle_screen(),
-    Memorybox_screen(),
-    Setting_screen()
+    FlogingScreen(),
+    QpuzzleScreen(),
+    MemoryBoxScreen(),
+    SettingScreen()
   ];
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
      bottomNavigationBar: BottomNavigationBar(
-       type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
+         showSelectedLabels: false,
+         showUnselectedLabels: false,
+         type: BottomNavigationBarType.fixed,
+         currentIndex: _currentIndex,
+         onTap: (index) {
+           setState(() {
             _currentIndex = index;
-          });
-        },
-        items: const [
+           });
+           },
+         items: [
+           BottomNavigationBarItem(
+              icon: Image.asset('button/floging_line.png', width: 35, height: 35),
+              activeIcon: Image.asset('button/floging_fill.png', width: 35, height: 35),
+               label: 'Floging'
+           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.camera_alt, //floging
-            ),
-            label: 'floging',
-          ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.local_play_sharp, //qpuzzle
-            ),
-          label: 'qpuzzle',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.calendar_month, //추억상자
-            ),
-          label: 'memory',
+              icon: Image.asset('button/qpuzzle_line.png', width: 35, height: 35),
+              activeIcon: Image.asset('button/qpuzzle_fill.png', width: 35, height: 35),
+              label: 'Qpuzzle'
         ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.settings, //setting
-            ),
-            label: 'setting',
+            icon: Image.asset('button/memorybox_line.png', width: 35, height: 35),
+            activeIcon: Image.asset('button/memorybox_fill.png', width: 35, height: 35),
+              label: 'memory box'
+        ),
+          BottomNavigationBarItem(
+              icon: Image.asset('button/setting_line.png', width: 35, height: 35),
+              activeIcon: Image.asset('button/setting_fill.png', width: 35, height: 35),
+              label: 'setting'
           ),
-        ],
-       iconSize: 20.0,
-       selectedLabelStyle: TextStyle(fontSize: 12.0),
-       unselectedLabelStyle: TextStyle(fontSize: 10.0),
+        ]
       ),
-      floatingActionButton: SizedBox(
+      floatingActionButton: //Floating + 버튼 - shooting
+      SizedBox(
         width: 60, // 원하는 너비
         height: 60, // 원하는 높이
         child: FloatingActionButton(
@@ -77,7 +72,7 @@ class _RootScreenState extends State<RootScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Shooting_screen(),
+                builder: (context) => ShootingScreen(),
               ),
             );
           },

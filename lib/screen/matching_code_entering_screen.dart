@@ -1,10 +1,10 @@
-import 'package:flog/screen/birth_screen.dart';
-import 'package:flog/screen/nickname_screen.dart';
+import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 
-class matching_code_entering_screen extends StatelessWidget {
-  const matching_code_entering_screen({Key? key}) : super(key: key);
+class MatchingCodeEnteringScreen extends StatelessWidget {
+  const MatchingCodeEnteringScreen({Key? key}) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -33,7 +33,7 @@ class matching_code_entering_screen extends StatelessWidget {
               Container(
                 width: 340,
                 child: TextField(
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'code',
                     hintStyle: TextStyle(
                         color: Colors.black12,
@@ -55,7 +55,7 @@ class matching_code_entering_screen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => nickname_screen(),
+                      builder: (context) => RootScreen(),
                     ),
                   );
                 },

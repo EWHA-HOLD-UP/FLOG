@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 
-class Memorybox_screen extends StatelessWidget {
-  const Memorybox_screen({Key? key}) : super(key: key);
+class MemoryBoxScreen extends StatelessWidget {
+  const MemoryBoxScreen({Key? key}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -30,13 +32,12 @@ class Memorybox_screen extends StatelessWidget {
     );
   }
 
-
   Widget _buildTop() {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget> [
+        children: const <Widget> [
           Column(
             children: <Widget>[
               Icon(
@@ -80,7 +81,7 @@ class Memorybox_screen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20),
       child : Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           Icon(
             Icons.monetization_on,
             size: 20,
@@ -115,7 +116,7 @@ class Memorybox_screen extends StatelessWidget {
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget> [
+                  children: const <Widget> [
                     Column(
                       children: <Widget> [
                         Icon(
@@ -184,7 +185,7 @@ class Memorybox_screen extends StatelessWidget {
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget> [
+                  children: const <Widget> [
                     Column(
                       children: <Widget> [
                         Icon(
@@ -312,7 +313,7 @@ class Memorybox_screen extends StatelessWidget {
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                  children: const [
                     Icon(
                       Icons.photo,
                       size: 120,

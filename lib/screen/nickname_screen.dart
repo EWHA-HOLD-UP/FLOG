@@ -1,9 +1,10 @@
 import 'package:flog/screen/birth_screen.dart';
 import 'package:flutter/material.dart';
 
-class nickname_screen extends StatelessWidget {
-  const nickname_screen({Key? key}) : super(key: key);
+class NicknameScreen extends StatelessWidget {
+  const NicknameScreen({Key? key}) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
@@ -38,7 +39,7 @@ class nickname_screen extends StatelessWidget {
                   Container(
                     width: 340,
                     child: TextField(
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                           hintText: 'nickname',
                           hintStyle: TextStyle(
                               color: Colors.black12,
@@ -60,7 +61,7 @@ class nickname_screen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => birth_screen(),
+                          builder: (context) => BirthScreen(),
                         ),
                       );
                     },
