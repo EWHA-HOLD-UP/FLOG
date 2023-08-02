@@ -25,10 +25,8 @@ dependencies:
   firebase_core_platform_interface: ^4.8.0
   cloud_firestore: ^4.8.4
   firebase_storage: ^11.2.5
-  image_picker: ^1.0.1
-  intl: ^0.18.1
   firebase_messaging: ^14.6.5
-  flutter_local_notification: ^15.1.0+1
+  flutter_local_notifications: ^15.1.0+1
 
   kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
 
