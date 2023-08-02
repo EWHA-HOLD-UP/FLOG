@@ -105,6 +105,32 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
+
+  firebase_core:
+    dependency: "direct main"
+    description:
+      name: firebase_core
+      sha256: "2e9324f719e90200dc7d3c4f5d2abc26052f9f2b995d3b6626c47a0dfe1c8192"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.15.0"
+  firebase_core_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_core_platform_interface
+      sha256: b63e3be6c96ef5c33bdec1aab23c91eb00696f6452f0519401d640938c94cba2
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.0"
+  firebase_core_web:
+    dependency: transitive
+    description:
+      name: firebase_core_web
+      sha256: "0fd5c4b228de29b55fac38aed0d9e42514b3d3bd47675de52bf7f8fccaf922fa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.0"
+
   ffi:
     dependency: transitive
     description:
@@ -145,6 +171,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3"
+
   flutter:
     dependency: "direct main"
     description: flutter
@@ -176,6 +203,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+
   http:
     dependency: transitive
     description:
@@ -264,6 +292,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+
   js:
     dependency: transitive
     description:
@@ -320,6 +349,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+
   path_provider:
     dependency: "direct main"
     description:
@@ -376,6 +406,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -384,6 +415,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
+
   quiver:
     dependency: transitive
     description:
@@ -392,6 +424,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+
   sky_engine:
     dependency: transitive
     description: flutter

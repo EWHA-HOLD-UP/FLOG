@@ -3,9 +3,12 @@ import 'package:flog/screen/login_screen.dart';
 import 'package:flog/screen/family_matching_screen.dart';
 import 'package:flog/screen/nickname_screen.dart';
 import 'package:flog/screen/shooting_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flog/screen/floging_screen.dart';
 import 'package:flog/screen/root_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 
 void main() {
   runApp(
