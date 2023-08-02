@@ -27,4 +27,40 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/app_logo.png
+    - assets/face_angry.png
+    - assets/face_dizzy.png
+    - assets/face_sad.png
+    - assets/flog_coin_green.png
+    - assets/flog_coin_yellow.png
+    - assets/flog_foot_black.png
+    - assets/flog_foot_green.png
+    - assets/flog_foot_stroke.png
+    - assets/flog_foot_white.png
     - assets/flog_logo.png
+    - assets/flog_name.png
+    - assets/flog_name_3d.png
+    - button/back_arrow.png
+    - button/book.png
+    - button/checked.png
+    - button/close.png
+    - button/flash.png
+    - button/flip.png
+    - button/floging_fill.png
+    - button/floging_line.png
+    - button/memorybox_fill.png
+    - button/memorybox_line.png
+    - button/padlock.png
+    - button/plus.png
+    - button/qpuzzle_empty.png
+    - button/qpuzzle_fill.png
+    - button/qpuzzle_line.png
+    - button/send_black.png
+    - button/send_green.png
+    - button/send_white.png
+    - button/setting_fill.png
+    - button/setting_line.png
+    - button/shooting.png
+    - button/sticker.png
+    - button/text.png
+    - button/video.png
