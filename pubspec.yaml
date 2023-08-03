@@ -45,8 +45,13 @@ dependencies:
   image_picker: ^1.0.1
   intl: ^0.18.1
   firebase_messaging: ^14.6.5
+<<<<<<< Updated upstream
   flutter_local_notification: ^15.1.0+1
 
+=======
+  flutter_local_notifications: ^15.1.0+1
+  get: ^4.6.5 # 컨트롤러
+>>>>>>> Stashed changes
   kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
 
 dev_dependencies:

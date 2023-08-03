@@ -7,6 +7,7 @@ void main() {
 
   //Firebase 초기화 코드
 
+<<<<<<< Updated upstream
 // await Firebase.initializeApp(
 //     options: DefaultFirebaseOptions.currentPlatform,
 // );
@@ -130,4 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+=======
+    MaterialApp(
+      home: LoginScreen(), //하단탭
+    ),
+  );
+>>>>>>> Stashed changes
 }
