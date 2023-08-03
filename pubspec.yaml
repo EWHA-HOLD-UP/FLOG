@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_native_splash: ^2.3.1 # 로딩 화면 커스텀
+
   cupertino_icons: ^1.0.2
   camera: ^0.10.5+2
   path_provider: ^2.0.5
@@ -34,7 +36,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_native_splash: ^2.3.1 # 로딩 화면 커스텀
 
   flutter_lints: ^2.0.0
 
@@ -78,7 +79,3 @@ flutter:
     - button/sticker.png
     - button/text.png
     - button/video.png
-
-flutter_native_splash:
-  color: "ffffff"
-  image: assets/flog_logo.png
