@@ -34,6 +34,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.3.1 # 로딩 화면 커스텀
 
   flutter_lints: ^2.0.0
 
@@ -77,3 +78,7 @@ flutter:
     - button/sticker.png
     - button/text.png
     - button/video.png
+
+flutter_native_splash:
+  color: "ffffff"
+  image: assets/flog_logo.png
