@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FlogingDetailScreen extends StatelessWidget {
-  const FlogingDetailScreen({Key? key}) : super(key: key);
+
+  final String status; // 전달받은 상태 정보 저장
+  const FlogingDetailScreen({required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,22 @@ class FlogingDetailScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20), // 간격
+            Container(
+              width: 300,
+              height: 400,
+              decoration: BoxDecoration(
+                color: Color(0xad747474),
+                borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
+              ),
+              child: Center(
+                child: Text(
+                  status,
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+
+                ),
+              ),
+            ),
+            // 이곳에 추가적인 상세 정보를 표시하는 위젯을 추가
           ],
         ),
       ),

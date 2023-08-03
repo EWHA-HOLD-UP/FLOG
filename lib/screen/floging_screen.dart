@@ -42,12 +42,13 @@ class FlogingScreen extends StatelessWidget {
                   ),
                   itemCount: 3, // 박스의 개수
                   itemBuilder: (context, index) {
+                    String status = "플로깅 상태 ${index + 1}"; // 상태 정보 저장
                     return InkWell(
                     onTap: () { // 클릭 시 다른 스크린으로 이동하는 로직 추가
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FlogingDetailScreen(),
+                          builder: (context) => FlogingDetailScreen(status: status),
                         ),
                       );
                     },
@@ -60,7 +61,7 @@ class FlogingScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "플로깅 상태 ${index + 1}",
+                          status,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
