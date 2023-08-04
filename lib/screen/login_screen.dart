@@ -1,3 +1,5 @@
+
+import 'package:flog/screen/kakao_login_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -20,7 +22,14 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 70),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KakaoLoginScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
