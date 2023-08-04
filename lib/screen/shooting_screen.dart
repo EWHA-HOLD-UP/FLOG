@@ -88,13 +88,13 @@ class _ShootingScreenState extends State<ShootingScreen> {
               child : SafeArea(
                   child: Column(
                     children: [
-                      SizedBox(height:10), //간격
+                      const SizedBox(height:10), //간격
                       Image.asset(
                         "assets/flog_logo.png",
                         width: 55,
                         height: 55,
                       ),
-                      Text(
+                      const Text(
                         "FLOGing",
                         style: TextStyle(
                           fontSize: 30,
@@ -102,8 +102,8 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           color: Color(0xFF609966), // #609966 색상 지정
                         ),
                       ),
-                      SizedBox(height:10), //간격
-                      Container( //카메라 프리뷰 크기 조절
+                      const SizedBox(height:10), //간격
+                      SizedBox( //카메라 프리뷰 크기 조절
                         width: 350,
                         height: 470,
                         child: _cameraController != null && _isCameraReady
@@ -112,9 +112,9 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height:10), //간격
-                      Text('$guide'), //ai 가이드 문구
-                      SizedBox(height:10), //간격
+                      const SizedBox(height:10), //간격
+                      Text(guide), //ai 가이드 문구
+                      const SizedBox(height:10), //간격
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -128,7 +128,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                                 height: 50
                             ),
                           ),
-                          SizedBox(width: 35), //간격
+                          const SizedBox(width: 35), //간격
                           InkWell( //후면 카메라 촬영 버튼
                             onTap:
                             _cameraController != null && _isCameraReady
@@ -143,7 +143,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                                 height: 60
                             ),
                           ),
-                          SizedBox(width: 35), //간격
+                          const SizedBox(width: 35), //간격
                           InkWell( //앞뒤 전환 아이콘 버튼
                             onTap: () {
 

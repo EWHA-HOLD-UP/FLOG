@@ -10,20 +10,20 @@ class NicknameScreen extends StatelessWidget {
         body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 70),
+            const SizedBox(height: 70),
             Row(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Image.asset(
                         "assets/flog_logo.png",
                         width: 40,
                         height: 40
                     ),
-                    SizedBox(width: 5),
-                    Text(
+                    const SizedBox(width: 5),
+                    const Text(
                       '닉네임을 입력해주세요.',
                       style: TextStyle(
                           fontSize: 15, fontWeight: FontWeight.bold),
@@ -35,8 +35,8 @@ class NicknameScreen extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  SizedBox(height: 20),
-                  Container(
+                  const SizedBox(height: 20),
+                  const SizedBox(
                     width: 340,
                     child: TextField(
                       decoration: InputDecoration(
@@ -55,13 +55,13 @@ class NicknameScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BirthScreen(),
+                          builder: (context) => const BirthScreen(),
                         ),
                       );
                     },
@@ -69,11 +69,11 @@ class NicknameScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      backgroundColor: Color(0xFF609966),
-                      minimumSize: Size(300, 50),
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      backgroundColor: const Color(0xFF609966),
+                      minimumSize: const Size(300, 50),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     ),
-                    child: Text(
+                    child: const Text(
                       '다음',
                       style: TextStyle(
                         color: Colors.white,

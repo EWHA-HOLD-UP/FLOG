@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'package:flog/screen/root_screen.dart';
 import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -24,13 +23,13 @@ class ShootingEditScreen extends StatelessWidget {
             child : SafeArea(
               child: Column(
                   children: [
-                    SizedBox(height:10), //간격
+                    const SizedBox(height:10), //간격
                     Image.asset(
                       "assets/flog_logo.png",
                       width: 55,
                       height: 55,
                     ),
-                    Text(
+                    const Text(
                       "FLOGing",
                       style: TextStyle(
                         fontSize: 30,
@@ -38,15 +37,15 @@ class ShootingEditScreen extends StatelessWidget {
                         color: Color(0xFF609966), // #609966 색상 지정
                       ),
                     ),
-                    SizedBox(height:20), //간격
+                    const SizedBox(height:20), //간격
                     IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         // close 버튼 클릭 시 다시 ShootingScreen으로 이동 - 처음부터 다시 찍기
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ShootingScreen(),
+                            builder: (context) => const ShootingScreen(),
                           ),
                         );
                       },

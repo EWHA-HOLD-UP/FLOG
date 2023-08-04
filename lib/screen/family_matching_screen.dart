@@ -13,31 +13,31 @@ class FamilyMatchingScreen extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 20),
-              Text('가족 연결',
+              const SizedBox(height: 20),
+              const Text('가족 연결',
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 140),
+              const SizedBox(height: 140),
               Image.asset(
                 "assets/flog_logo.png",
                 width: 150,
                 height: 150,
               ),
-              SizedBox(height: 30),
-              Text('생성된 FLOG 코드',
+              const SizedBox(height: 30),
+              const Text('생성된 FLOG 코드',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15),
               ),
-              SizedBox(height:5),
-              Text('$familycode',
-                style: TextStyle(
+              const SizedBox(height:5),
+              Text(familycode,
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
@@ -45,10 +45,10 @@ class FamilyMatchingScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   backgroundColor: Colors.white,
-                  minimumSize: Size(300, 50),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  minimumSize: const Size(300, 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                child: Text(
+                child: const Text(
                   'FLOG 코드 공유',
                   style: TextStyle(
                     color: Color(0xFF609966),
@@ -57,13 +57,13 @@ class FamilyMatchingScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MatchingCodeEnteringScreen(),
+                      builder: (context) => const MatchingCodeEnteringScreen(),
                     ),
                   );
                 },
@@ -71,11 +71,11 @@ class FamilyMatchingScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  backgroundColor: Color(0xFF609966),
-                  minimumSize: Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // 내부 패딩 설정
+                  backgroundColor: const Color(0xFF609966),
+                  minimumSize: const Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // 내부 패딩 설정
                 ),
-                child: Text(
+                child: const Text(
                   'FLOG 코드 입력',
                   style: TextStyle(
                     color: Colors.white,

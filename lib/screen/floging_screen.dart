@@ -1,6 +1,11 @@
 
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'floging_detail_screen.dart'; // 다른 파일의 Floging_Detail_Screen import
+=======
+// 다른 파일의 Floging_Detail_Screen import
+import 'package:flog/widgets/flog_card.dart';
+>>>>>>> Stashed changes
 
 class FlogingScreen extends StatelessWidget {
   const FlogingScreen({Key? key}) : super(key: key);
@@ -15,13 +20,13 @@ class FlogingScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height:30),
+                  const SizedBox(height:30),
                   Image.asset(
                     "assets/flog_logo.png",
                     width: 55,
                     height: 55,
                   ),
-                  Text(
+                  const Text(
                     "FLOGing",
                     style: TextStyle(
                       fontSize: 30,
@@ -29,12 +34,12 @@ class FlogingScreen extends StatelessWidget {
                       color: Color(0xFF609966), // #609966 색상 지정
                     ),
                   ),
-              SizedBox(height:20), // 간격
+              const SizedBox(height:20), // 간격
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 20.0,
                     mainAxisSpacing: 20.0,
