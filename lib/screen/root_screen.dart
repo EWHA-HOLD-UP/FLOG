@@ -40,23 +40,23 @@ class _RootScreenState extends State<RootScreen> {
            },
          items: [
            BottomNavigationBarItem(
-              icon: Image.asset('button/floging_line.png', width: 35, height: 35),
-              activeIcon: Image.asset('button/floging_fill.png', width: 35, height: 35),
+              icon: Image.asset('button/floging_line.png', width: 30, height: 30),
+              activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30),
                label: 'Floging'
            ),
           BottomNavigationBarItem(
-              icon: Image.asset('button/qpuzzle_line.png', width: 35, height: 35),
-              activeIcon: Image.asset('button/qpuzzle_fill.png', width: 35, height: 35),
+              icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
+              activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
               label: 'Qpuzzle'
         ),
           BottomNavigationBarItem(
-            icon: Image.asset('button/memorybox_line.png', width: 35, height: 35),
-            activeIcon: Image.asset('button/memorybox_fill.png', width: 35, height: 35),
+            icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
+            activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30),
               label: 'memory box'
         ),
           BottomNavigationBarItem(
-              icon: Image.asset('button/setting_line.png', width: 35, height: 35),
-              activeIcon: Image.asset('button/setting_fill.png', width: 35, height: 35),
+              icon: Image.asset('button/setting_line.png', width: 30, height: 30),
+              activeIcon: Image.asset('button/setting_fill.png', width: 30, height: 30),
               label: 'setting'
           ),
         ]
