@@ -9,7 +9,8 @@ import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootScreen extends StatefulWidget {
-  const RootScreen({Key? key}) : super(key: key);
+  final String matched_familycode;
+  const RootScreen({required this.matched_familycode, Key? key}) : super(key: key);
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
@@ -27,6 +28,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('확인용 - ${widget.matched_familycode}의 가족')),
       body: _pages[_currentIndex],
      bottomNavigationBar: BottomNavigationBar(
          showSelectedLabels: false,

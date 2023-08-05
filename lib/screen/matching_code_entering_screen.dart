@@ -1,8 +1,21 @@
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 
-class MatchingCodeEnteringScreen extends StatelessWidget {
+class MatchingCodeEnteringScreen extends StatefulWidget {
   const MatchingCodeEnteringScreen({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _EnteringState();
+}
+
+  class _EnteringState extends State<MatchingCodeEnteringScreen>{
+  TextEditingController codeController = TextEditingController();
+
+  @override
+  void dispose() {
+    codeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +46,7 @@ class MatchingCodeEnteringScreen extends StatelessWidget {
               Container(
                 width: 340,
                 child: TextField(
+                  controller: codeController,
                   decoration: InputDecoration(
                     hintText: 'code',
                     hintStyle: TextStyle(
@@ -52,11 +66,10 @@ class MatchingCodeEnteringScreen extends StatelessWidget {
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
+                  String entered_familycode = codeController.text;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => RootScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => RootScreen(matched_familycode: entered_familycode)),
                   );
                 },
                 style: ElevatedButton.styleFrom(

@@ -1,10 +1,61 @@
 import 'package:flog/screen/matching_code_entering_screen.dart';
+import 'package:flog/screen/waiting_for_family.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
-class FamilyMatchingScreen extends StatelessWidget {
-  const FamilyMatchingScreen({Key? key}) : super(key: key);
+import 'package:flutter/services.dart';
 
-  final String familycode = "alxlsk203lx";
+
+
+class FamilyMatchingScreen extends StatefulWidget {
+  FamilyMatchingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _FamilyMatchingScreenState();
+}
+class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
+  late String familycode;
+
+  @override
+  void initState() {
+    super.initState();
+    GetFamilyCode();
+  }
+
+  Future<void> GetFamilyCode() async {
+    var _random = Random();
+    var leastcharindex=[];
+    var skipCharacter = [
+      0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
+      0x40, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60
+    ];
+    var min = 0x30; //사용할 아스키 문자 시작
+    var max = 0x7A;
+    var code = [];
+    while(code.length <= 15) {
+      var tmp = min + _random.nextInt(max - min); //랜덤으로 아스키 값 받기
+      if(skipCharacter.contains(tmp)){
+        continue;
+      }
+      code.add(tmp);
+    }
+
+    while(leastcharindex.length < 3) {
+      var ran = _random.nextInt(15);
+      if(!leastcharindex.contains(ran)) {
+        leastcharindex.add(ran);
+      }
+    }
+
+    code[leastcharindex[0]] = 0x21; //!
+    code[leastcharindex[1]] = 0x78; //x
+    code[leastcharindex[2]] = 0x30; //0
+    String generatedCode = String.fromCharCodes(code.cast<int>());
+
+    setState(() {
+      familycode = generatedCode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +90,19 @@ class FamilyMatchingScreen extends StatelessWidget {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: familycode));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('가족 코드가 복사되었습니다!'),
+                      duration: Duration(seconds: 2), // 알림이 화면에 표시될 시간 2초
+                    ),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WaitingForFamily(familycode: familycode)),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
