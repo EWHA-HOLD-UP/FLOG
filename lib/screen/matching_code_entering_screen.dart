@@ -8,7 +8,7 @@ class MatchingCodeEnteringScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _EnteringState();
 }
 
-  class _EnteringState extends State<MatchingCodeEnteringScreen>{
+class _EnteringState extends State<MatchingCodeEnteringScreen>{
   TextEditingController codeController = TextEditingController();
 
   @override
