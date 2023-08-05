@@ -1,5 +1,3 @@
-import 'package:flog/screen/family_matching_screen.dart';
-import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 
 class WaitingForFamily extends StatefulWidget {
@@ -19,7 +17,6 @@ class _WaitingState extends State<WaitingForFamily>{
         elevation: 0.0,
         leading: IconButton(
           icon: Image.asset('button/back_arrow.png', width: 20, height: 20),
-          color: Color(0xFF609966),
           onPressed: () {
             Navigator.pop(context);
             },
@@ -29,7 +26,6 @@ class _WaitingState extends State<WaitingForFamily>{
         child: Center(
           child: Column(
             children: [
-
               SizedBox(height: 70),
               Image.asset(
                   "assets/flog_logo.png",

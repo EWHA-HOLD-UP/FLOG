@@ -10,7 +10,7 @@ class NicknameScreen extends StatefulWidget {
 
 class _NicknameScreenState extends State<NicknameScreen> {
   TextEditingController nicknameController = TextEditingController();
-  bool _isNicknameEntered = false;
+  bool isButtonEnabled = false; //'다음' 버튼 비활성화
 
   @override
   void dispose() {
@@ -19,15 +19,38 @@ class _NicknameScreenState extends State<NicknameScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    updateButtonStatus();
+  }
+
+  void updateButtonStatus(){ //글자가 입력되면 '다음' 버튼 활성화
+    setState(() {
+      isButtonEnabled = nicknameController.text.isNotEmpty;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return WillPopScope( //뒤로가기 방지
       onWillPop: () async => false,
       child:
         Scaffold(
-            body: SafeArea(
+          appBar: AppBar(
+            backgroundColor: Colors.white12,
+            elevation: 0.0,
+            leading: IconButton(
+              icon: Image.asset('button/back_arrow.png', width: 20, height: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+
+          body: SafeArea(
             child: Column(
               children: [
-                SizedBox(height: 70),
+                SizedBox(height: 50),
                 Row(
                   children: [
                     Row(
@@ -41,9 +64,9 @@ class _NicknameScreenState extends State<NicknameScreen> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          '닉네임을 입력해주세요. (10자 이내)',
+                          '닉네임을 입력해주세요.',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         )
                       ]
                     ),
@@ -57,8 +80,11 @@ class _NicknameScreenState extends State<NicknameScreen> {
                         width: 340,
                         child: TextField(
                           maxLength: 10,
+                          onChanged: (value) {
+                            updateButtonStatus();
+                          },
                           controller: nicknameController,
-                          decoration: InputDecoration(
+                          decoration: InputDecoration( //힌트
                               hintText: 'nickname',
                               hintStyle: TextStyle(
                                   color: Colors.black12,
@@ -70,26 +96,21 @@ class _NicknameScreenState extends State<NicknameScreen> {
                               ),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black26)
-                              )
+                              ),
+                            helperText: '10자 이내로 입력해주세요.'
                           ),
                         ),
                       ),
                       SizedBox(height: 50),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: isButtonEnabled
+                          ? () {
                           String entered_nickname = nicknameController.text;
-                          if (entered_nickname.isNotEmpty) {
-                            _isNicknameEntered = true;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => BirthScreen(nickname: entered_nickname)),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('10자 이내의 닉네임을 입력해주세요.')),
-                            );
-                          }
-                        },
+                          Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => BirthScreen(nickname: entered_nickname)),
+                          );
+                        }
+                        : null,
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -112,11 +133,9 @@ class _NicknameScreenState extends State<NicknameScreen> {
                 ),
               ],
             ),
-            ),
+          ),
         ),
     );
   }
-
-
 }
 

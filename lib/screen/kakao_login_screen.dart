@@ -34,18 +34,29 @@ class _LoginPageState extends State<LoginPage>{
               Image.network(viewModel.user?.kakaoAccount?.profile?.profileImageUrl ?? ''),
               Text('${viewModel.isLogined}'),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF609966)
+                ),
                   onPressed: () async {
                     await viewModel.login();
                     setState(() {});
                   },
-                  child: const Text('Login')
+                  child: const Text(
+                    'Kakao Login',
+                      style: TextStyle(color: Colors.white)
+                  )
               ),
               ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF609966)
+                  ),
                   onPressed: ()async {
                     await viewModel.logout();
                     setState(() {});
                   },
-                  child: const Text('Logout')
+                  child: const Text('Kakao Logout',
+                      style: TextStyle(color: Colors.white)
+                  )
               )
             ],
           ),

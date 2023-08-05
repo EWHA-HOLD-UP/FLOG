@@ -20,6 +20,17 @@ class _EnteringState extends State<MatchingCodeEnteringScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white12,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Image.asset('button/back_arrow.png', width: 20, height: 20),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+
       body: SafeArea(
         child: Center(
           child: Column(
@@ -28,7 +39,7 @@ class _EnteringState extends State<MatchingCodeEnteringScreen>{
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: 20),
+                  SizedBox(width: 10),
                   Image.asset(
                   "assets/flog_logo.png",
                   width: 40,
@@ -66,10 +77,12 @@ class _EnteringState extends State<MatchingCodeEnteringScreen>{
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  String entered_familycode = codeController.text;
+                  String entered_familycode = codeController.text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RootScreen(matched_familycode: entered_familycode)),
+                    MaterialPageRoute( //다음 스크린으로 가족코드 전달되는지 확인 위해 매개변수로 전달
+                        builder: (context) => RootScreen(matched_familycode: entered_familycode)
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(

@@ -11,7 +11,7 @@ class BirthScreen extends StatefulWidget {
 
 class _BirthScreenState extends State<BirthScreen> {
   TextEditingController birthController = TextEditingController();
-  bool isButtonEnabled = false;
+  bool isButtonEnabled = false; //'다음' 버튼 비활성화
 
   @override
   void dispose(){
@@ -25,22 +25,38 @@ class _BirthScreenState extends State<BirthScreen> {
     updateButtonStatus();
   }
 
-  void updateButtonStatus(){
+  void updateButtonStatus(){ //글자가 4개 입력되면 '다음' 버튼 활성화
     setState(() {
       isButtonEnabled = birthController.text.length == 4;
     });
   }
 
+  //다음 화면으로 넘어가기 전 키보드 숨기기 - 이 코드 없으면 공사장 표시 잠시 나타남
+  void dismissKeyboard() {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return WillPopScope( //뒤로가기 방지
       onWillPop: () async => false,
       child:
         Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white12,
+            elevation: 0.0,
+            leading: IconButton(
+              icon: Image.asset('button/back_arrow.png', width: 20, height: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+
           body: SafeArea(
             child: Column(
               children: [
-                SizedBox(height: 70),
+                SizedBox(height: 50),
                 Row(
                     children: [
                       Row(
@@ -56,7 +72,7 @@ class _BirthScreenState extends State<BirthScreen> {
                             Text(
                               '${widget.nickname}님의 생일을 입력해주세요.',
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             )
                           ]
                       ),
@@ -72,9 +88,9 @@ class _BirthScreenState extends State<BirthScreen> {
                           maxLength: 4,
                           onChanged: (value) {
                             updateButtonStatus();
-                          },
+                            },
                           controller: birthController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.number, //숫자 키보드
                           decoration: InputDecoration(
                               hintText: 'MMDD(ex. 10월 2일 : 1002)',
                               hintStyle: TextStyle(
@@ -88,32 +104,31 @@ class _BirthScreenState extends State<BirthScreen> {
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black26)
                               ),
-                            helperText: birthController.text.length < 4
-                              ? '4개의 숫자를 입력해주세요.'
-                                : null,
+                            helperText: '4개의 숫자를 입력해주세요.'
                           ),
                         ),
                       ),
-
                       SizedBox(height: 50),
                       ElevatedButton(
                         onPressed: isButtonEnabled
                           ? () {
-                          String entered_nickname = widget.nickname;
-                          String entered_birth = birthController.text;
-                          if (entered_birth.isNotEmpty) {
+                          dismissKeyboard(); // 키보드 숨기기
 
-                            Navigator.push(
+                          String entered_nickname = widget.nickname; //닉네임 저장된 변수 - 파이어베이스에 저장 + 셋팅 화면에서 활용하면 될 것 같음
+                          String entered_birth = birthController.text;
+
+                          /* 하단 두개 변수를 파이어베이스에 저장 + 셋팅 화면에서 활용하면 될 것 같음 */
+                          String entered_birth_month = entered_birth.substring(0,2); //월 저장된 변수
+                          String entered_birth_day = entered_birth.substring(2); //일 저장된 변수
+                          // print('$entered_birth_month 월 $entered_birth_day 일'); 잘 분리되어 저장된 것 확인 완료
+
+                          Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => FamilyMatchingScreen(nickname: entered_nickname, birth: entered_birth)),
+                              MaterialPageRoute(builder: (context) => FamilyMatchingScreen(nickname: entered_nickname))
                             );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('생일을 입력해주세요.'))
-                            );
-                          }
                           }
                           :null,
+
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -140,7 +155,5 @@ class _BirthScreenState extends State<BirthScreen> {
         ),
     );
   }
-
-
 }
 

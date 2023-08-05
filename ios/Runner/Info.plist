@@ -22,6 +22,16 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>CFBundleURLTypes</key>
+            <array>
+              <dict>
+              <key>CFBundleURLSchemes</key>
+              <array>
+                <!-- kakao login -->
+                <string>kakao네이티브 앱 키</string>
+              </array>
+              </dict>
+            </array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>

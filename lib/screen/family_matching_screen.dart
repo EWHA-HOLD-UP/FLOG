@@ -2,55 +2,54 @@ import 'package:flog/screen/matching_code_entering_screen.dart';
 import 'package:flog/screen/waiting_for_family.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import 'package:flutter/services.dart';
 
-
-
 class FamilyMatchingScreen extends StatefulWidget {
-  final String nickname, birth;
-  const FamilyMatchingScreen({required this.nickname, required this.birth, Key? key}) : super(key: key);
+  final String nickname;
+  const FamilyMatchingScreen({required this.nickname, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FamilyMatchingScreenState();
 }
+
 class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
   late String familycode;
 
   @override
   void initState() {
     super.initState();
-    GetFamilyCode();
+    getFamilyCode();
   }
 
-  Future<void> GetFamilyCode() async {
-    var _random = Random();
-    var leastcharindex=[];
-    var skipCharacter = [
+  Future<void> getFamilyCode() async {
+    var random = Random();
+    var leastcharindex=[]; //꼭 들어가야 할 문자
+    var skipCharacter = [ //포함하지 않은 문자
       0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
       0x40, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60
     ];
     var min = 0x30; //사용할 아스키 문자 시작
-    var max = 0x7A;
-    var code = [];
-    while(code.length <= 15) {
-      var tmp = min + _random.nextInt(max - min); //랜덤으로 아스키 값 받기
+    var max = 0x7A; //사용할 아스키 문자 마지막
+    var code = []; //생성한 코드
+
+    while(code.length <= 15) { //가족 코드는 15글자
+      var tmp = min + random.nextInt(max - min); //랜덤으로 아스키 값 받기
       if(skipCharacter.contains(tmp)){
         continue;
       }
       code.add(tmp);
     }
 
-    while(leastcharindex.length < 3) {
-      var ran = _random.nextInt(15);
+    while(leastcharindex.length < 3) { //특수문자, 숫자, 문자 섞기 위해 하나씩 지정하여 꼭 넣기
+      var ran = random.nextInt(15);
       if(!leastcharindex.contains(ran)) {
         leastcharindex.add(ran);
       }
     }
-
     code[leastcharindex[0]] = 0x21; //!
     code[leastcharindex[1]] = 0x78; //x
     code[leastcharindex[2]] = 0x30; //0
+
     String generatedCode = String.fromCharCodes(code.cast<int>());
 
     setState(() {
