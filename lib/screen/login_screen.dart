@@ -1,5 +1,6 @@
 
 import 'package:flog/screen/kakao_login_screen.dart';
+import 'package:flog/screen/sms_login_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class LoginScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => KakaoLoginScreen(),
+                        builder: (context) => SMSLoginPage(),
                       ),
                     );
                   },
@@ -39,7 +40,7 @@ class LoginScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                   child: Text(
-                    '시작하기 - 카카오',
+                    '시작하기 - SMS',
                     style: TextStyle(
                       color: Color(0xFF609966),
                       fontWeight: FontWeight.bold,

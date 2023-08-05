@@ -12,7 +12,7 @@ import 'firebase_options.dart';
 
 
 void main() {
-  KakaoSdk.init(nativeAppKey: '1bc756b46c8f0708f62fe07ef96bb3d6'); //내 계정 임의로 넣은거야!
+
   runApp(
     //Firebase 초기화 코드
 
