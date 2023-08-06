@@ -55,8 +55,8 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
     return TextFormField(
       controller: _phoneController,
       autofocus: true,
-      validator: (val){
-        if(val!.isEmpty) {
+      validator: (val) {
+        if (val!.isEmpty) {
           return '비어있음';
         } else {
           return null;
@@ -64,19 +64,15 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
       },
       keyboardType: TextInputType.phone,
       decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        ),
+        border: OutlineInputBorder(),
         hintText: '핸드폰 번호를 입력하세요.', //+8210 넣고 입력해야됨
         hintStyle: TextStyle(
-            color: Colors.black12,
-            fontSize: 25,
-            fontStyle: FontStyle.italic),
+            color: Colors.black12, fontSize: 25, fontStyle: FontStyle.italic),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF609966)),
         ),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black26)
-        ),
+        focusedBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
       ),
     );
   }
@@ -86,7 +82,7 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
       controller: _smsCodeController,
       autofocus: true,
       validator: (val) {
-        if(val!.isEmpty) {
+        if (val!.isEmpty) {
           return '입력되지 않음';
         } else {
           return null;
@@ -104,42 +100,42 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF609966)),
         ),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black26)
-        ),
+        focusedBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
       ),
     );
   }
 
   ElevatedButton submitButton() {
-    return ElevatedButton(onPressed: () async {
-      if(_key.currentState!.validate()) {
-        FirebaseAuth auth = FirebaseAuth.instance;
-        await auth.verifyPhoneNumber(
-          phoneNumber: _phoneController.text,
-          verificationCompleted: (PhoneAuthCredential credential) async {
-            await auth
-                .signInWithCredential(credential)
-                .then((_) => Navigator.pushNamed(context, "/"));
-          },
-          verificationFailed: (FirebaseAuthException e) {
-            if(e.code == 'invalid-phone-number') {
-              print('올바르지 않은 핸드폰 번호입니다.');
-            }
-          },
-          codeSent: (String verificationId, forceResendingToken) async {
-            String smsCode = _smsCodeController.text;
-            setState(() {
-              _codeSent = true;
-              _verificationId = verificationId;
-            });
-          },
-          codeAutoRetrievalTimeout: (verificationId) {
-            print("handling code auto retrieval timeout");
-          },
-        );
-      }
-    },
+    return ElevatedButton(
+      onPressed: () async {
+        if (_key.currentState!.validate()) {
+          FirebaseAuth auth = FirebaseAuth.instance;
+          await auth.verifyPhoneNumber(
+            phoneNumber: _phoneController.text,
+            verificationCompleted: (PhoneAuthCredential credential) async {
+              await auth
+                  .signInWithCredential(credential)
+                  .then((_) => Navigator.pushNamed(context, "/"));
+            },
+            verificationFailed: (FirebaseAuthException e) {
+              if (e.code == 'invalid-phone-number') {
+                print('올바르지 않은 핸드폰 번호입니다.');
+              }
+            },
+            codeSent: (String verificationId, forceResendingToken) async {
+              String smsCode = _smsCodeController.text;
+              setState(() {
+                _codeSent = true;
+                _verificationId = verificationId;
+              });
+            },
+            codeAutoRetrievalTimeout: (verificationId) {
+              print("handling code auto retrieval timeout");
+            },
+          );
+        }
+      },
       style: ElevatedButton.styleFrom(
         primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
         shape: RoundedRectangleBorder(
@@ -161,14 +157,14 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
 
   ElevatedButton verifyButton() {
     return ElevatedButton(
-        onPressed: () async {
-          FirebaseAuth auth = FirebaseAuth.instance;
-          PhoneAuthCredential credential = PhoneAuthProvider.credential(
-              verificationId: _verificationId, smsCode: _smsCodeController.text);
-          await auth
-              .signInWithCredential(credential)
-              .then((_) => Navigator.pushNamed(context, "/"));
-          },
+      onPressed: () async {
+        FirebaseAuth auth = FirebaseAuth.instance;
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: _verificationId, smsCode: _smsCodeController.text);
+        await auth
+            .signInWithCredential(credential)
+            .then((_) => Navigator.pushNamed(context, "/"));
+      },
       style: ElevatedButton.styleFrom(
         primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
         shape: RoundedRectangleBorder(
@@ -176,15 +172,15 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
         ),
       ),
       child: Container(
-          padding: const EdgeInsets.all(15),
-          color: Color(0xFF609966),
-          child: const Text(
-            "확인",
-            style: TextStyle(
-              fontSize: 15,
-            ),
+        padding: const EdgeInsets.all(15),
+        color: Color(0xFF609966),
+        child: const Text(
+          "확인",
+          style: TextStyle(
+            fontSize: 15,
           ),
         ),
+      ),
     );
   }
 }
