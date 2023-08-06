@@ -20,19 +20,21 @@ class _HomePageState extends State<HomePage> {
              appBar: AppBar(
                actions: [
                  IconButton(
-                     icon: const Icon(Icons.logout),
-                 onPressed: () async => await FirebaseAuth.instance
-                   .signOut()
-                   .then((_) => Navigator.pushNamed(context, "/")),
+                   icon: const Icon(Icons.logout),
+                   onPressed: () async =>
+                   await FirebaseAuth.instance
+                       .signOut()
+                       .then((_) => Navigator.pushNamed(context, "/")),
                  ),
                ],
                backgroundColor: Colors.white12,
                elevation: 0.0,
                leading: IconButton(
-                 icon: Image.asset('button/back_arrow.png', width: 20, height: 20),
+                 icon: Image.asset(
+                     'button/back_arrow.png', width: 20, height: 20),
                  onPressed: () {
                    Navigator.pop(context);
-                   },
+                 },
                ),
              ),
              body: const Center(

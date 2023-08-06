@@ -4,7 +4,7 @@ import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-class ShootingEditScreen extends StatelessWidget {
+class ShootingEditScreen extends StatefulWidget {
   final String backImagePath;
   final String frontImagePath;
 
@@ -13,6 +13,15 @@ class ShootingEditScreen extends StatelessWidget {
     required this.backImagePath,
     required this.frontImagePath,
   }) : super(key: key);
+
+  @override
+  _ShootingEditState createState() => _ShootingEditState();
+}
+
+class _ShootingEditState extends State<ShootingEditScreen> {
+
+  //여기서부터 플립 기능 위한 부분
+  bool isFrontImageVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -51,31 +60,47 @@ class ShootingEditScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.file( //후면 카메라로 찍은 사진 불러오기
-                          File(backImagePath),
-                          width: 200,
-                          height: 200,
-                        ),
-                        Transform( //전면 카메라로 찍은 사진 불러오기 (좌우 반전)
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationY(math.pi),
-                          child: Image.file(
-                            File(frontImagePath),
-                            width: 200,
-                            height: 200,
+                    Center(
+                      child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isFrontImageVisible = !isFrontImageVisible;
+                            });
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                            Visibility(
+                              visible: !isFrontImageVisible,
+                              child: Image.file(
+                                File(widget.backImagePath),
+                                width: 600,
+                                height: 400,
+                              ),
+                            ),
+                              Visibility(
+                                visible: isFrontImageVisible,
+                                child: Transform(
+                                  alignment: Alignment.center,
+                                  transform: Matrix4.rotationY(math.pi),
+                                  child: Image.file(
+                                    File(widget.frontImagePath),
+                                    width: 600,
+                                    height: 400,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
                     ),
-                  ]
+                  ],
               ),
             ),
           ),
         ),
     );
   }
+
+
 }

@@ -20,7 +20,7 @@ void main() {
     //     options: DefaultFirebaseOptions.currentPlatform,
     // );
     MaterialApp(
-      home: LoginScreen(),
+      home: NicknameScreen(),
     ),
   );
 }
