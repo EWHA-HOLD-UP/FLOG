@@ -32,10 +32,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: '/init',
       routes: {
         '/': (context) => const HomePage(),
         '/login': (context) => const NicknameScreen(),
+        '/init' : (context) => const LoginScreen(),
       },
     );
   }
