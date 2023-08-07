@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flog/screen/root_screen.dart';
-import 'package:flog/screen/shooting_screen.dart';
+import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 

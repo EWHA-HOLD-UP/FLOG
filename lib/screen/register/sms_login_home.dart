@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flog/screen/nickname_screen.dart';
-import 'package:flog/screen/sms_login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flog/screen/register/personal_nickname_screen.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

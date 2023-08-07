@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flog/screen/floging_detail_screen.dart'; // 다른 파일의 Floging_Detail_Screen import
+import 'package:flog/screen/floging/floging_detail_screen.dart'; // 다른 파일의 Floging_Detail_Screen import
 import 'package:flog/widgets/flog_card.dart';
 
 class FlogingScreen extends StatelessWidget {

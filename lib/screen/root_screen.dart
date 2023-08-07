@@ -1,11 +1,11 @@
 //Bottom Navigation Bar와 Tab Bar View 구현 위함
-
-import 'package:flog/screen/floging_screen.dart';
-import 'package:flog/screen/qpuzzle_screen.dart';
-import 'package:flog/screen/setting_screen.dart';
-import 'package:flog/screen/memorybox_screen.dart';
-import 'package:flog/screen/shooting_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flog/screen/floging/floging_screen.dart';
+import 'package:flog/screen/floging/shooting_screen_back.dart';
+import 'package:flog/screen/qpuzzle_screen.dart';
+import 'package:flog/screen/memorybox/memorybox_screen.dart';
+import 'package:flog/screen/setting_screen.dart';
+
 
 class RootScreen extends StatefulWidget {
   final String matched_familycode;

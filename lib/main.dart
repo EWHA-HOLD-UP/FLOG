@@ -1,13 +1,7 @@
-import 'package:flog/screen/birth_screen.dart';
-import 'package:flog/screen/login_screen.dart';
-import 'package:flog/screen/family_matching_screen.dart';
-import 'package:flog/screen/nickname_screen.dart';
-import 'package:flog/screen/shooting_screen.dart';
-import 'package:flog/screen/floging_screen.dart';
-import 'package:flog/screen/root_screen.dart';
-import 'package:flog/screen/sms_login_home.dart';
-import 'package:flog/screen/sms_login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flog/screen/register/start_login_screen.dart';
+import 'package:flog/screen/register/personal_nickname_screen.dart';
+import 'package:flog/screen/register/sms_login_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

@@ -1,6 +1,6 @@
 // 업로드한 상태를 보여주는 카드 기능 구현
 import 'package:flutter/material.dart';
-import 'package:flog/screen/floging_detail_screen.dart';
+import 'package:flog/screen/floging/floging_detail_screen.dart';
 
 class FlogCard extends StatelessWidget {
   final String status;

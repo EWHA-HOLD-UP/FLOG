@@ -1,5 +1,5 @@
-import 'package:flog/screen/matching_code_entering_screen.dart';
-import 'package:flog/screen/waiting_for_family.dart';
+import 'package:flog/screen/register/matching_code_entering_screen.dart';
+import 'package:flog/screen/register/matching_waiting_for_family.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';

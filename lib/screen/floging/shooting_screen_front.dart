@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:flog/screen/shooting_edit_screen.dart';
+import 'package:flog/screen/floging/shooting_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 

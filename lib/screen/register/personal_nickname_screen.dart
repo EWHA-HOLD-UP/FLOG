@@ -1,5 +1,5 @@
-import 'package:flog/screen/birth_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flog/screen/register/personal_birth_screen.dart';
 
 class NicknameScreen extends StatefulWidget {
   const NicknameScreen({Key? key}) : super(key: key);

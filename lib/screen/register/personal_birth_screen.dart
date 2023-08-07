@@ -1,5 +1,6 @@
-import 'package:flog/screen/family_matching_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flog/screen/register/matching_screen.dart';
+
 
 
 class BirthScreen extends StatefulWidget {
