@@ -20,7 +20,7 @@ class ShootingEditScreen extends StatefulWidget {
 
 class _ShootingEditState extends State<ShootingEditScreen> {
 
-  //여기서부터 플립 기능 위한 부분
+  //플립 기능 위한 부분
   bool isFrontImageVisible = true;
 
   @override
