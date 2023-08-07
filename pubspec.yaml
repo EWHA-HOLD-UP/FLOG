@@ -30,8 +30,6 @@ dependencies:
   firebase_messaging: ^14.6.5
   flutter_local_notifications: ^15.1.0+1
 
-  kakao_flutter_sdk_user: ^1.5.0 # 카카오 로그인
-
   shared_preferences: ^2.2.0
   shared_preferences_android: ^2.2.0
   shared_preferences_ios_sn: ^1.0.3

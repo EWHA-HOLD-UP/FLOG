@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flog/screen/kakao_login_screen.dart';
 import 'package:flog/screen/nickname_screen.dart';
 import 'package:flog/screen/sms_login_screen.dart';
 import 'package:flutter/material.dart';
