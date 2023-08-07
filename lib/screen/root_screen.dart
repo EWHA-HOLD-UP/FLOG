@@ -33,7 +33,8 @@ class _RootScreenState extends State<RootScreen> {
           appBar: AppBar(
               backgroundColor: Colors.white12,
               elevation: 0.0,
-              title: Text('개발 중 확인용 - ${widget.matched_familycode}의 가족')
+              title: Text('개발 중 확인용 - ${widget.matched_familycode}의 가족',
+              style: TextStyle(color: Colors.black))
           ),
 
           body: _pages[_currentIndex],

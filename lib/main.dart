@@ -1,5 +1,4 @@
 import 'package:flog/screen/birth_screen.dart';
-import 'package:flog/screen/kakao_login_screen.dart';
 import 'package:flog/screen/login_screen.dart';
 import 'package:flog/screen/family_matching_screen.dart';
 import 'package:flog/screen/nickname_screen.dart';
@@ -10,7 +9,6 @@ import 'package:flog/screen/sms_login_home.dart';
 import 'package:flog/screen/sms_login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'firebase_options.dart';
 
 void main() async {
