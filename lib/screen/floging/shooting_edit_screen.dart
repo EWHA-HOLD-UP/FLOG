@@ -1,11 +1,15 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flog/widgets/shooting_edit_footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import '../../widgets/emoticon_sticker.dart';
 import '../../widgets/sticker_model.dart';
@@ -27,12 +31,15 @@ class ShootingEditScreen extends StatefulWidget {
 
 class _ShootingEditState extends State<ShootingEditScreen> {
 
-  //플립 기능 위한 부분
-  bool isFrontImageVisible = true;
+  bool isFrontImageVisible = false; //플립 기능 위한 부분
 
-  Set<StickerModel> frontImageStickers = {};
-  Set<StickerModel> backImageStickers = {};
+  Set<StickerModel> frontImageStickers = {}; //셀카 스티커
+  Set<StickerModel> backImageStickers = {}; //후면 카메라 스티커
   String? selectedId;
+  GlobalKey imgKey = GlobalKey();
+  GlobalKey imgKey2 = GlobalKey();
+  String? _editiedFrontImagePath = '';
+  String? _editiedBackImagePath = '';
 
 
   @override
@@ -43,172 +50,225 @@ class _ShootingEditState extends State<ShootingEditScreen> {
         Scaffold(
           body: Center(
             child : SafeArea(
-              child: Column(
-                  children: [
-                    SizedBox(height:10), //간격
-                    Image.asset(
-                      "assets/flog_logo.png",
-                      width: 55,
-                      height: 55,
-                    ),
-                    Text(
-                      "FLOGing",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF609966), // #609966 색상 지정
-                      ),
-                    ),
-                    SizedBox(height:10), //간격
-                    /////////////////////
-                    Container(
-                      width: 350,
-                      height: 470,
-                      child: Stack(
-                            alignment: Alignment.center,
+              child: Stack(
+                children: [
+                  Column(
+                      children: [
+                        SizedBox(height:10), //간격
+                        Image.asset(
+                          "assets/flog_logo.png",
+                          width: 55,
+                          height: 55,
+                        ),
+                        Text(
+                          "FLOGing",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF609966), // #609966 색상 지정
+                          ),
+                        ),
+                        SizedBox(height:10), //간격
+                        ////////////////////////////////////////////////////////////
+                        /* ↓↓↓↓↓ 사진 보여주기 ↓↓↓↓↓ */
+                        Container(
+                          width: 350,
+                          height: 470,
+                          child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  RepaintBoundary(
+                                    key: imgKey,
+                                    child:
+                                      InteractiveViewer( //확대축소
+                                        child:
+                                          Stack(
+                                            children: [
+                                              Visibility(
+                                                visible: !isFrontImageVisible, //후면 사진
+                                                child: Image.file(
+                                                  File(widget.backImagePath),
+                                                  width: 350,
+                                                  height: 470,
+                                                ),
+                                              ),
+                                              ...backImageStickers.map(
+                                                    (sticker) => Center(
+                                                  child: EmoticonSticker(
+                                                    key: ObjectKey(sticker.id),
+                                                    onTransform: () {
+                                                      onTransform(sticker.id);
+                                                    },
+                                                    imgPath: sticker.imgPath,
+                                                    isSelected: selectedId == sticker.id,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                      ),
+                                  ),
+                                  RepaintBoundary(
+                                    key: imgKey2,
+                                    child:
+                                      InteractiveViewer( //확대축소
+                                        child:
+                                          Stack(
+                                            children: [
+                                              Visibility(
+                                                visible: isFrontImageVisible, //전면 사진
+                                                child: Transform( //좌우 반전
+                                                  alignment: Alignment.center,
+                                                  transform: Matrix4.rotationY(math.pi),
+                                                  child: Image.file(
+                                                    File(widget.frontImagePath),
+                                                    width: 350,
+                                                    height: 470,
+                                                  ),
+                                                ),
+                                              ),
+                                              ...frontImageStickers.map(
+                                                    (sticker) => Center(
+                                                  child: EmoticonSticker(
+                                                    key: ObjectKey(sticker.id),
+                                                    onTransform: () {
+                                                      onTransform(sticker.id);
+                                                    },
+                                                    imgPath: sticker.imgPath,
+                                                    isSelected: selectedId == sticker.id,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                      ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                        SizedBox(height:10), //간격
+
+                        ////////////////////////////////////////////////////////////
+                        /* ↓↓↓↓↓ 텍스트, 플립, 스티커 버튼 ↓↓↓↓↓ */
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //텍스트 버튼
+                            InkWell(
+                              onTap: () {
+
+                              },
+                              child: Image.asset(
+                                  "button/text.png",
+                                  width: 30,
+                                  height: 30
+                              ),
+                            ),
+
+                            SizedBox(width: 50),
+
+                            //사진 전환 버튼
+                            InkWell(
+                              onTap: () async {
+                                  if(isFrontImageVisible) { // 셀카이면
+                                    RenderRepaintBoundary boundary = imgKey2
+                                        .currentContext!
+                                        .findRenderObject() as RenderRepaintBoundary;
+                                    ui.Image image = await boundary.toImage();
+                                    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+                                    Uint8List pngBytes = byteData!.buffer.asUint8List();
+                                    String editedImagePath = await _saveEditedImage(pngBytes);
+                                    setState(() {
+                                      _editiedFrontImagePath = editedImagePath;
+
+                                    });
+                                  } else { //후면카메라이면
+                                    RenderRepaintBoundary boundary = imgKey
+                                        .currentContext!
+                                        .findRenderObject() as RenderRepaintBoundary;
+                                    ui.Image image = await boundary.toImage();
+                                    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+                                    Uint8List pngBytes = byteData!.buffer.asUint8List();
+                                    String editedImagePath = await _saveEditedImage(pngBytes);
+                                    setState(() {
+                                      _editiedBackImagePath = editedImagePath;
+                                      isFrontImageVisible = !isFrontImageVisible; //사진 전환
+                                    });
+                                  };
+                                },
+                              child: Image.asset(
+                                  "button/flip.png",
+                                  width: 30,
+                                  height: 30
+                                ),
+                            ),
+
+                            SizedBox(width: 50), //간격
+
+                            //스티커 버튼
+                            InkWell(
+                                onTap: () {
+                                  _showStickerPicker(context);
+                                },
+                                child: Image.asset(
+                                    "button/sticker.png",
+                                    width: 30,
+                                    height: 30
+                                ),
+                            ),
+
+                            SizedBox(width: 50),
+                            
+                            IconButton(
+                              onPressed: onDeleteItem,
+                              icon: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.green,
+                                ),
+                            )
+                          ],
+                        ),
+
+                        SizedBox(height:10), //간격
+
+                        ////////////////////////////////////////////////////////////
+                        /* ↓↓↓↓↓ 상태 전송 버튼 ↓↓↓↓↓ */
+                        ElevatedButton(
+                          onPressed: isFrontImageVisible ? () {
+                            } : null,
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(15),  // 내부 여백 설정
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),  // 둥근 모서리 설정
+                            ),
+                            fixedSize: Size(180, 55),
+                            backgroundColor: Color(0xff609966)
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,  // 아이콘과 텍스트를 가로로 배치
                             children: [
-                              InteractiveViewer(
-                                child:
-                                  Stack(
-                                    children: [
-                                      Visibility(
-                                        visible: !isFrontImageVisible,
-                                        child: Image.file(
-                                          File(widget.backImagePath),
-                                          width: 350,
-                                          height: 470,
-                                        ),
-                                      ),
-                                      ...backImageStickers.map(
-                                            (sticker) => Center(
-                                          child: EmoticonSticker(
-                                            key: ObjectKey(sticker.id),
-                                            onTransform: () {
-                                              onTransform(sticker.id);
-                                            },
-                                            imgPath: sticker.imgPath,
-                                            isSelected: selectedId == sticker.id,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              Image.asset(
+                                  "button/send_white.png",
+                                  height: 20,
+                                  width: 20
                               ),
-                              InteractiveViewer(
-                                child:
-                                  Stack(
-                                    children: [
-                                      Visibility(
-                                        visible: isFrontImageVisible,
-                                        child: Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(math.pi),
-                                          child: Image.file(
-                                            File(widget.frontImagePath),
-                                            width: 350,
-                                            height: 470,
-                                          ),
-                                        ),
-                                      ),
-                                      ...frontImageStickers.map(
-                                            (sticker) => Center(
-                                          child: EmoticonSticker(
-                                            key: ObjectKey(sticker.id),
-                                            onTransform: () {
-                                              onTransform(sticker.id);
-                                            },
-                                            imgPath: sticker.imgPath,
-                                            isSelected: selectedId == sticker.id,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ),
+                              SizedBox(width: 20),  // 아이콘과 텍스트 사이 간격
+                              Text(
+                                '상태 전송',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold
+                                  )
+                              ),  // 텍스트 추가
                             ],
                           ),
                         ),
-                    SizedBox(height:10), //간격
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell( //글자 추가 버튼
-                          onTap: () {
 
-                          },
-                          child: Image.asset(
-                              "button/text.png",
-                              width: 30,
-                              height: 30
-                          ),
-                        ),
-                        SizedBox(width: 70),
-                        InkWell( //사진 전환 버튼
-                          onTap: () {
-                            setState(() {
-                              isFrontImageVisible = !isFrontImageVisible;
-                              if (isFrontImageVisible) {
-                                frontImageStickers.clear();
-                              } else {
-                                backImageStickers.clear();
-                              }
-                            });
-                            },
-                          child: Image.asset(
-                              "button/flip.png",
-                              width: 30,
-                              height: 30
-                            ),
-                        ),
-                        SizedBox(width: 70), //간격
-                        InkWell( //스티커 아이콘 버튼
-                            onTap: () {
-                              _showStickerPicker(context);
-
-                            },
-                            child: Image.asset(
-                                "button/sticker.png",
-                                width: 30,
-                                height: 30
-                            ),
-                        ),
                       ],
-                    ),
-                    SizedBox(height:15), //간격
-                    ElevatedButton(
-                      onPressed: () {
-                  
-                        }, 
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(15),  // 내부 여백 설정
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),  // 둥근 모서리 설정
-                        ),
-                        fixedSize: Size(180, 55),
-                        backgroundColor: Color(0xff609966)
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,  // 아이콘과 텍스트를 가로로 배치
-                        children: [
-                          Image.asset(
-                              "button/send_white.png",
-                              height: 20,
-                              width: 20
-                          ),
-                          SizedBox(width: 20),  // 아이콘과 텍스트 사이 간격
-                          Text(
-                            '상태 전송',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold
-                              )
-                          ),  // 텍스트 추가
-                        ],
-                      ),
-                    ),
-                    
-                  ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -216,25 +276,6 @@ class _ShootingEditState extends State<ShootingEditScreen> {
     );
   }
 
-  void onEmoticonTap(int index) async {
-    setState(() {
-      if (isFrontImageVisible) {
-        frontImageStickers.add(
-          StickerModel(
-            id: Uuid().v4(),
-            imgPath: 'assets/emoticons/emoticon_$index.png',
-          ),
-        );
-      } else {
-        backImageStickers.add(
-          StickerModel(
-            id: Uuid().v4(),
-            imgPath: 'assets/emoticons/emoticon_$index.png',
-          ),
-        );
-      }
-    });
-  }
 
   void onTransform(String id) {
     setState(() {
@@ -242,31 +283,59 @@ class _ShootingEditState extends State<ShootingEditScreen> {
     });
   }
 
+  //스티커 삭제
   void onDeleteItem() async {
     setState(() {
-      if (isFrontImageVisible) {
+      if (isFrontImageVisible) { //셀카이면
         frontImageStickers = frontImageStickers
             .where((sticker) => sticker.id != selectedId)
             .toSet();
-      } else {
+      } else { //후면카메라이면
         backImageStickers = backImageStickers
             .where((sticker) => sticker.id != selectedId)
             .toSet();
+
+      }
+      selectedId = null;
+    });
+  }
+
+  //각 카메라마다 붙인 스티커 저장
+  void onEmoticonTap(int index) async {
+    setState(() {
+      if (isFrontImageVisible) { //셀카이면
+        frontImageStickers.add(
+          StickerModel(
+            id: Uuid().v4(),
+            imgPath: 'assets/emoticons/emoticon_$index.png',
+          ),
+        );
+
+      } else { //후면카메라이면
+        backImageStickers.add(
+          StickerModel(
+            id: Uuid().v4(),
+            imgPath: 'assets/emoticons/emoticon_$index.png',
+          ),
+        );
+
       }
     });
   }
 
+  //스티커 보여주기
   void _showStickerPicker(BuildContext context) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return Stack(
           children: [
+
             AlertDialog(
               backgroundColor: Colors.transparent,
               content: Footer(onEmoticonTap: onEmoticonTap),
               actions: [
-                IconButton(
+                IconButton( // close 버튼 누르면 스티커 팝업 닫기
                   icon: Icon(Icons.close),
                   color: Colors.white,
                   onPressed: () {
@@ -280,4 +349,17 @@ class _ShootingEditState extends State<ShootingEditScreen> {
       },
     );
   }
+
+  Future<String> _saveEditedImage(Uint8List imageBytes) async {
+    final directory = await getTemporaryDirectory();
+    final imagePath = '${directory.path}/edited_image.png';
+
+    final editedImageFile = File(imagePath);
+    await editedImageFile.writeAsBytes(imageBytes);
+
+    return imagePath;
+  }
+
+
+
 }

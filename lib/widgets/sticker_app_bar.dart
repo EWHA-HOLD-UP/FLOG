@@ -11,17 +11,17 @@ class StickerAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      decoration: BoxDecoration(
-        color: Color(0xff609966).withOpacity(0.7),
-      ),
-      child: IconButton(
-          onPressed: onDeleteItem,
-          icon: Icon(
-            Icons.delete_forever_outlined,
+          height: 100,
+          decoration: BoxDecoration(
+            color: Color(0xff609966),
           ),
-          color: Colors.white
-      ),
+          child: IconButton(
+              onPressed: onDeleteItem,
+              icon: Icon(
+                Icons.delete_forever_outlined,
+                  color: Colors.white,
+              ),
+          ),
     );
   }
 }
