@@ -19,6 +19,7 @@ dependencies:
   path_provider: ^2.0.5
   image_picker: ^1.0.2
   intl: ^0.18.1
+  uuid: 3.0.7
   
   firebase_core: ^2.15.0
   
@@ -81,3 +82,4 @@ flutter:
     - button/sticker.png
     - button/text.png
     - button/video.png
+    - assets/emoticons/

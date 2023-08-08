@@ -1,3 +1,4 @@
+import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/screen/register/start_login_screen.dart';
 import 'package:flog/screen/register/personal_nickname_screen.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/login': (context) => const NicknameScreen(),
-        '/init' : (context) => const LoginScreen(),
+        '/init' : (context) => const ShootingScreen(),
       },
     );
   }
