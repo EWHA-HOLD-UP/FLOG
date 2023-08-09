@@ -1,8 +1,5 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'package:camera/camera.dart';
-import 'package:flog/screen/root_screen.dart';
-import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flog/widgets/shooting_edit_footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -10,10 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
-
 import '../../widgets/emoticon_sticker.dart';
 import '../../widgets/sticker_model.dart';
-import '../../widgets/sticker_app_bar.dart';
 
 class ShootingEditScreen extends StatefulWidget {
   final String backImagePath;
