@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:flog/widgets/ImageSticker/shooting_edit_footer.dart';
-import 'package:flog/widgets/TextSticker/text_editor.dart';
+import 'package:flog/widgets/TextSticker/text_sticker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +10,9 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import '../../widgets/ImageSticker/emoticon_sticker.dart';
 import '../../widgets/ImageSticker/sticker_model.dart';
+import 'package:text_editor/text_editor.dart';
+
+import '../../widgets/TextSticker/text_sticker_model.dart';
 
 class ShootingEditScreen extends StatefulWidget {
   final String backImagePath;
@@ -28,9 +31,13 @@ class ShootingEditScreen extends StatefulWidget {
 class _ShootingEditState extends State<ShootingEditScreen> {
 
   bool isFrontImageVisible = false; //플립 기능 위한 부분
+  bool isTextEditorVisible = false; // 텍스트 편집기 표시 여부를 추적합니다.
+  String editedText = ""; // 편집된 텍스트를 보관합니다.
 
   Set<StickerModel> frontImageStickers = {}; //셀카 스티커
   Set<StickerModel> backImageStickers = {}; //후면 카메라 스티커
+  Set<TextStickerModel> frontTextStickers = {}; //셀카 스티커
+  Set<TextStickerModel> backTextStickers = {}; //후면 카메라 스티커
   String? selectedId;
   GlobalKey imgKey = GlobalKey();
   GlobalKey imgKey2 = GlobalKey();
@@ -153,7 +160,9 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                             //텍스트 버튼
                             InkWell(
                               onTap: () {
-
+                                setState(() {
+                                  isTextEditorVisible = true;
+                                });
                               },
                               child: Image.asset(
                                   "button/text.png",
@@ -231,8 +240,11 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                         ////////////////////////////////////////////////////////////
                         /* ↓↓↓↓↓ 상태 전송 버튼 ↓↓↓↓↓ */
                         ElevatedButton(
-                          onPressed: isFrontImageVisible ? () {
-                            } : null,
+                          onPressed: isFrontImageVisible
+                              ? () {
+
+                          }
+                          : null,
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.all(15),  // 내부 여백 설정
                             shape: RoundedRectangleBorder(
@@ -256,14 +268,57 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                                       color: Colors.white,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold
-                                  )
+                                  ),
                               ),  // 텍스트 추가
                             ],
                           ),
                         ),
-
                       ],
                   ),
+                  if (isTextEditorVisible) // 텍스트 편집기를 겹쳐서 표시합니다.
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onTap: () {
+                          // 텍스트 편집 완료 시 처리
+                          setState(() {
+                            isTextEditorVisible = false;
+                            // 텍스트 스티커를 추가합니다.
+                            backTextStickers.add(
+                              TextStickerModel(
+                                t_id: Uuid().v4(),
+                                text: editedText,
+                                // 추가 속성 설정
+                              ),
+                            );
+                          });
+                        },
+                        child: TextEditor(
+                          fonts: ['OpenSans', 'Billabong', 'GrandHotel'],
+                          onEditCompleted: (style, align, text) {
+                            // 스타일, 정렬, 텍스트 편집 완료 시 호출
+                            style = TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            );
+                            align = TextAlign.center;
+                            editedText = text;
+                          },
+                        ),
+                      ),
+                    ),
+                  ...backTextStickers.map(
+                        (sticker) => Center(
+                      child: TextSticker(
+                        key: ObjectKey(sticker.t_id),
+                        onTransform: () {
+                          onTransform(sticker.t_id);
+                        },
+                        text: sticker.text,
+                        isSelected: selectedId == sticker.t_id,
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),
@@ -314,11 +369,33 @@ class _ShootingEditState extends State<ShootingEditScreen> {
             imgPath: 'assets/emoticons/emoticon_$index.png',
           ),
         );
-
       }
     });
   }
 
+  //각 카메라마다 붙인 텍스트 스티커 저장
+ /*
+  void onTextTap(int index) async {
+    setState(() {
+      if (isFrontImageVisible) { //셀카이면
+        frontTextStickers.add(
+          TextStickerModel(
+            t_id: Uuid().v4(),
+            text: ,
+          ),
+        );
+
+      } else { //후면카메라이면
+        backTextStickers.add(
+          TextStickerModel(
+            t_id: Uuid().v4(),
+            text: ,
+          ),
+        );
+      }
+    });
+  }
+*/
   //스티커 보여주기
   void _showStickerPicker(BuildContext context) async {
     await showDialog(
