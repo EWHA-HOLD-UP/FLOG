@@ -1,3 +1,4 @@
+import 'package:flog/screen/floging/comment_screen.dart';
 import 'package:flutter/material.dart';
 
 class FlogingDetailScreen extends StatelessWidget {
@@ -58,6 +59,7 @@ class FlogingDetailScreen extends StatelessWidget {
               ),
             ),
             // 이곳에 추가적인 상세 정보를 표시하는 위젯을 추가
+            CommentsScreen(flogingId: 'flogId'),
           ],
         ),
       ),
