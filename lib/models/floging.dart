@@ -11,7 +11,7 @@ class Floging {
   final List<Comment> comments; // 해당 플로깅 아래 달린 댓글들
 
   Floging({
-    required this. flogingId,
+    required this.flogingId,
     required this.date,
     required this.uid,
     required this.groupNo,

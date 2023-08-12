@@ -35,6 +35,7 @@ dependencies:
   shared_preferences: ^2.2.0
   shared_preferences_android: ^2.2.0
   shared_preferences_ios_sn: ^1.0.3
+  provider: ^6.0.5
 
 
 dev_dependencies:
