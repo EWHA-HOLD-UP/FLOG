@@ -59,7 +59,11 @@ class FlogingDetailScreen extends StatelessWidget {
               ),
             ),
             // 이곳에 추가적인 상세 정보를 표시하는 위젯을 추가
-            CommentsScreen(flogingId: 'flogId'),
+            Expanded( // CommentsScreen 부분을 스크롤 가능하도록 만듦
+              child: SingleChildScrollView(
+                child: CommentsScreen(flogingId: 'flogId'),
+              ),
+            ),
           ],
         ),
       ),
