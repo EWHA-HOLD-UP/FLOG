@@ -89,10 +89,27 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                 child: Column(
                   children: [
                     SizedBox(height:10), //간격
-                    Image.asset(
-                      "assets/flog_logo.png",
-                      width: 55,
-                      height: 55,
+                    Row(
+                      children: [
+                        SizedBox(width: 20), //간격
+                        InkWell( //close 아이콘 버튼
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Image.asset(
+                              "button/close.png",
+                              width: 20,
+                              height: 20
+                          ),
+                        ),
+                        SizedBox(width: 135), //간격
+                        Image.asset(
+                          "assets/flog_logo.png",
+                          width: 55,
+                          height: 55,
+                        ),
+                      ],
                     ),
                     Text(
                       "FLOGing",
