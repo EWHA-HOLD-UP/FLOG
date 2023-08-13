@@ -51,7 +51,11 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
 
-    return Scaffold(
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus(); // 다른 곳 터치 하면 키보드 내리기
+      },
+      child: Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent, // 앱바 배경 색상
         elevation: 0, // 그림자 제거
@@ -86,7 +90,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
               ),
             ),
             SizedBox(height: 20), // 간격
-            Container(
+            Expanded(
+            child: SingleChildScrollView(
+            child:Container(
               width: 300,
               height: 400,
               decoration: BoxDecoration(
@@ -100,6 +106,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
 
                 ),
               ),
+            ),
+            ),
             ),
         ]
       ),
@@ -154,6 +162,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 ),
               ),
             ),
+      ),
             );
   }
 }
