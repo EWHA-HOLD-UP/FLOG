@@ -14,7 +14,7 @@ class FlogCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => FlogingDetailScreen(status: status),
+            builder: (context) => FlogingDetailScreen(flogingId: 'flogingID', status: status),
           ),
         );
       },

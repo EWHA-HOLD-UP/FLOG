@@ -38,38 +38,13 @@ class _RootScreenState extends State<RootScreen> {
           ),
 
           body: _pages[_currentIndex],
-         bottomNavigationBar: BottomNavigationBar(
-             showSelectedLabels: false,
-             showUnselectedLabels: false,
-             type: BottomNavigationBarType.fixed,
-             currentIndex: _currentIndex,
-             onTap: (index) {
-               setState(() {
-                 _currentIndex = index;
-               });
-               },
-             items: [ //하단 네비게이터바 아이콘
-               BottomNavigationBarItem(
-                  icon: Image.asset('button/floging_line.png', width: 30, height: 30),
-                  activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30),
-                   label: 'Floging'
-               ),
-               BottomNavigationBarItem(
-                  icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
-                  activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
-                  label: 'Qpuzzle'
-               ),
-               BottomNavigationBarItem(
-                   icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
-                   activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30),
-                   label: 'memory box'
-               ),
-              BottomNavigationBarItem(
-                  icon: Image.asset('button/setting_line.png', width: 30, height: 30),
-                  activeIcon: Image.asset('button/setting_fill.png', width: 30, height: 30),
-                  label: 'setting'
-              ),
-             ]
+         bottomNavigationBar: BottomTabBar(
+           currentIndex: _currentIndex,
+           onTabTapped: (index) {
+             setState(() {
+               _currentIndex = index;
+             });
+           },
          ),
           floatingActionButton: //Floating + 버튼 - shooting
           SizedBox(
@@ -90,6 +65,49 @@ class _RootScreenState extends State<RootScreen> {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         ),
+    );
+  }
+}
+
+class BottomTabBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTabTapped;
+
+  const BottomTabBar({
+    required this.currentIndex,
+    required this.onTabTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: currentIndex,
+      onTap: onTabTapped,
+      items: [
+        BottomNavigationBarItem(
+          icon: Image.asset('button/floging_line.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30),
+          label: 'Floging',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
+          label: 'Qpuzzle',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30),
+          label: 'memory box',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset('button/setting_line.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/setting_fill.png', width: 30, height: 30),
+          label: 'setting',
+        ),
+      ],
     );
   }
 }

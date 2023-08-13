@@ -1,13 +1,56 @@
-import 'package:flog/screen/floging/comment_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flog/models/user.dart';
+import 'package:flog/providers/user_provider.dart';
+import 'package:flog/firebase_options.dart';
+import 'package:flog/widgets/comment_card.dart';
+import 'package:provider/provider.dart';
 
-class FlogingDetailScreen extends StatelessWidget {
 
+class FlogingDetailScreen extends StatefulWidget {
+  final flogingId;
   final String status; // 전달받은 상태 정보 저장
-  const FlogingDetailScreen({required this.status});
+  const FlogingDetailScreen({Key? key, required this.flogingId, required this.status}) : super(key: key);
+
+  @override
+  _FlogingDetailScreenState createState() => _FlogingDetailScreenState();
+}
+
+class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
+  final TextEditingController commentEditingController =
+  TextEditingController();
+
+  // 댓글 작성한 후 firebase에 저장하는 함수
+  void postComment(String uid, String nickname, String profile) async {
+    /*
+    try {
+      String res = await FireStoreMethods().postComment(
+        widget.flogingId,
+        commentEditingController.text,
+        uid,
+        nickname,
+        profile,
+      );
+
+      if (res != 'success') {
+        if (context.mounted) showSnackBar(context, res);
+      }
+      setState(() {
+        commentEditingController.text = "";
+      });
+    } catch (err) {
+      showSnackBar(
+        context,
+        err.toString(),
+      );
+    }
+     */
+  }
 
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<UserProvider>(context).getUser;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent, // 앱바 배경 색상
@@ -52,22 +95,65 @@ class FlogingDetailScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  status,
+                  widget.status,
                   style: TextStyle(fontSize: 20, color: Colors.white),
 
                 ),
               ),
             ),
-            // 이곳에 추가적인 상세 정보를 표시하는 위젯을 추가
-            Expanded( // CommentsScreen 부분을 스크롤 가능하도록 만듦
-              child: SingleChildScrollView(
-                child: CommentsScreen(flogingId: 'flogId'),
+        ]
+      ),
+    ),
+      ),
+
+          //CommentCard 에서 댓글 불러오기
+
+
+          // 댓글 다는 필드
+          bottomNavigationBar: SafeArea(
+                child: Container(
+                height: kToolbarHeight,
+                margin:
+                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                padding: const EdgeInsets.only(left: 16, right: 8),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(user.profile),
+                      radius: 18,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: TextField(
+                          controller: commentEditingController,
+                          decoration: InputDecoration(
+                            hintText: 'Comment as ${user.nickname}',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => postComment(
+                        user.uid,
+                        user.nickname,
+                        user.profile,
+                      ),
+                      child: Container(
+                        padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        child: Image.asset(
+                          'button/send_green.png', // 이미지의 경로나 소스를 지정해야 합니다.
+                          width: 25, // 이미지의 가로 크기
+                          height: 25, // 이미지의 세로 크기
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
-      ),
-    );
+            );
   }
 }
