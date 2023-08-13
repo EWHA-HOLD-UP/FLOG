@@ -66,6 +66,7 @@ flutter:
     - button/close.png
     - button/flash.png
     - button/flip.png
+    - button/flip_disabled.png
     - button/floging_fill.png
     - button/floging_line.png
     - button/memorybox_fill.png

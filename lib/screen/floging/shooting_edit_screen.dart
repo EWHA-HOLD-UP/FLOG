@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:flog/screen/floging/floging_screen.dart';
+import 'package:flog/screen/floging/ttt.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flog/widgets/ImageSticker/sticker_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:flutter/services.dart';
 
 import '../../widgets/ImageSticker/ImageSticker.dart';
 import '../../widgets/ImageSticker/sticker_model.dart';
@@ -33,40 +35,18 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   Set<StickerModel> backImageStickers = {}; //후면 카메라 스티커
   GlobalKey globalKey = GlobalKey();
   bool isSendingButtonEnabled = false;
-
   bool isFrontImageVisible = false; //플립 기능 위한 부분
   String? selectedId;
 
-  Future<void> saveImage(String imagePath, Set<StickerModel> stickers) async {
-    try {
-      RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
-
-      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData != null) {
-        List<int> pngBytes = byteData.buffer.asUint8List();
-
-
-        if(imagePath == widget.frontImagePath) {
-          File frontImagePath = File(imagePath);
-          await frontImagePath.writeAsBytes(pngBytes);
-        }
-        else if(imagePath == widget.backImagePath) {
-          File backImagePath = File(imagePath);
-          await backImagePath.writeAsBytes(pngBytes);
-        }
-
-      }
-    } catch (e) {
-      print("Error saving image: $e");
-    }
-  }
 
   /*
   bool isStickerbuttonPressed = false;
   Set<ImageStickerModel> Backstickers = {};
   String? selectedId;
   */
+  Uint8List final_backImagePath = Uint8List(0);
+  Uint8List final_frontImagePath = Uint8List(0);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope( //뒤로가기 해서 사진 다시 찍는 것 막음
@@ -118,7 +98,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                                     onTransform: () {
                                       onTransform(sticker.id);
                                       }, 
-                                    imgPath: sticker.imgPath, 
+                                    imgPath: sticker.imgPath,
                                     isSelected: selectedId == sticker.id,
                                   ),
                                 ),
@@ -180,7 +160,17 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                             isFrontImageVisible = !isFrontImageVisible;
                             isSendingButtonEnabled = true;
                           });
-                          await saveImage(widget.backImagePath, backImageStickers);
+
+
+                          RenderRepaintBoundary boundary = globalKey.currentContext!
+                              .findRenderObject() as RenderRepaintBoundary;
+                          ui.Image image = await boundary.toImage();
+                          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+                          if (byteData != null) {
+                            Uint8List pngBytes = byteData.buffer.asUint8List();
+                            final_backImagePath = pngBytes; // 이미지 데이터를 frontImagePath에 저장
+                          }
                         }
                       },
 
@@ -228,7 +218,22 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                 ElevatedButton(
                   onPressed: isSendingButtonEnabled
                       ? () async {
-                    await saveImage(widget.frontImagePath, frontImageStickers);
+                    RenderRepaintBoundary boundary = globalKey.currentContext!
+                        .findRenderObject() as RenderRepaintBoundary;
+                    ui.Image image = await boundary.toImage();
+                    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+                    if (byteData != null) {
+                      Uint8List pngBytes = byteData.buffer.asUint8List();
+                      final_frontImagePath = pngBytes; // 이미지 데이터를 frontImagePath에 저장
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TScreen(
+                            backImagePath: final_backImagePath,
+                            frontImagePath: final_frontImagePath,
+                          )),
+                    );
                   }
                     : null,
                   style: ElevatedButton.styleFrom(
