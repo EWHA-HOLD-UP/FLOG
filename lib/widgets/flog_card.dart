@@ -5,7 +5,7 @@ import 'package:flog/screen/floging/floging_detail_screen.dart';
 class FlogCard extends StatelessWidget {
   final String status;
 
-  const FlogCard({required this.status});
+  const FlogCard({required this.status, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class FlogCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => FlogingDetailScreen(status: status),
+            builder: (context) => FlogingDetailScreen(flogingId: 'flogingID', status: status),
           ),
         );
       },

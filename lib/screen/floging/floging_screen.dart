@@ -8,8 +8,7 @@ class FlogingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: SafeArea(
             child: Center(
               child: Column(
@@ -54,7 +53,6 @@ class FlogingScreen extends StatelessWidget {
             )
 
         ),
-      ),
     );
   }
 }

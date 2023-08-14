@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
-class EmoticonSticker extends StatefulWidget {
+class ImageSticker extends StatefulWidget {
   final VoidCallback onTransform;
   final String imgPath;
   final bool isSelected;
 
-  const EmoticonSticker({
+  const ImageSticker({
     required this.onTransform,
     required this.imgPath,
     required this.isSelected,
@@ -15,14 +15,17 @@ class EmoticonSticker extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EmoticonStickerState();
+  State<StatefulWidget> createState() => _ImageStickerState();
 }
 
-class _EmoticonStickerState extends State<EmoticonSticker> {
+class _ImageStickerState extends State<ImageSticker> {
   double scale = 0.3;
   double hTransform = 0;
   double vTransform = 0;
   double actualScale = 0.3;
+
+  double maxWidth = 360; // 사진의 최대 너비
+  double maxHeight = 470; // 사진의 최대 높이
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,10 @@ class _EmoticonStickerState extends State<EmoticonSticker> {
           scale = details.scale * actualScale;
           vTransform += details.focalPointDelta.dy;
           hTransform += details.focalPointDelta.dx;
+
+          hTransform = hTransform.clamp(-10, maxWidth - maxWidth * scale);
+          vTransform = vTransform.clamp(-70, maxHeight - maxHeight * scale - 10);
+
         });
       },
       onScaleEnd: (ScaleEndDetails details) {
@@ -45,15 +52,7 @@ class _EmoticonStickerState extends State<EmoticonSticker> {
         transform: Matrix4.identity()
           ..translate(hTransform, vTransform)
           ..scale(scale, scale),
-        decoration: widget.isSelected
-            ? BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
-          border: Border.all(
-            color: Color(0xff609966),
-            width: 1.0,
-          ),
-        )
-            : BoxDecoration(
+        decoration: BoxDecoration(
           border: Border.all(
             width: 1.0,
             color: Colors.transparent,

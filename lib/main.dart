@@ -1,9 +1,9 @@
 import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flog/screen/register/start_login_screen.dart';
 import 'package:flog/screen/register/personal_nickname_screen.dart';
 import 'package:flog/screen/register/sms_login_home.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {

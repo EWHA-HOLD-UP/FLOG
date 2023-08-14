@@ -5,8 +5,7 @@ class QpuzzleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: SafeArea(
           child: Center(
             child: Column(
@@ -32,7 +31,6 @@ class QpuzzleScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }
