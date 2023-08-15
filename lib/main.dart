@@ -1,5 +1,6 @@
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
+import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flog/screen/register/start_login_screen.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
-import 'package:flog/screen/qpuzzle_screen.dart';
+import 'package:flog/screen/qpuzzle/qpuzzle_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_screen.dart';
 import 'package:flog/screen/setting_screen.dart';
 
