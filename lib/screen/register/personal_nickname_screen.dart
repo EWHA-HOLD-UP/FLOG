@@ -95,6 +95,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
                       onPressed: isButtonEnabled
                           ? () {
                               String entered_nickname = nicknameController.text;
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

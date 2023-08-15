@@ -64,10 +64,10 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
 
     //가족코드 파이어베이스에 저장
     FirebaseFirestore db = FirebaseFirestore.instance;
+    String? user = await flog_User.getCurrentUserUID();
     CollectionReference groupRef = db.collection('Group');
     DocumentReference documentRef =
-        await groupRef.add({'code': familycode, 'uid': uid});
-    String? user = await flog_User.getCurrentUserUID();
+        await groupRef.add({'code': familycode, 'uid': user});
     setState(() {
       familycode = familycode;
     });

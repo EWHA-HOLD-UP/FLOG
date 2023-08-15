@@ -186,20 +186,9 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
         FirebaseAuth auth = FirebaseAuth.instance;
         PhoneAuthCredential credential = PhoneAuthProvider.credential(
             verificationId: _verificationId, smsCode: _smsCodeController.text);
-        UserCredential userCredential =
-            await auth.signInWithCredential(credential);
         await auth
             .signInWithCredential(credential)
             .then((_) => Navigator.pushNamed(context, "/"));
-        User? user = userCredential.user;
-        flog_User.User new_user = flog_User.User(
-            uid: user?.uid,
-            nickname: '',
-            birth: '',
-            profile: 'null',
-            flogCode: 'null',
-            isUpload: false,
-            isAnswered: false);
       },
       style: ElevatedButton.styleFrom(
         primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
