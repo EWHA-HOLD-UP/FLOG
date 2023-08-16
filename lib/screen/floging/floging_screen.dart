@@ -15,7 +15,7 @@ class FlogingScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height:30),
+                  SizedBox(height:10),
                   Image.asset(
                     "assets/flog_logo.png",
                     width: 55,

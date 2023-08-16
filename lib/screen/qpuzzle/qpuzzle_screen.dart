@@ -17,10 +17,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   XFile? image;
 
   void onPickImage() async {
-    final image = await ImagePicker().
-    pickImage(source: ImageSource.gallery);
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery);
+    final cropped_image = await ImageCropper()
+        .cropImage(sourcePath: image!.path, aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3));
+
     setState(() {
-      this.image = image;
+      this.image = XFile(cropped_image!.path);
     });
   }
 
@@ -33,7 +36,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 30),
+              SizedBox(height: 10),
               Image.asset(
                 "assets/flog_logo.png",
                 width: 55,
@@ -60,25 +63,24 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
   Widget renderBody() {
     if (image != null) {
-      return InteractiveViewer(
-        child: Container(
-            width: 300,
-            height: 400,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: FileImage(
-                      File(image!.path)
-                  ),
-                  fit: BoxFit.cover
-              ),
-              borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
-            ),
-          ),
-      );
-    } else {
       return Container(
-        width: 300,
-        height: 400,
+        width: 330,
+        height: 495,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: FileImage(
+                  File(image!.path)
+              ),
+              fit: BoxFit.cover
+          ),
+          borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
+        ),
+      );
+    }
+    else {
+      return Container(
+        width: 350,
+        height: 525,
         decoration: BoxDecoration(
           color: Color(0xad747474),
           borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절

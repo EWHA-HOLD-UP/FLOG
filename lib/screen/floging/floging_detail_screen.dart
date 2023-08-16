@@ -143,11 +143,11 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap: () => postComment(
+                      /*onTap: () => postComment(
                         user.uid,
                         user.nickname,
                         user.profile,
-                      ),
+                      ),*/
                       child: Container(
                         padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
