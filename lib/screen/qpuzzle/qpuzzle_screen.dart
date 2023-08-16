@@ -15,6 +15,7 @@ class QpuzzleScreen extends StatefulWidget {
 
 class _QpuzzleScreenState extends State<QpuzzleScreen> {
   XFile? image;
+  List<bool> unlockStates = List.generate(6, (index) => false); // 6개의 조각에 대한 잠금 상태를 나타내는 리스트
 
   void onPickImage() async {
     final image = await ImagePicker()
@@ -63,24 +64,73 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
   Widget renderBody() {
     if (image != null) {
-      return Container(
-        width: 330,
-        height: 495,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: FileImage(
-                  File(image!.path)
+      return Stack(
+        children: [
+          Container(
+            width: 330,
+            height: 495,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: FileImage(File(image!.path)),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover
+              borderRadius: BorderRadius.circular(23),
+            ),
           ),
-          borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
-        ),
+          Container(
+            width: 330,
+            height: 495,
+            child: Column(
+              children: [
+                for (int row = 0; row < 3; row++)
+                  Row(
+                    children: [
+                      for (int col = 0; col < 2; col++)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              unlockStates[row * 2 + col] = true;
+                            });
+                          },
+                          child: Container(
+                            width: 165,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: unlockStates[row * 2 + col]
+                                  ? Colors.transparent
+                                  : Color(0xFF000000), //검정색으로 덮음
+                              border: Border.all(
+                                color: unlockStates[row * 2 + col]
+                                    ? Colors.transparent // 잠금 해제된 셀
+                                    : Colors.white, // 잠금 해제되지 않은 셀은 흰색 테두리
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(
+                                    (row == 0 && col == 0) ? 23.0 : 0.0), // 1행1열
+                                topRight: Radius.circular(
+                                    (row == 0 && col == 1) ? 23.0 : 0.0), // 1행2열
+                                bottomLeft: Radius.circular(
+                                    (row == 2 && col == 0) ? 23.0 : 0.0), // 3행1열
+                                bottomRight: Radius.circular(
+                                    (row == 2 && col == 1) ? 23.0 : 0.0), // 3행2열
+                              ),
+
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ],
       );
     }
     else {
       return Container(
-        width: 350,
-        height: 525,
+        width: 330,
+        height: 495,
         decoration: BoxDecoration(
           color: Color(0xad747474),
           borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
