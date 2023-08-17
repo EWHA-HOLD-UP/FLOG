@@ -26,19 +26,14 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    print('개발 중 확인용 - ${widget.matched_familycode}의 가족');
     return WillPopScope(
       onWillPop: () async => false,
       child:
         Scaffold(
-          appBar: AppBar(
-              backgroundColor: Colors.white12,
-              elevation: 0.0,
-              title: Text('개발 중 확인용 - ${widget.matched_familycode}의 가족',
-              style: TextStyle(color: Colors.black))
-          ),
-
-          body: _pages[_currentIndex],
-         bottomNavigationBar: BottomTabBar(
+          body: _pages[_currentIndex], 
+          bottomNavigationBar: BottomTabBar(
            currentIndex: _currentIndex,
            onTabTapped: (index) {
              setState(() {
