@@ -17,6 +17,8 @@ class RegisterScreen extends StatelessWidget {
             EmailInput(),
             PasswordInput(),
             PasswordConfirmInput(),
+            NicknameInput(),
+            BirthInput(),
             ReisterButton()
           ],
         ),
@@ -39,7 +41,7 @@ class EmailInput extends StatelessWidget {
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           labelText: '이메일',
-          helperText: '',
+          helperText: '이메일 형식으로 입력해주세요!',
         ),
       ),
     );
@@ -91,6 +93,46 @@ class PasswordConfirmInput extends StatelessWidget {
   }
 }
 
+class NicknameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final registerField =
+        Provider.of<RegisterFieldModel>(context, listen: false);
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+      child: TextField(
+        onChanged: (nickname) {
+          registerField.setNickname(nickname);
+        },
+        decoration: InputDecoration(
+          labelText: '닉네임',
+          helperText: 'FLOG에서 사용하실 닉네임을 입력하세요',
+        ),
+      ),
+    );
+  }
+}
+
+class BirthInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final registerField =
+        Provider.of<RegisterFieldModel>(context, listen: false);
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+      child: TextField(
+        onChanged: (birth) {
+          registerField.setBirth(birth);
+        },
+        decoration: InputDecoration(
+          labelText: '생일',
+          helperText: 'ex)0705',
+        ),
+      ),
+    );
+  }
+}
+
 class ReisterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -109,7 +151,8 @@ class ReisterButton extends StatelessWidget {
           ),
           onPressed: () async {
             await authClient
-                .registerWithEmail(registerField.email, registerField.password)
+                .registerWithEmail(registerField.email, registerField.password,
+                    registerField.nickname, registerField.birth)
                 .then((registerStatus) {
               if (registerStatus == AuthStatus.registerSuccess) {
                 ScaffoldMessenger.of(context)

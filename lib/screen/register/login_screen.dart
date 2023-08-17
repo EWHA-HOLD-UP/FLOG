@@ -1,5 +1,6 @@
 import 'package:flog/models/model_auth.dart';
 import 'package:flog/models/model_login.dart';
+import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +94,11 @@ class LoginButton extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(SnackBar(
                       content: Text(authClient.user!.email! + '님 환영합니다!')));
-                Navigator.pushReplacementNamed(context, '/index');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FamilyMatchingScreen(
+                            nickname: authClient.user!.email!)));
               } else {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
@@ -117,7 +122,7 @@ class ReisterButton extends StatelessWidget {
           Navigator.of(context).pushNamed('/register');
         },
         child: Text(
-          '이메일로 간단하게 회원가입하기',
+          '아직 회원이 아니신가요?',
           style: TextStyle(color: theme.primaryColor),
         ));
   }

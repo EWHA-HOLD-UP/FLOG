@@ -6,7 +6,7 @@ class LoginFieldModel extends ChangeNotifier {
   String email = "";
   String password = "";
 
-  void setEmail(String Email) {
+  void setEmail(String email) {
     this.email = email;
     notifyListeners();
   }

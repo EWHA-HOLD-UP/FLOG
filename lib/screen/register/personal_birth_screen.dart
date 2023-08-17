@@ -120,7 +120,7 @@ class _BirthScreenState extends State<BirthScreen> {
                               FirebaseFirestore db = FirebaseFirestore.instance;
                               CollectionReference userRef =
                                   db.collection("Users");
-
+                              print('d');
                               flog_User.User user = flog_User.User(
                                   uid: 'flog_User.getCurrentUserUID()',
                                   nickname: entered_nickname,
@@ -131,8 +131,8 @@ class _BirthScreenState extends State<BirthScreen> {
                                   isUpload: false,
                                   isAnswered: false);
 
-                              flog_User.save(userRef, user);
-
+                              userRef.doc().set(user.toJson());
+                              print('d');
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

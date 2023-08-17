@@ -6,8 +6,10 @@ class RegisterFieldModel extends ChangeNotifier {
   String email = "";
   String password = "";
   String passwordConfirm = "";
+  String nickname = "";
+  String birth = "";
 
-  void setEmail(String Email) {
+  void setEmail(String email) {
     this.email = email;
     notifyListeners();
   }
@@ -19,6 +21,16 @@ class RegisterFieldModel extends ChangeNotifier {
 
   void setPasswordConfirm(String passwordConfirm) {
     this.passwordConfirm = passwordConfirm;
+    notifyListeners();
+  }
+
+  void setNickname(String nickname) {
+    this.nickname = nickname;
+    notifyListeners();
+  }
+
+  void setBirth(String birth) {
+    this.birth = birth;
     notifyListeners();
   }
 }
