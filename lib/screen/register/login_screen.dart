@@ -11,6 +11,15 @@ class LoginScreen extends StatelessWidget {
       create: (_) => LoginFieldModel(),
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black, // 뒤로가기 버튼 아이콘 색상
+            ),// 이미지 경로 지정
+            onPressed: () {
+              Navigator.pop(context); // 뒤로가기 기능 추가
+            },
+          ),
           title: const Text('로그인',
             style: TextStyle(
             color: Colors.black,
@@ -52,14 +61,14 @@ class LoginScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center, // 수직 가운데 정렬
                   children: [
                     Text(
-                      '아직 회원이 아니신가요?',
+                      '아직 계정이 없으신가요?',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(width: 10), // 원하는 간격을 설정
-                    RegisterButton(),
+                    SignUpButton(),
                   ],
                 ),
             ),
@@ -181,7 +190,7 @@ class LoginButton extends StatelessWidget {
   }
 }
 
-class RegisterButton extends StatelessWidget {
+class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
