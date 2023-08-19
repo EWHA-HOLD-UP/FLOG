@@ -119,7 +119,33 @@ class EmailInput extends StatelessWidget {
   }
 }
 
-class PasswordInput extends StatelessWidget {
+class PasswordInput extends StatefulWidget {
+  @override
+  _PasswordInputState createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<PasswordInput> {
+  final TextEditingController _pwcontroller = TextEditingController();
+  String _errorText = '';
+
+  @override
+  void dispose() {
+    _pwcontroller.dispose();
+    super.dispose();
+  }
+
+  void _validateInput(String password) {
+    if (password.length < 8) {
+      setState(() {
+        _errorText = '비밀번호는 8자 이상이어야 합니다.';
+      });
+    } else {
+      setState(() {
+        _errorText = '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final registerField =
@@ -128,7 +154,9 @@ class PasswordInput extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
+        controller: _pwcontroller,
         onChanged: (password) {
+          _validateInput(password);
           registerField.setPassword(password);
         },
         obscureText: true,
@@ -151,6 +179,7 @@ class PasswordInput extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             borderSide: BorderSide(color: Color(0xFF609966), width: 2.0), // 선택됐을 때 테두리 색 변경
           ),
+          errorText: _errorText.isNotEmpty ? _errorText : null,
         ),
       ),
     );
@@ -235,8 +264,33 @@ class NicknameInput extends StatelessWidget {
   }
 }
 
-class BirthInput extends StatelessWidget {
+class BirthInput extends StatefulWidget {
   @override
+  _BirthInputState createState() => _BirthInputState();
+}
+
+class _BirthInputState extends State<BirthInput> {
+  final TextEditingController _birthcontroller = TextEditingController();
+  String _errorText = '';
+
+  @override
+  void dispose() {
+    _birthcontroller.dispose();
+    super.dispose();
+  }
+
+  void _validateInput(String input) {
+    if (input.length != 6 || !RegExp(r'^[0-9]+$').hasMatch(input)) {
+      setState(() {
+        _errorText = '숫자 6자리로 입력해주세요.';
+      });
+    } else {
+      setState(() {
+        _errorText = '';
+      });
+    }
+  }
+
   Widget build(BuildContext context) {
     final registerField =
         Provider.of<RegisterFieldModel>(context, listen: false);
@@ -244,9 +298,12 @@ class BirthInput extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
+        controller: _birthcontroller,
         onChanged: (birth) {
+          _validateInput(birth);
           registerField.setBirth(birth);
         },
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: 'Birth', // Hint Text
           hintText: '생일을 입력해주세요. (YYMMDD)',
@@ -266,6 +323,7 @@ class BirthInput extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             borderSide: BorderSide(color: Color(0xFF609966), width: 2.0), // 선택됐을 때 테두리 색 변경
           ),
+          errorText: _errorText.isNotEmpty ? _errorText : null,
         ),
       ),
     );
