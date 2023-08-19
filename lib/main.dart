@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/login',
           routes: {
             '/': (context) => const HomePage(),
-            '/login': (context) => LoginScreen(),
+            '/login': (context) => RootScreen(matched_familycode: 'ass'),
             '/register': (context) => RegisterScreen(),
             '/index': (context) => const FlogingScreen(),
           },
