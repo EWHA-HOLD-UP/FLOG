@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter/services.dart';
 import '../../widgets/ImageSticker/ImageSticker.dart';
 import '../../widgets/ImageSticker/sticker_model.dart';
 
@@ -25,18 +24,18 @@ class ShootingEditScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ShootingEditState createState() => _ShootingEditState();
+  ShootingEditState createState() => ShootingEditState();
 }
 
-class _ShootingEditState extends State<ShootingEditScreen> {
+class ShootingEditState extends State<ShootingEditScreen> {
   Set<StickerModel> frontImageStickers = {}; //전면 카메라에 붙인 스티커 저장
   Set<StickerModel> backImageStickers = {}; //후면 카메라에 붙인 스티커 저장
   bool isSendingButtonEnabled = false; //상태전송버튼 활성화 여부 설정 위한 부분
   bool isFrontImageVisible = false; //후면 -> 전면 플립 기능 위한 부분
   String? selectedId; //스티커 선택하여 붙일 때 사용할 스티커 아이디
   GlobalKey globalKey = GlobalKey(); //스티커 포함하여 캡처하기 위한 global key
-  Uint8List final_backImage = Uint8List(0); //스티커까지 붙인 후면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
-  Uint8List final_frontImage = Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
+  Uint8List finalbackImage = Uint8List(0); //스티커까지 붙인 후면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
+  Uint8List finalfrontImage = Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
 
   @override
   Widget build(BuildContext context) {
@@ -70,19 +69,19 @@ class _ShootingEditState extends State<ShootingEditScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextStickerButton(), //2️⃣텍스트 스티커 버튼
+                    textStickerButton(), //2️⃣텍스트 스티커 버튼
                     SizedBox(width: 50),
-                    FlipButton(), //3️⃣사진 전환 버튼
+                    flipButton(), //3️⃣사진 전환 버튼
                     SizedBox(width: 50),
-                    ImageStickerButton(), //4️⃣이미지 스티커 버튼
+                    imageStickerButton(), //4️⃣이미지 스티커 버튼
                     SizedBox(width: 50),
-                    StickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
+                    stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
                   ],
                 ),
                 SizedBox(height: 10),
 
                 /*---상태 전송 버튼---*/
-                SendingButton(), //6️⃣상태 전송 버튼
+                sendingButton(), //6️⃣상태 전송 버튼
               ],
             ),
           ),
@@ -154,7 +153,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   // 2️⃣텍스트 스티커 버튼
-  Widget TextStickerButton () {
+  Widget textStickerButton () {
     return InkWell(
       onTap: () {
         //구현 필요
@@ -164,7 +163,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   // 3️⃣플립 버튼
-  Widget FlipButton () {
+  Widget flipButton () {
     return InkWell(
       onTap: () async { //플립 버튼을 누르면
         if (isFrontImageVisible == false) { //후면일 때만 (후면->전면 플립은 가능하지만 전면->후면 다시 넘어가서 꾸밀 수 없음)
@@ -180,7 +179,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
 
           if (byteData != null) {
             Uint8List pngBytes = byteData.buffer.asUint8List(); //지금까지 꾸민 스티커와 후면카메라를 캡처하여 pngBytes에 임시 저장
-            final_backImage = pngBytes; //최종적으로 final_backImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+            finalbackImage = pngBytes; //최종적으로 finalbackImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
           }
         }
       },
@@ -200,7 +199,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   // 4️⃣이미지 스티커 버튼
-  Widget ImageStickerButton () {
+  Widget imageStickerButton () {
     return  InkWell(
       onTap: () {
         _showStickerPicker(context); //클릭 시 이미지 스티커 목록을 보여줌
@@ -214,10 +213,10 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   // 5️⃣ 스티커 뒤로가기 버튼
-  Widget StickerUndoButton () {
+  Widget stickerUndoButton () {
     return IconButton(
       onPressed: () {
-        UndoSticker(); //클릭 시 되돌리기
+        undoSticker(); //클릭 시 되돌리기
       },
       icon: Icon(
         Icons.undo, //추후에 undo 버튼 제작하여 변경?
@@ -227,7 +226,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   // 6️⃣상태 전송 버튼
-  Widget SendingButton () {
+  Widget sendingButton () {
     return ElevatedButton(
       //상태 전송 버튼을 누르면
       onPressed: isSendingButtonEnabled ? () async { //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
@@ -238,15 +237,15 @@ class _ShootingEditState extends State<ShootingEditScreen> {
 
         if (byteData != null) {
           Uint8List pngBytes = byteData.buffer.asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
-          final_frontImage = pngBytes;  //최종적으로 final_frontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+          finalfrontImage = pngBytes;  //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
         }
 
         Navigator.push( //다음 스크린으로
           context,
           MaterialPageRoute(
               builder: (context) => TScreen( //임시 스크린인 TScreen으로 꾸민 후면, 전면 사진 넘기기
-                backImagePath: final_backImage,
-                frontImagePath: final_frontImage,
+                backImagePath: finalbackImage,
+                frontImagePath: finalfrontImage,
               ),
           ),
         );
@@ -341,7 +340,7 @@ class _ShootingEditState extends State<ShootingEditScreen> {
   }
 
   //스티커 되돌리기
-  void UndoSticker() async {
+  void undoSticker() async {
     if (!isFrontImageVisible && backImageStickers.isNotEmpty) {
       setState(() {
         StickerModel lastStickerback = backImageStickers.last;
