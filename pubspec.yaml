@@ -87,4 +87,6 @@ flutter:
     - button/text.png
     - button/video.png
     - button/edit.png
+    - button/profile_fill.png
+    - button/profile_line.png
     - assets/emoticons/

@@ -98,8 +98,8 @@ class BottomTabBar extends StatelessWidget {
           label: 'memory box',
         ),
         BottomNavigationBarItem(
-          icon: Image.asset('button/setting_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/setting_fill.png', width: 30, height: 30),
+          icon: Image.asset('button/profile_line.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30),
           label: 'setting',
         ),
       ],
