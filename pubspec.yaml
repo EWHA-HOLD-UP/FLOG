@@ -86,4 +86,5 @@ flutter:
     - button/sticker.png
     - button/text.png
     - button/video.png
+    - button/edit.png
     - assets/emoticons/

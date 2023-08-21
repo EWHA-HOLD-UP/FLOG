@@ -4,7 +4,7 @@ import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flog/screen/qpuzzle/qpuzzle_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_screen.dart';
-import 'package:flog/screen/setting_screen.dart';
+import 'package:flog/screen/profile/profile_screen.dart';
 
 
 class RootScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _RootScreenState extends State<RootScreen> {
     FlogingScreen(),
     QpuzzleScreen(),
     MemoryBoxScreen(),
-    SettingScreen()
+    ProfileScreen()
   ];
 
   @override
