@@ -16,9 +16,9 @@ class _ShootingScreenState extends State<ShootingScreen> {
   bool _isCameraReady = false;
   String? _tempBackImagePath; //임시 후면 사진 저장
   String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
-  bool _isCameraInitialized = false;
-  bool _isProcessing = false;
-  bool _flashon = true;
+  bool _isCameraInitialized = false; //카메라 초기화되었는지
+  bool _isProcessing = false; //사진 찍히고 있는지
+  bool _isFlashOn = true; //플래시 켜져있는지
 
   //카메라 초기화
   @override
@@ -88,7 +88,6 @@ class _ShootingScreenState extends State<ShootingScreen> {
       setState(() {
         _isProcessing = false; // 사진 처리 실패 시 처리 중 표시 해제
       });
-      // 에러 처리
     }
   }
 
@@ -100,118 +99,116 @@ class _ShootingScreenState extends State<ShootingScreen> {
 
   @override
   Widget build(BuildContext context) {
-      return WillPopScope(
-        onWillPop: () async => false,
-        child :
-          Scaffold(
-            body: Center(
-              child : SafeArea(
-                  child: Column(
-                    children: [
-                      SizedBox(height:10), //간격
-                      Row(
-                        children: [
-                          SizedBox(width: 20), //간격
-                          InkWell( //close 아이콘 버튼
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Image.asset(
-                                "button/close.png",
-                                width: 20,
-                                height: 20
-                            ),
-                          ),
-                          SizedBox(width: 135), //간격
-                          Image.asset(
-                            "assets/flog_logo.png",
-                            width: 55,
-                            height: 55,
-                          ),
-                        ],
+    return WillPopScope( //뒤로가기 막음
+      onWillPop: () async => false,
+      child : Scaffold(
+        body: Center(
+          child : SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height:10), //간격
+                Row(
+                  children: [
+                    SizedBox(width: 20), //간격
+                    InkWell( //close 아이콘 버튼
+                      onTap: () {
+                        Navigator.pop(context);
+                        },
+                      child: Image.asset(
+                          "button/close.png",
+                          width: 20,
+                          height: 20
                       ),
-                      Text(
-                        "FLOGing",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF609966), // #609966 색상 지정
-                        ),
-                      ),
-                      SizedBox(height:10), //간격
-                      Container( //카메라 프리뷰 크기 조절
-                        width: 350,
-                        height: 470,
-                        child: _cameraController != null && _isCameraReady
-                            ? CameraPreview(_cameraController!)
-                            :Container(
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height:10), //간격
-                      Text('$guide'), //ai 가이드 문구
-                      SizedBox(height:10), //간격
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell( //플래시 아이콘 버튼
-                              onTap: () {
-                                setState(() {
-                                  _flashon = !_flashon; // 플래시 상태를 토글
-                                  if (_flashon) {
-                                    _cameraController?.setFlashMode(FlashMode.auto);
-                                  } else {
-                                    _cameraController?.setFlashMode(FlashMode.off);
-                                  }
-                                });
-                              },
-                            child: Image.asset(
-                              "button/flash.png",
-                              width: 50,
-                              height: 50,
-                              color: _flashon ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
-                            ),
-                          ),
-                          SizedBox(width: 35), //간격
-                          InkWell( //후면 카메라 촬영 버튼
-                            onTap:
-                            _cameraController != null && _isCameraReady
-                                ? () {
-                              _takeBackPicture(context);
-                            }
-                            : null,
-
-                            child: _isProcessing
-                                ? CircularProgressIndicator(
-                                color: Color(0xFF609966),
-                            ) // 사진 처리 중에는 로딩 스피너 표시
-                                : Image.asset(
-                              "button/shooting.png",
-                              width: 60,
-                              height: 60,
-                              color: _cameraController != null && _isCameraReady && _isCameraInitialized
-                                  ? null
-                                  : Colors.grey,
-                            ),
-                          ),
-                          SizedBox(width: 35), //간격
-                          InkWell( //앞뒤 전환 아이콘 버튼
-                            onTap: () {
-
-                            },
-                            child: Image.asset(
-                                "button/flip.png",
-                                width: 40,
-                                height: 40
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
+                    SizedBox(width: 135), //간격
+                    Image.asset(
+                      "assets/flog_logo.png",
+                      width: 55,
+                      height: 55,
+                    ),
+                  ],
+                ),
+                Text(
+                  "FLOGing",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF609966), // #609966 색상 지정
                   ),
-              ),
+                ),
+                SizedBox(height:10), //간격
+                Container( //카메라 프리뷰 크기 조절
+                  width: 350,
+                  height: 470,
+                  child: _cameraController != null && _isCameraReady
+                      ? CameraPreview(_cameraController!)
+                      :Container(
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height:10), //간격
+                Text('$guide'), //ai 가이드 문구
+                SizedBox(height:10), //간격
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell( //플래시 아이콘 버튼
+                      onTap: () {
+                        setState(() {
+                          _isFlashOn = !_isFlashOn; // 플래시 상태를 토글
+                          if (_isFlashOn) {
+                            _cameraController?.setFlashMode(FlashMode.auto);
+                          } else {
+                            _cameraController?.setFlashMode(FlashMode.off);
+                          }
+                        });
+                        },
+                      child: Image.asset(
+                        "button/flash.png",
+                        width: 50,
+                        height: 50,
+                        color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                      ),
+                    ),
+                    SizedBox(width: 35), //간격
+                    InkWell( //후면 카메라 촬영 버튼
+                      onTap:
+                      _cameraController != null && _isCameraReady
+                          ? () {
+                        _takeBackPicture(context);
+                      }
+                      : null,
+                      child: _isProcessing
+                          ? CircularProgressIndicator(
+                        color: Color(0xFF609966),
+                      ) // 사진 처리 중에는 로딩 스피너 표시
+                          : Image.asset(
+                        "button/shooting.png",
+                        width: 60,
+                        height: 60,
+                        color: _cameraController != null && _isCameraReady && _isCameraInitialized
+                            ? null
+                            : Colors.grey,
+                      ),
+                    ),
+                    SizedBox(width: 35), //간격
+                    InkWell( //앞뒤 전환 아이콘 버튼
+                      onTap: () {
+                        //구현 or 삭제 필요
+                      },
+                      child: Image.asset(
+                          "button/flip.png",
+                          width: 40,
+                          height: 40
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-      );
+        ),
+      ),
+    );
   }
 }
