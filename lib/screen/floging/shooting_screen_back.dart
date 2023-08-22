@@ -5,7 +5,9 @@ import 'dart:async';
 
 class ShootingScreen extends StatefulWidget {
   final String? backImagePath;
+
   const ShootingScreen({Key? key, this.backImagePath}) : super(key: key);
+
   @override
   State<ShootingScreen> createState() => _ShootingScreenState();
 }
@@ -15,6 +17,8 @@ class _ShootingScreenState extends State<ShootingScreen> {
   bool _isCameraReady = false;
   String? _tempBackImagePath; //임시 후면 사진 저장
   String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
+  bool _isCameraInitialized = false;
+  bool _isProcessing = false;
 
   //카메라 초기화
   @override
@@ -32,6 +36,9 @@ class _ShootingScreenState extends State<ShootingScreen> {
         break;
       }
     }
+    setState(() {
+      _isCameraInitialized = true; // 카메라 초기화 완료
+    });
   }
 
   //카메라 컨트롤러 initalize
@@ -42,9 +49,11 @@ class _ShootingScreenState extends State<ShootingScreen> {
     );
 
     _cameraController!.initialize().then((_) {
-      setState(() {
-        _isCameraReady = true; //카메라 컨트롤러 initalize 마쳤을 때
-      });
+      if (mounted) {
+        setState(() {
+          _isCameraReady = true; //카메라 컨트롤러 initalize 마쳤을 때
+        });
+      }
     });
   }
 
@@ -62,14 +71,25 @@ class _ShootingScreenState extends State<ShootingScreen> {
   }
 
   //후면 카메라 촬영
-  void _takeBackPicture(BuildContext context) {
-    if (_cameraController == null || !_isCameraReady) return;
-    _cameraController!.takePicture().then((image) {
+  Future<void> _takeBackPicture(BuildContext context) async {
+    if (_cameraController == null || !_isCameraReady || _isProcessing) return;
+    setState(() {
+      _isProcessing = true; // 사진 처리 중 표시
+    });
+
+    try {
+      final image = await _cameraController!.takePicture();
       setState(() {
         _tempBackImagePath = image.path;
+        _isProcessing = false; // 사진 처리 완료
       });
-      _navigateToFrontScreen(context); //전면 카메라 화면으로 전환
-    });
+      _navigateToFrontScreen(context);
+    } catch (e) {
+      setState(() {
+        _isProcessing = false; // 사진 처리 실패 시 처리 중 표시 해제
+      });
+      // 에러 처리
+    }
   }
 
   @override
@@ -153,10 +173,17 @@ class _ShootingScreenState extends State<ShootingScreen> {
                             }
                             : null,
 
-                            child: Image.asset(
-                                "button/shooting.png",
-                                width: 60,
-                                height: 60
+                            child: _isProcessing
+                                ? CircularProgressIndicator(
+                                color: Color(0xFF609966),
+                            ) // 사진 처리 중에는 로딩 스피너 표시
+                                : Image.asset(
+                              "button/shooting.png",
+                              width: 60,
+                              height: 60,
+                              color: _cameraController != null && _isCameraReady
+                                  ? null
+                                  : Colors.grey,
                             ),
                           ),
                           SizedBox(width: 35), //간격
