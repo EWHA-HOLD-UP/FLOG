@@ -15,6 +15,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
   bool _isCameraReady = false;
   String? _tempFrontImagePath; //임시 전면 사진 저장
   String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
+  bool _flashon = true;
 
   //카메라 초기화
   @override
@@ -137,12 +138,20 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                       children: [
                         InkWell( //플래시 아이콘 버튼
                           onTap: () {
-
+                            setState(() {
+                              _flashon = !_flashon; // 플래시 상태를 토글
+                              if (_flashon) {
+                                _cameraController?.setFlashMode(FlashMode.auto);
+                              } else {
+                                _cameraController?.setFlashMode(FlashMode.off);
+                              }
+                            });
                           },
                           child: Image.asset(
-                              "button/flash.png",
-                              width: 50,
-                              height: 50
+                            "button/flash.png",
+                            width: 50,
+                            height: 50,
+                            color: _flashon ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                           ),
                         ),
                         SizedBox(width: 35),

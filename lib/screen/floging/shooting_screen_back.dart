@@ -5,7 +5,6 @@ import 'dart:async';
 
 class ShootingScreen extends StatefulWidget {
   final String? backImagePath;
-
   const ShootingScreen({Key? key, this.backImagePath}) : super(key: key);
 
   @override
@@ -19,6 +18,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
   String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
+  bool _flashon = true;
 
   //카메라 초기화
   @override
@@ -71,7 +71,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
   }
 
   //후면 카메라 촬영
-  Future<void> _takeBackPicture(BuildContext context) async {
+  Future<void> _takeBackPicture(context) async {
     if (_cameraController == null || !_isCameraReady || _isProcessing) return;
     setState(() {
       _isProcessing = true; // 사진 처리 중 표시
@@ -156,12 +156,20 @@ class _ShootingScreenState extends State<ShootingScreen> {
                         children: [
                           InkWell( //플래시 아이콘 버튼
                               onTap: () {
-
+                                setState(() {
+                                  _flashon = !_flashon; // 플래시 상태를 토글
+                                  if (_flashon) {
+                                    _cameraController?.setFlashMode(FlashMode.auto);
+                                  } else {
+                                    _cameraController?.setFlashMode(FlashMode.off);
+                                  }
+                                });
                               },
                             child: Image.asset(
-                                "button/flash.png",
-                                width: 50,
-                                height: 50
+                              "button/flash.png",
+                              width: 50,
+                              height: 50,
+                              color: _flashon ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                             ),
                           ),
                           SizedBox(width: 35), //간격
@@ -181,7 +189,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                               "button/shooting.png",
                               width: 60,
                               height: 60,
-                              color: _cameraController != null && _isCameraReady
+                              color: _cameraController != null && _isCameraReady && _isCameraInitialized
                                   ? null
                                   : Colors.grey,
                             ),
