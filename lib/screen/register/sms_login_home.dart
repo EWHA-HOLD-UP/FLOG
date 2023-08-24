@@ -17,9 +17,9 @@ class _HomePageState extends State<HomePage> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext con, AsyncSnapshot<User?> user) {
           if (!user.hasData) {
-            return NicknameScreen();
+            return const NicknameScreen();
           } else {
-            return NicknameScreen();
+            return const NicknameScreen();
           }
         });
   }

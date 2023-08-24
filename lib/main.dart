@@ -1,10 +1,7 @@
 import 'package:flog/screen/floging/floging_screen.dart';
-import 'package:flog/screen/floging/shooting_screen_back.dart';
-import 'package:flog/screen/root_screen.dart';
+//import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flog/screen/register/start_login_screen.dart';
-import 'package:flog/screen/register/personal_nickname_screen.dart';
 import 'package:flog/screen/register/sms_login_home.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -39,8 +36,8 @@ class MyApp extends StatelessWidget {
           initialRoute: '/login',
           routes: {
             '/': (context) => const HomePage(),
-            '/login': (context) => LoginScreen(),
-            '/register': (context) => RegisterScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/register': (context) => const RegisterScreen(),
             '/index': (context) => const FlogingScreen(),
           },
         ));

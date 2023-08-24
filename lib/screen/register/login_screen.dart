@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -13,7 +15,7 @@ class LoginScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black, // 뒤로가기 버튼 아이콘 색상
             ),// 이미지 경로 지정
@@ -37,8 +39,8 @@ class LoginScreen extends StatelessWidget {
               "assets/flog_name_3d.png",
               width: 180,
             ),
-            SizedBox(height: 40),
-            Align(
+            const SizedBox(height: 40),
+            const Align(
               alignment: Alignment.centerLeft, // 좌측 정렬
               child: Padding(
                 padding: EdgeInsets.only(left: 65.0), // 좌측으로 20.0만큼 패딩 추가
@@ -51,11 +53,11 @@ class LoginScreen extends StatelessWidget {
                   ),
               ),
             ),
-            EmailInput(),
-            PasswordInput(),
-            SizedBox(height: 10),
-            LoginButton(),
-            Align(
+            const EmailInput(),
+            const PasswordInput(),
+            const SizedBox(height: 10),
+            const LoginButton(),
+            const Align(
               alignment: Alignment.centerLeft,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -81,6 +83,8 @@ class LoginScreen extends StatelessWidget {
 }
 
 class EmailInput extends StatelessWidget {
+  const EmailInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     final loginField = Provider.of<LoginFieldModel>(context, listen: false);
@@ -92,7 +96,7 @@ class EmailInput extends StatelessWidget {
           loginField.setEmail(email);
         },
         keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Email', // Hint Text
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0)), // 네모 상자의 모서리 둥글기 설정
@@ -111,6 +115,8 @@ class EmailInput extends StatelessWidget {
 }
 
 class PasswordInput extends StatelessWidget {
+  const PasswordInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     final loginField = Provider.of<LoginFieldModel>(context, listen: false);
@@ -141,17 +147,19 @@ class PasswordInput extends StatelessWidget {
 }
 
 class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authClient =
         Provider.of<FirebaseAuthProvider>(context, listen: false);
     final loginField = Provider.of<LoginFieldModel>(context, listen: false);
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height * 0.05,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Color(0xff609966),
+            backgroundColor: const Color(0xff609966),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -164,7 +172,7 @@ class LoginButton extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(SnackBar(
-                      content: Text(authClient.user!.email! + '님 환영합니다!')));
+                      content: Text('${authClient.user!.email!}님 환영합니다!')));
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -174,12 +182,12 @@ class LoginButton extends StatelessWidget {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
-                    SnackBar(content: Text("로그인에 실패했습니다. 다시 시도해주세요.")),
+                    const SnackBar(content: Text("로그인에 실패했습니다. 다시 시도해주세요.")),
                   );
               }
             });
           },
-          child: Text('로그인 하기',
+          child: const Text('로그인 하기',
             style: TextStyle(
               fontSize: 18,
               color: Colors.white,
@@ -192,6 +200,8 @@ class LoginButton extends StatelessWidget {
 }
 
 class SignUpButton extends StatelessWidget {
+  const SignUpButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

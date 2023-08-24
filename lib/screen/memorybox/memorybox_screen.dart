@@ -9,10 +9,10 @@ class MemoryBoxScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('추억 보관함', style: TextStyle(color: Colors.black),),
+        title: const Text('추억 보관함', style: TextStyle(color: Colors.black),),
         actions: <Widget> [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             ),
@@ -33,11 +33,11 @@ class MemoryBoxScreen extends StatelessWidget {
   }
 
   Widget _buildTop() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
+    return const Padding(
+      padding: EdgeInsets.only(top: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const <Widget> [
+        children: <Widget> [
           Column(
             children: <Widget>[
               Icon(
@@ -77,11 +77,11 @@ class MemoryBoxScreen extends StatelessWidget {
   }
 
   Widget _buildMiddle_1() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
+    return const Padding(
+      padding: EdgeInsets.only(top: 20),
       child : Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(
             Icons.monetization_on,
             size: 20,
@@ -99,11 +99,11 @@ class MemoryBoxScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          Text('우리 가족의 모든 날',
+          const Text('우리 가족의 모든 날',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             height: 200,
             width: 350,
@@ -113,10 +113,10 @@ class MemoryBoxScreen extends StatelessWidget {
               ),
             child: Column(
               children: [
-                SizedBox(height: 10),
-                Row(
+                const SizedBox(height: 10),
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const <Widget> [
+                  children: <Widget> [
                     Column(
                       children: <Widget> [
                         Icon(
@@ -182,10 +182,10 @@ class MemoryBoxScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
-                Row(
+                const SizedBox(height: 30),
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const <Widget> [
+                  children: <Widget> [
                     Column(
                       children: <Widget> [
                         Icon(
@@ -252,31 +252,31 @@ class MemoryBoxScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    SizedBox(width: 125),
+                    const SizedBox(width: 125),
                     OutlinedButton(
                         onPressed: (){
 
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side: const BorderSide(color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        child: Text(
+                        child: const Text(
                           '전체 보기',
                           style: TextStyle(color: Colors.white),
                         ),
                     ),
-                    SizedBox(width: 80),
+                    const SizedBox(width: 80),
                     IconButton(
                         onPressed: (){
 
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.video_camera_back,
                           color: Colors.white,
                         ),
@@ -296,11 +296,11 @@ class MemoryBoxScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          Text('우리 가족의 소중한 날',
+          const Text('우리 가족의 소중한 날',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             height: 200,
             width: 350,
@@ -310,10 +310,10 @@ class MemoryBoxScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                SizedBox(height: 10),
-                Row(
+                const SizedBox(height: 10),
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
+                  children: [
                     Icon(
                       Icons.photo,
                       size: 120,
@@ -326,31 +326,31 @@ class MemoryBoxScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    SizedBox(width: 125),
+                    const SizedBox(width: 125),
                     OutlinedButton(
                       onPressed: (){
 
                       },
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.white),
+                        side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         '전체 보기',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    SizedBox(width: 80),
+                    const SizedBox(width: 80),
                     IconButton(
                       onPressed: (){
 
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.menu_book,
                         color: Colors.white,
                       ),

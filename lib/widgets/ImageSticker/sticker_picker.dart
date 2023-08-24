@@ -13,7 +13,7 @@ class StickerPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF609966).withOpacity(0.7),
+      color: const Color(0xFF609966).withOpacity(0.7),
       height: 200,
       width: 100,
       child: SingleChildScrollView(
@@ -35,7 +35,7 @@ class StickerPicker extends StatelessWidget {
                   ),
                 )),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(3, (index) => Padding(
@@ -51,7 +51,7 @@ class StickerPicker extends StatelessWidget {
                   ),
                 )),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(3, (index) => Padding(

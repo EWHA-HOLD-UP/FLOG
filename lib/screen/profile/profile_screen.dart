@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.settings, // 프로필 편집 아이콘
               color: Colors.black, // 아이콘 색상
             ),
@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingScreen(),
+                  builder: (context) => const SettingScreen(),
                 ),
               );
             },
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         width: 120,
                         height: 120,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xffD9D9D9),
                         ),
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProfileEditScreen(),
+                                builder: (context) => const ProfileEditScreen(),
                               ),
                             );
                           },
@@ -86,14 +86,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               ),
             const SizedBox(height: 10),
-            Text("현서", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,)), //여기에 user.nickname 값 불러오기
-            Text("tocputer", style: TextStyle(fontSize: 20,)),//여기에 user.uid 값 불러오기
+            const Text("현서", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,)), //여기에 user.nickname 값 불러오기
+            const Text("tocputer", style: TextStyle(fontSize: 20,)),//여기에 user.uid 값 불러오기
             const SizedBox(height: 200),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("위젯 추가해야해요", style: TextStyle(fontSize: 15)),
-                const SizedBox(width: 5),
+                Text("위젯 추가해야해요", style: TextStyle(fontSize: 15)),
+                SizedBox(width: 5),
               ],
                  )
               ]

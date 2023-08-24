@@ -25,7 +25,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
     _initializeCamera();
   }
 
-  //전면 카메라 - 가능한 카메라들 목록을 하나하나 검사하면서 전면 카메라를 발견하면 탐색 멈춤
+  //전면 카메라 - 가능한 카메라들의 목록을 하나 하나 검사하면서 전면 카메라를 발견하면 탐색 멈춤
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
     for(CameraDescription camera in cameras) {
@@ -90,10 +90,10 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
           child : SafeArea(
             child: Column(
               children: [
-                SizedBox(height:10), //간격
+                const SizedBox(height:10), //간격
                 Row(
                   children: [
-                    SizedBox(width: 20), //간격
+                    const SizedBox(width: 20), //간격
                     InkWell( //close 아이콘 버튼
                       onTap: () {
                         Navigator.pop(context);
@@ -105,7 +105,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                           height: 20
                       ),
                     ),
-                    SizedBox(width: 135), //간격
+                    const SizedBox(width: 135), //간격
                     Image.asset(
                       "assets/flog_logo.png",
                       width: 55,
@@ -113,7 +113,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                     ),
                   ],
                 ),
-                Text(
+                const Text(
                   "FLOGing",
                   style: TextStyle(
                     fontSize: 30,
@@ -121,8 +121,8 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                     color: Color(0xFF609966), // #609966 색상 지정
                   ),
                 ),
-                SizedBox(height:10), // 간격
-                Container( //카메라 프리뷰 크기 조절
+                const SizedBox(height:10), // 간격
+                SizedBox( //카메라 프리뷰 크기 조절
                   width: 350,
                   height: 470,
                   child: _cameraController != null && _isCameraReady
@@ -131,9 +131,9 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height:10), //간격
-                Text('$guide'), //ai 가이드 문구
-                SizedBox(height:10), //간격
+                const SizedBox(height:10), //간격
+                Text(guide), //ai 가이드 문구
+                const SizedBox(height:10), //간격
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -155,7 +155,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                         color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                       ),
                     ),
-                    SizedBox(width: 35),
+                    const SizedBox(width: 35),
                     InkWell( //전면 카메라 촬영 버튼
                       onTap:
                       _cameraController != null && _isCameraReady
@@ -169,7 +169,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                           height: 60
                       ),
                     ),
-                    SizedBox(width: 35), //간격
+                    const SizedBox(width: 35), //간격
                     InkWell( //앞뒤 전환 아이콘 버튼
                       onTap: () {
                         //구현 or 삭제 필요

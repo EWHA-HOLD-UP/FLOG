@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
-import '../../widgets/ImageSticker/ImageSticker.dart';
+import '../../widgets/ImageSticker/image_sticker.dart';
 import '../../widgets/ImageSticker/sticker_model.dart';
 
 //💚💚183라인 final_backImage, 241라인 final_frontImage가 최종적으로 스티커까지 붙은 이미지
@@ -49,9 +49,9 @@ class ShootingEditState extends State<ShootingEditScreen> {
               children: [
 
                 /*---상단 Floging 바---*/
-                SizedBox(height: 10), //간격
+                const SizedBox(height: 10), //간격
                 Image.asset("assets/flog_logo.png", width: 55, height: 55,), //로고
-                Text( //Floging 텍스트
+                const Text( //Floging 텍스트
                   "FLOGing",
                   style: TextStyle(
                     fontSize: 30,
@@ -59,26 +59,26 @@ class ShootingEditState extends State<ShootingEditScreen> {
                     color: Color(0xFF609966),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 /*---사진을 보여주는 부분---*/
                 showPicture(), //1️⃣사진을 보여주는 부분
-                SizedBox(height: 10), //간격
+                const SizedBox(height: 10), //간격
 
                 /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     textStickerButton(), //2️⃣텍스트 스티커 버튼
-                    SizedBox(width: 50),
+                    const SizedBox(width: 50),
                     flipButton(), //3️⃣사진 전환 버튼
-                    SizedBox(width: 50),
+                    const SizedBox(width: 50),
                     imageStickerButton(), //4️⃣이미지 스티커 버튼
-                    SizedBox(width: 50),
+                    const SizedBox(width: 50),
                     stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 /*---상태 전송 버튼---*/
                 sendingButton(), //6️⃣상태 전송 버튼
@@ -94,7 +94,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
   /*-----------------------------위젯-----------------------------*/
   // 1️⃣사진을 보여주는 부분
   Widget showPicture () {
-    return Container(
+    return SizedBox(
       width: 350,
       height: 470,
       child: RepaintBoundary( //스티커 포함하여 현재 화면 캡처
@@ -218,7 +218,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
       onPressed: () {
         undoSticker(); //클릭 시 되돌리기
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.undo, //추후에 undo 버튼 제작하여 변경?
         color: Color(0xFF609966),
       ),
@@ -240,6 +240,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
           finalfrontImage = pngBytes;  //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
         }
 
+        if(!mounted) return;
         Navigator.push( //다음 스크린으로
           context,
           MaterialPageRoute(
@@ -254,12 +255,12 @@ class ShootingEditState extends State<ShootingEditScreen> {
 
       //상태 전송 버튼 디자인
       style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
           ),
-          fixedSize: Size(180, 55),
-          backgroundColor: Color(0xff609966)
+          fixedSize: const Size(180, 55),
+          backgroundColor: const Color(0xff609966)
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -269,8 +270,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
               height: 20,
               width: 20
           ),
-          SizedBox(width: 20),
-          Text(
+          const SizedBox(width: 20),
+          const Text(
             '상태 전송',
             style: TextStyle(
                 color: Colors.white,
@@ -297,7 +298,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
               content: StickerPicker(onStickerTap: onStickerTap),
               actions: [
                 IconButton( // close 버튼 누르면 스티커 팝업 닫기
-                  icon: Icon(Icons.close), //추후에 close 버튼 제작하여 변경?
+                  icon: const Icon(Icons.close), //추후에 close 버튼 제작하여 변경?
                   color: Colors.white,
                   onPressed: () {
                     Navigator.of(context).pop(); // AlertDialog 닫기
@@ -317,14 +318,14 @@ class ShootingEditState extends State<ShootingEditScreen> {
       if (isFrontImageVisible) { //전면 카메라가 보일 때
         frontImageStickers.add( //전면 카메라에 붙인 스티커 목록에 해당 스티커 추가
           StickerModel(
-            id: Uuid().v4(),
+            id: const Uuid().v4(),
             imgPath: 'assets/emoticons/emoticon_$index.png',
           ),
         );
       } else { //후면 카메라가 보일 때
         backImageStickers.add( //후면 카메라에 붙인 스티커 목록에 해당 스티커 추가
           StickerModel(
-            id: Uuid().v4(),
+            id: const Uuid().v4(),
             imgPath: 'assets/emoticons/emoticon_$index.png',
           ),
         );

@@ -75,35 +75,35 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
         body: SafeArea(
           child: Center(
             child: Column(children: [
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 '가족 연결',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 140),
+              const SizedBox(height: 140),
               Image.asset(
                 "assets/flog_logo.png",
                 width: 150,
                 height: 150,
               ),
-              SizedBox(height: 30),
-              Text(
+              const SizedBox(height: 30),
+              const Text(
                 '생성된 FLOG 코드',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
-                '$familycode',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                familycode,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: familycode));
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${widget.nickname}님의 가족 코드가 복사되었습니다!'),
-                      duration: Duration(seconds: 3), // 알림이 화면에 표시될 시간 2초
+                      duration: const Duration(seconds: 3), // 알림이 화면에 표시될 시간 2초
                     ),
                   );
                   Navigator.push(
@@ -118,10 +118,10 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   backgroundColor: Colors.white,
-                  minimumSize: Size(300, 50),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  minimumSize: const Size(300, 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                child: Text(
+                child: const Text(
                   'FLOG 코드 공유',
                   style: TextStyle(
                     color: Color(0xFF609966),
@@ -130,13 +130,13 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MatchingCodeEnteringScreen(),
+                      builder: (context) => const MatchingCodeEnteringScreen(),
                     ),
                   );
                 },
@@ -144,12 +144,12 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  backgroundColor: Color(0xFF609966),
-                  minimumSize: Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
-                  padding: EdgeInsets.symmetric(
+                  backgroundColor: const Color(0xFF609966),
+                  minimumSize: const Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
+                  padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8), // 내부 패딩 설정
                 ),
-                child: Text(
+                child: const Text(
                   'FLOG 코드 입력',
                   style: TextStyle(
                     color: Colors.white,

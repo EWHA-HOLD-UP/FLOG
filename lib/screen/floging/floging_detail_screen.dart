@@ -61,7 +61,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
           backgroundColor: Colors.transparent, // 앱바 배경 색상
           elevation: 0, // 그림자 제거
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black, // 뒤로가기 버튼 아이콘 색상
             ),
@@ -82,7 +82,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     width: 55,
                     height: 55,
                   ),
-                  Text(
+                  const Text(
                     "FLOGing",
                     style: TextStyle(
                       fontSize: 30,
@@ -90,20 +90,20 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       color: Color(0xFF609966),
                     ),
                   ),
-                  SizedBox(height: 20), // 간격
+                  const SizedBox(height: 20), // 간격
                   Expanded(
                     child: SingleChildScrollView(
                       child: Container(
                         width: 300,
                         height: 400,
                         decoration: BoxDecoration(
-                          color: Color(0xad747474),
+                          color: const Color(0xad747474),
                           borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
                         ),
                         child: Center(
                           child: Text(
                             widget.status,
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            style: const TextStyle(fontSize: 20, color: Colors.white),
                           ),
                         ),
                       ),

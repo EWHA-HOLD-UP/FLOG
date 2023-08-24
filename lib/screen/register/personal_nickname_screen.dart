@@ -50,13 +50,13 @@ class _NicknameScreenState extends State<NicknameScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Row(children: [
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Image.asset("assets/flog_logo.png", width: 40, height: 40),
-                  SizedBox(width: 5),
-                  Text(
+                  const SizedBox(width: 5),
+                  const Text(
                     '닉네임을 입력해주세요.',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   )
@@ -65,8 +65,8 @@ class _NicknameScreenState extends State<NicknameScreen> {
               Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
-                    Container(
+                    const SizedBox(height: 20),
+                    SizedBox(
                       width: 340,
                       child: TextField(
                         maxLength: 10,
@@ -74,7 +74,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
                           updateButtonStatus();
                         },
                         controller: nicknameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             //힌트
                             hintText: 'nickname',
                             hintStyle: TextStyle(
@@ -90,17 +90,17 @@ class _NicknameScreenState extends State<NicknameScreen> {
                             helperText: '10자 이내로 입력해주세요.'),
                       ),
                     ),
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: isButtonEnabled
                           ? () {
-                              String entered_nickname = nicknameController.text;
+                              String enteredNickname = nicknameController.text;
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => BirthScreen(
-                                        nickname: entered_nickname)),
+                                        nickname: enteredNickname)),
                               );
                             }
                           : null,
@@ -108,12 +108,12 @@ class _NicknameScreenState extends State<NicknameScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Color(0xFF609966),
-                        minimumSize: Size(300, 50),
+                        backgroundColor: const Color(0xFF609966),
+                        minimumSize: const Size(300, 50),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       ),
-                      child: Text(
+                      child: const Text(
                         '다음',
                         style: TextStyle(
                           color: Colors.white,

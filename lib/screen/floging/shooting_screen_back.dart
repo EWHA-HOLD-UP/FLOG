@@ -106,10 +106,10 @@ class _ShootingScreenState extends State<ShootingScreen> {
           child : SafeArea(
             child: Column(
               children: [
-                SizedBox(height:10), //간격
+                const SizedBox(height:10), //간격
                 Row(
                   children: [
-                    SizedBox(width: 20), //간격
+                    const SizedBox(width: 20), //간격
                     InkWell( //close 아이콘 버튼
                       onTap: () {
                         Navigator.pop(context);
@@ -120,7 +120,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           height: 20
                       ),
                     ),
-                    SizedBox(width: 135), //간격
+                    const SizedBox(width: 135), //간격
                     Image.asset(
                       "assets/flog_logo.png",
                       width: 55,
@@ -128,7 +128,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                     ),
                   ],
                 ),
-                Text(
+                const Text(
                   "FLOGing",
                   style: TextStyle(
                     fontSize: 30,
@@ -136,8 +136,8 @@ class _ShootingScreenState extends State<ShootingScreen> {
                     color: Color(0xFF609966), // #609966 색상 지정
                   ),
                 ),
-                SizedBox(height:10), //간격
-                Container( //카메라 프리뷰 크기 조절
+                const SizedBox(height:10), //간격
+                SizedBox( //카메라 프리뷰 크기 조절
                   width: 350,
                   height: 470,
                   child: _cameraController != null && _isCameraReady
@@ -146,9 +146,9 @@ class _ShootingScreenState extends State<ShootingScreen> {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height:10), //간격
-                Text('$guide'), //ai 가이드 문구
-                SizedBox(height:10), //간격
+                const SizedBox(height:10), //간격
+                Text(guide), //ai 가이드 문구
+                const SizedBox(height:10), //간격
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -170,7 +170,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                         color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                       ),
                     ),
-                    SizedBox(width: 35), //간격
+                    const SizedBox(width: 35), //간격
                     InkWell( //후면 카메라 촬영 버튼
                       onTap:
                       _cameraController != null && _isCameraReady
@@ -179,7 +179,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                       }
                       : null,
                       child: _isProcessing
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                         color: Color(0xFF609966),
                       ) // 사진 처리 중에는 로딩 스피너 표시
                           : Image.asset(
@@ -191,7 +191,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                             : Colors.grey,
                       ),
                     ),
-                    SizedBox(width: 35), //간격
+                    const SizedBox(width: 35), //간격
                     InkWell( //앞뒤 전환 아이콘 버튼
                       onTap: () {
                         //구현 or 삭제 필요

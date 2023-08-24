@@ -140,14 +140,14 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
         }
       },
       style: ElevatedButton.styleFrom(
-        primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
+        backgroundColor: const Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0), // 버튼의 모서리를 둥글게 조정
         ),
       ),
       child: Container(
         padding: const EdgeInsets.all(15),
-        color: Color(0xFF609966),
+        color: const Color(0xFF609966),
         child: const Text(
           "SMS 코드 전송",
           style: TextStyle(
@@ -162,14 +162,14 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
     return ElevatedButton(
       onPressed: () async {},
       style: ElevatedButton.styleFrom(
-        primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
+        backgroundColor: const Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0), // 버튼의 모서리를 둥글게 조정
         ),
       ),
       child: Container(
         padding: const EdgeInsets.all(15),
-        color: Color(0xFF609966),
+        color: const Color(0xFF609966),
         child: const Text(
           "로그인",
           style: TextStyle(
@@ -191,14 +191,14 @@ class _SMSLoginPageState extends State<SMSLoginPage> {
             .then((_) => Navigator.pushNamed(context, "/"));
       },
       style: ElevatedButton.styleFrom(
-        primary: Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
+        backgroundColor: const Color(0xFF609966), // 버튼 배경색을 원하는 색상으로 변경
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0), // 버튼의 모서리를 둥글게 조정
         ),
       ),
       child: Container(
         padding: const EdgeInsets.all(15),
-        color: Color(0xFF609966),
+        color: const Color(0xFF609966),
         child: const Text(
           "확인",
           style: TextStyle(

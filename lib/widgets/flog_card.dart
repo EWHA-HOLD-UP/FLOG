@@ -22,13 +22,13 @@ class FlogCard extends StatelessWidget {
         width: 150,
         height: 200,
         decoration: BoxDecoration(
-          color: Color(0xad747474),
+          color: const Color(0xad747474),
           borderRadius: BorderRadius.circular(23),
         ),
         child: Center(
           child: Text(
             status,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),

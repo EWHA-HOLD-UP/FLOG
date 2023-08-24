@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-
 class StickerModel {
   final String id;
   final String imgPath;
@@ -15,5 +12,6 @@ class StickerModel {
     return (other as StickerModel).id == id;
   }
 
+  @override
   int get hashCode => id.hashCode;
 }

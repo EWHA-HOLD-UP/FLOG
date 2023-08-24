@@ -13,19 +13,19 @@ class LoginScreen1 extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Image.asset(
                 "assets/flog_logo.png",
                 width: 150,
                 height: 150,
               ),
-              SizedBox(height: 70),
+              const SizedBox(height: 70),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SMSLoginPage(),
+                      builder: (context) => const SMSLoginPage(),
                     ),
                   );
                 },
@@ -34,10 +34,10 @@ class LoginScreen1 extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   backgroundColor: Colors.white,
-                  minimumSize: Size(300, 50),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  minimumSize: const Size(300, 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                child: Text(
+                child: const Text(
                   '시작하기 - SMS',
                   style: TextStyle(
                     color: Color(0xFF609966),

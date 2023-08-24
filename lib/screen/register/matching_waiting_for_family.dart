@@ -26,27 +26,27 @@ class _WaitingState extends State<WaitingForFamily>{
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 70),
+              const SizedBox(height: 70),
               Image.asset(
                   "assets/flog_logo.png",
                   width: 40,
                   height: 40
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'FLOG 코드를 가족에게 공유하여',
                 style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              Text(
+              const Text(
                 '가족 그룹에 들어오라고 알려주세요!',
                 style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
-                '${widget.familycode}',
-                style: TextStyle(
+                widget.familycode,
+                style: const TextStyle(
                 fontSize: 30, fontWeight: FontWeight.bold),
               )
             ],

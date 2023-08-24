@@ -15,7 +15,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.black, // 뒤로가기 버튼 아이콘 색상
           ),// 이미지 경로 지정
@@ -32,7 +32,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         backgroundColor: Colors.transparent, // 투명 설정
         elevation: 0, // 그림자 제거
       ),
-      body: Center(
+      body: const Center(
         child: Text('위젯 추가해야해요'),
       ),
     );

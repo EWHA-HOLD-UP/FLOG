@@ -1,6 +1,5 @@
 //꾸민 사진 잘 넘어오는지 테스트용
 
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -20,6 +19,7 @@ class TScreen extends StatefulWidget {
 }
 
 class _TState extends State<TScreen> {
+  @override
   Widget build(BuildContext context){
     return Column(
       children: [

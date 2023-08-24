@@ -8,8 +8,8 @@ import 'package:flog/screen/profile/profile_screen.dart';
 
 
 class RootScreen extends StatefulWidget {
-  final String matched_familycode;
-  const RootScreen({required this.matched_familycode, Key? key}) : super(key: key);
+  final String matchedFamilycode;
+  const RootScreen({required this.matchedFamilycode, Key? key}) : super(key: key);
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
@@ -27,7 +27,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
 
-    print('개발 중 확인용 - ${widget.matched_familycode}의 가족');
+    print('개발 중 확인용 - ${widget.matchedFamilycode}의 가족');
     return WillPopScope(
       onWillPop: () async => false,
       child:
@@ -46,16 +46,16 @@ class _RootScreenState extends State<RootScreen> {
             width: 60, // 원하는 너비
             height: 60, // 원하는 높이
             child: FloatingActionButton(
-              backgroundColor: Color(0xFF609966),
+              backgroundColor: const Color(0xFF609966),
               onPressed: () { // 버튼 클릭 시 동작
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ShootingScreen(),
+                    builder: (context) => const ShootingScreen(),
                   ),
                 );
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -69,6 +69,7 @@ class BottomTabBar extends StatelessWidget {
   final Function(int) onTabTapped;
 
   const BottomTabBar({
+    super.key,
     required this.currentIndex,
     required this.onTabTapped,
   });
