@@ -10,7 +10,7 @@ import 'dart:ui' as ui;
 import '../../widgets/ImageSticker/image_sticker.dart';
 import '../../widgets/ImageSticker/sticker_model.dart';
 
-//💚💚183라인 final_backImage, 241라인 final_frontImage가 최종적으로 스티커까지 붙은 이미지
+//💚💚182라인 finalbackImage, 240라인 finalfrontImage가 최종적으로 스티커까지 붙은 이미지
 // --> 파이어베이스로 넘기면 됨! Uint8List 형식의 변수로 되어있음
 
 class ShootingEditScreen extends StatefulWidget {

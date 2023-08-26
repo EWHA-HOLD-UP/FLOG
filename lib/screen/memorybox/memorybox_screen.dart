@@ -1,29 +1,46 @@
 import 'package:flutter/material.dart';
+import '../../widgets/member_profile.dart';
 
-
-class MemoryBoxScreen extends StatelessWidget {
+class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
+  @override
+  MemoryBoxState createState() => MemoryBoxState();
+}
+
+class MemoryBoxState extends State<MemoryBoxScreen> {
+  int numOfMem = 5; // 예시로 5명의 사람 수 설정
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*---상단 Memory Box 바---*/
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('추억 보관함', style: TextStyle(color: Colors.black),),
-        actions: <Widget> [
-          IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
+        title: Row(
+          children: [
+            const SizedBox(width: 60),
+            Image.asset(
+              "assets/flog_logo.png",
+              width: 30, height: 30,
             ),
-            onPressed: () {},
-          ),
-        ],
+            const SizedBox(width: 10),
+            const Text('Memory Box',
+              style: TextStyle(
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        elevation: 0.0, //그림자 없음
         centerTitle: true,
       ),
+
+      /*---화면---*/
+      backgroundColor: Colors.white, //화면 배경색
       body:  ListView(
         children: <Widget> [
-          _buildTop(), //상단
+          memberProfiles(numOfMem), //멤버 프로필
           _buildMiddle_1(), //중단
           _buildMiddle_2(),
           _buildBottom(), //하단
@@ -32,46 +49,39 @@ class MemoryBoxScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTop() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget> [
-          Column(
-            children: <Widget>[
-              Icon(
-                Icons.account_circle,
-                size: 60,
-                color: Colors.grey,
-              ),
-              Text('예원', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('eye_o-o')
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Icon(
-                Icons.account_circle,
-                size: 60,
-                color: Colors.grey,
-              ),
-              Text('민교', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('mingyo')
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Icon(
-                Icons.account_circle,
-                size: 60,
-                color: Colors.grey,
-              ),
-              Text('현서', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('tocputer')
-            ],
-          ),
-        ],
+  Widget memberProfiles(int numOfMem) {
+
+    final List<Person> people = [];
+
+    // 리스트에 항목 추가
+    /* 나중에는 여기다가 숫자(프로필 사진 인덱스) 자리에 파이어베이스에서 받아온 숫자 넣고,
+    닉네임 자리에 파이어베이스에서 받아온 닉네임 넣으면 되지 않을까?
+    for(int i = 1; i <= numOfMem; i++) {
+      people.add(Person(숫자, 닉네임));
+    }
+     */
+    people.add(Person(1, '예원'));
+    people.add(Person(2, '민교'));
+    people.add(Person(3, '현서'));
+    people.add(Person(4, '스크롤'));
+    people.add(Person(5, '확인용'));
+
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal, // 가로 스크롤 설정
+        child: Row(
+          children: [
+            for (final person in people)
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  Profiles(person),
+                ],
+              )
+          ],
+        ),
       ),
     );
   }
@@ -110,7 +120,7 @@ class MemoryBoxScreen extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(10.0)
-              ),
+            ),
             child: Column(
               children: [
                 const SizedBox(height: 10),
@@ -120,8 +130,8 @@ class MemoryBoxScreen extends StatelessWidget {
                     Column(
                       children: <Widget> [
                         Icon(
-                          Icons.circle_outlined,
-                          size: 45,
+                            Icons.circle_outlined,
+                            size: 45,
                             color: Colors.white
                         ),
                       ],
@@ -257,29 +267,29 @@ class MemoryBoxScreen extends StatelessWidget {
                   children: [
                     const SizedBox(width: 125),
                     OutlinedButton(
-                        onPressed: (){
+                      onPressed: (){
 
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: const Text(
-                          '전체 보기',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                      ),
+                      child: const Text(
+                        '전체 보기',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     const SizedBox(width: 80),
                     IconButton(
-                        onPressed: (){
+                      onPressed: (){
 
-                        },
-                        icon: const Icon(
-                          Icons.video_camera_back,
-                          color: Colors.white,
-                        ),
+                      },
+                      icon: const Icon(
+                        Icons.video_camera_back,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -366,5 +376,3 @@ class MemoryBoxScreen extends StatelessWidget {
   }
 
 }
-
-
