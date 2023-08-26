@@ -8,7 +8,7 @@ class MemoryBoxScreen extends StatefulWidget {
 }
 
 class MemoryBoxState extends State<MemoryBoxScreen> {
-  int numOfMem = 5; // 예시로 5명의 사람 수 설정
+  int numOfMem = 5; // 나중에 가족 명 수 파이어베이스에서 받아오기
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +50,26 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   }
 
   Widget memberProfiles(int numOfMem) {
-
     final List<Person> people = [];
-
     // 리스트에 항목 추가
-    /* 나중에는 여기다가 숫자(프로필 사진 인덱스) 자리에 파이어베이스에서 받아온 숫자 넣고,
-    닉네임 자리에 파이어베이스에서 받아온 닉네임 넣으면 되지 않을까?
+    /* 나중에는 아래 people.add 5줄 다 지우고,
+
+    getProfileNums(여기에 파이어베이스에서 숫자 받아오는 함수 구현)
+    getNicknames(여기에 파이어베이스에서 닉네임 받아오는 함수 구현)
     for(int i = 1; i <= numOfMem; i++) {
+      int 숫자 = getProfileNums();
+      String 닉네임 = getNicknames();
       people.add(Person(숫자, 닉네임));
     }
+
+    이렇게 하면 되지 않을까??
      */
+
     people.add(Person(1, '예원'));
     people.add(Person(2, '민교'));
     people.add(Person(3, '현서'));
     people.add(Person(4, '스크롤'));
     people.add(Person(5, '확인용'));
-
 
     return Padding(
       padding: const EdgeInsets.only(top: 20),
