@@ -40,8 +40,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
       backgroundColor: Colors.white, //화면 배경색
       body:  ListView(
         children: <Widget> [
-          memberProfiles(numOfMem), //멤버 프로필
-          _buildMiddle_1(), //중단
+          memberProfiles(numOfMem), //가족 구성원들의 프로필 보여주기
+          flogCoinNum(), //모은 개구리 수 보여주기
           _buildMiddle_2(),
           _buildBottom(), //하단
         ],
@@ -49,13 +49,14 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     );
   }
 
+  //가족 구성원들의 프로필 보여주기
   Widget memberProfiles(int numOfMem) {
     final List<Person> people = [];
-    // 리스트에 항목 추가
+
     /* 나중에는 아래 people.add 5줄 다 지우고,
 
-    getProfileNums(여기에 파이어베이스에서 숫자 받아오는 함수 구현)
-    getNicknames(여기에 파이어베이스에서 닉네임 받아오는 함수 구현)
+    getProfileNums{여기에 파이어베이스에서 숫자 받아오는 함수 구현}
+    getNicknames{여기에 파이어베이스에서 닉네임 받아오는 함수 구현}
     for(int i = 1; i <= numOfMem; i++) {
       int 숫자 = getProfileNums();
       String 닉네임 = getNicknames();
@@ -90,25 +91,27 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     );
   }
 
-  Widget _buildMiddle_1() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 20),
+  //모은 개구리 수 보여주기
+  Widget flogCoinNum() {
+    int coinNum = 29; //나중에 파이어베이스에서 받아오기
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
       child : Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.monetization_on,
-            size: 20,
-            color: Colors.green,
+          Image.asset(
+            "assets/flog_coin_green.png",
+            width: 30, height: 30,
           ),
-          SizedBox(width: 10),
-          Text('모은 개구리 수 : 29마리', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
+          const SizedBox(width: 10),
+          Text('모은 개구리 수 : $coinNum마리', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
         ],
       ),
     );
   }
 
   Widget _buildMiddle_2() {
+    int today = 7; //오늘 날짜
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -122,158 +125,76 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
             height: 200,
             width: 350,
             decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10.0)
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               children: [
-                const SizedBox(height: 10),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget> [
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
+                const SizedBox(height: 15),
+                Flexible(
+                  child: GridView.builder(
+                      padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7, //열 수
+                        mainAxisSpacing: 10.0, // 행 사이의 간격
+                      ),
+                      itemCount: 14, //전체 사진 수
+                      itemBuilder: (BuildContext context, int index) {
+                        //각 그리드 아이템에 표시할 위젯을 반환
+                        final containerNumber = index + 1;
+                        if (containerNumber > today) {
+                          //containerNumber가 오늘 이후면 회색에 숫자만 적힌 빈 컨테이너
+                          return Container(
+                            margin: const EdgeInsets.all(3.0),
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFCED3CE),
+                                borderRadius: BorderRadius.circular(15)
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              containerNumber.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        } else {
+                          //containerNumber가 오늘이거나 그 이전이면 플로깅 이미지로 채워진 컨테이너
+                          return Container(
+                            margin: const EdgeInsets.all(3.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: const Color(0xFFCED3CE)
+                            ),
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: ClipRRect(
+                                    child: Image.asset(
+                                      "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
+                                      width: 35,
+                                      height: 35,
+                                      alignment: Alignment.center,
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                    child: Text(containerNumber.toString(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
                     ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                  ],
                 ),
-                const SizedBox(height: 30),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget> [
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget> [
-                        Icon(
-                            Icons.circle_outlined,
-                            size: 45,
-                            color: Colors.white
-
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
                 Row(
                   children: [
-                    const SizedBox(width: 125),
+                    const SizedBox(width: 133),
                     OutlinedButton(
                       onPressed: (){
 
-                      },
+                        },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
@@ -282,25 +203,30 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       ),
                       child: const Text(
                         '전체 보기',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15
+                        ),
                       ),
                     ),
                     const SizedBox(width: 80),
-                    IconButton(
-                      onPressed: (){
+                    InkWell(
+                      onTap: () {
 
-                      },
-                      icon: const Icon(
-                        Icons.video_camera_back,
-                        color: Colors.white,
+                        },
+                      child: Image.asset( //전송 버튼
+                          "button/video.png",
+                          width: 35,
+                          height: 35
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 15)
               ],
             ),
           ),
-        ],
+        ]
       ),
     );
   }
