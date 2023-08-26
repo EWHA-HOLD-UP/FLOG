@@ -66,7 +66,8 @@ class _BirthScreenState extends State<BirthScreen> {
                   const SizedBox(width: 5),
                   Text(
                     '${widget.nickname}님의 생일을 입력해주세요.',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   )
                 ]),
               ]),
@@ -122,9 +123,9 @@ class _BirthScreenState extends State<BirthScreen> {
                               print('d');
                               flog_User.User user = flog_User.User(
                                   uid: 'flog_User.getCurrentUserUID()',
+                                  email: '',
                                   nickname: enteredNickname,
-                                  birth:
-                                      enteredBirthMonth + enteredBirthDay,
+                                  birth: enteredBirthMonth + enteredBirthDay,
                                   profile: 'null',
                                   flogCode: 'null',
                                   isUpload: false,
@@ -146,8 +147,8 @@ class _BirthScreenState extends State<BirthScreen> {
                         ),
                         backgroundColor: const Color(0xFF609966),
                         minimumSize: const Size(300, 50),
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                       ),
                       child: const Text(
                         '다음',

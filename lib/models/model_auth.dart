@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flog/models/user.dart' as model;
 
 enum AuthStatus {
   registerSuccess,
@@ -14,6 +15,7 @@ enum AuthStatus {
 
 class FirebaseAuthProvider with ChangeNotifier {
   FirebaseAuth authClient;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? user;
 
   FirebaseAuthProvider({auth}) : authClient = auth ?? FirebaseAuth.instance;
@@ -21,24 +23,36 @@ class FirebaseAuthProvider with ChangeNotifier {
   Future<AuthStatus> registerWithEmail(
       String email, String password, String nickname, String birth) async {
     try {
-      UserCredential credential =
-          await authClient.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      FirebaseFirestore db = FirebaseFirestore.instance;
-      CollectionReference userRef = db.collection('User');
-      DocumentReference documentRef = await userRef.add({
-        'email': email,
-        'password': password,
-        'nickname': nickname,
-        'birth': birth,
-        'profle': 'null',
-        'flogCode': 'null',
-        'isUpload': false,
-        'isAnswered': false
-      });
-      return AuthStatus.registerSuccess;
+      if (email.isNotEmpty ||
+          password.isNotEmpty ||
+          nickname.isNotEmpty ||
+          birth.isNotEmpty) {
+        UserCredential credential =
+            await authClient.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        model.User user = model.User(
+            uid: credential.user!.uid,
+            email: email,
+            birth: birth,
+            nickname: nickname,
+            flogCode: "",
+            profile: "1",
+            isAnswered: false,
+            isUpload: false);
+
+        // 데이터베이스에 저장
+        await _firestore
+            .collection("User")
+            .doc(credential.user!.uid)
+            .set(user.toJson());
+
+        return AuthStatus.registerSuccess;
+      } else {
+        return AuthStatus.registerFail;
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -56,17 +70,21 @@ class FirebaseAuthProvider with ChangeNotifier {
 
   Future<AuthStatus> loginWithEmail(String email, String password) async {
     try {
-      await authClient
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((credential) async {
-        user = credential.user;
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isLogin', true);
-        prefs.setString('email', email);
-        prefs.setString('password', password);
-      });
-      print("[+] 로그인 유저 : ${user!.email}");
-      return AuthStatus.loginSuccess;
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await authClient
+            .signInWithEmailAndPassword(email: email, password: password)
+            .then((credential) async {
+          user = credential.user;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('isLogin', true);
+          prefs.setString('email', email);
+          prefs.setString('password', password);
+        });
+        print("[+] 로그인 유저 : ${user!.email}");
+        return AuthStatus.loginSuccess;
+      } else {
+        return AuthStatus.loginFail;
+      }
     } catch (e) {
       print(e);
       return AuthStatus.loginFail;

@@ -6,18 +6,36 @@ class Floging {
   final String flogingId; // 식별을 위한 해당 플로깅의 ID
   final DateTime date;
   final String uid;
-  final int groupNo;
+  final String flogCode;
   final String downloadUrl;
-  final List<Comment> comments; // 해당 플로깅 아래 달린 댓글들
 
   Floging({
     required this.flogingId,
     required this.date,
     required this.uid,
-    required this.groupNo,
+    required this.flogCode,
     required this.downloadUrl,
-    this.comments = const [], // 기본값은 빈 리스트
   });
+
+  static Floging fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return Floging(
+      flogingId: snapshot["flogingId"],
+      uid: snapshot["uid"],
+      date: snapshot["date"],
+      flogCode: snapshot["flogCode"],
+      downloadUrl: snapshot["downloadUrl"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "flogingId": flogingId,
+        "uid": uid,
+        "date": date,
+        "flogCode": flogCode,
+        "downloadUrl": downloadUrl,
+      };
 }
 
 // 2️⃣ 해당 floging 아래 달린 댓글
@@ -31,6 +49,20 @@ class Comment {
     required this.content,
     required this.date,
   });
-}
 
-// 여기에 Firestore 문서(DocumentSnapshot)와 데이터 간의 변환하는 백엔드 연동 코드 작성
+  static Comment fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return Comment(
+      uid: snapshot["uid"],
+      content: snapshot["content"],
+      date: snapshot["date"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "uid": uid,
+        "date": date,
+        "content": content,
+      };
+}

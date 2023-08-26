@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class User {
   final String uid;
+  final String email;
   final String nickname;
   final String birth;
   final String profile;
@@ -13,6 +14,7 @@ class User {
 
   User({
     required this.uid,
+    required this.email,
     required this.nickname,
     required this.birth,
     required this.profile,
@@ -21,17 +23,23 @@ class User {
     required this.isAnswered,
   });
 
-  User.fromJson(Map<String, dynamic> json)
-      : uid = json['uid'],
-        nickname = json['nickname'],
-        birth = json['birth'],
-        profile = json['profile'],
-        flogCode = json['flogCode'],
-        isUpload = json['isUpload'],
-        isAnswered = json['isAnswered'];
+  static User fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return User(
+        nickname: snapshot["nickname"],
+        uid: snapshot["uid"],
+        email: snapshot["email"],
+        profile: snapshot["profle"],
+        birth: snapshot["birth"],
+        flogCode: snapshot["flogCode"],
+        isUpload: snapshot["isUpload"],
+        isAnswered: snapshot["isAnswered"]);
+  }
 
   Map<String, dynamic> toJson() => {
         'uid': uid,
+        'email': email,
         'nickname': nickname,
         'birth': birth,
         'profile': profile,
@@ -41,33 +49,17 @@ class User {
       };
 }
 
-// 현재 로그인된 사용자의 UID를 가져오는 함수
-Future<String?> getCurrentUserUID() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User? user = auth.currentUser as User?;
-
-  if (user != null) {
-    return user.uid;
-  } else {
-    return null;
-  }
-}
-
-Future<void> save(CollectionReference userRef, User user) async {
-  String? uid = await getCurrentUserUID();
-  if (uid != null) {
-    userRef.doc(uid).set(user.toJson());
-  }
-}
-
 class Group {
-  final String groupId; // 그룹 식별 아이디 ( == flogCode ???)
+  final String flogCode; // 그룹 식별 아이디
   final List<User> members; // 그룹에 해당하는 user 들 리스트화
+  final int frog; // 모은 개구리 수
+  late final int memNumber; //그룹 멤버수
 
-  Group({
-    required this.groupId,
-    required this.members,
-  });
+  Group(
+      {required this.flogCode,
+      required this.members,
+      required this.frog,
+      required this.memNumber});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -76,6 +68,10 @@ class Group {
     return user
         .isUpload; //해당 사용자의 isUpload 상태를 확인. 만약 해당 사용자가 이미 업로드한 상태라면 true를 반환
   }
-}
 
-// 여기에 Firestore 문서(DocumentSnapshot)와 데이터 간의 변환하는 백엔드 연동 코드 작성
+  void addMember(User user) {
+    //멤버 추가하기
+    members.add(user);
+    memNumber += 1;
+  }
+}
