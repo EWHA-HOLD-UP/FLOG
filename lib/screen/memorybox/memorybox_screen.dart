@@ -1,3 +1,4 @@
+import 'package:flog/screen/memorybox/memorybox_book_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -342,7 +343,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     const SizedBox(width: 80),
                     InkWell(
                       onTap: () {
-                        //추억북 신청 화면으로 넘어가기 구현 필요
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MemoryBoxBookScreen(),
+                          ),
+                        );
                       },
                       child: Image.asset( //전송 버튼
                           "button/book.png",
