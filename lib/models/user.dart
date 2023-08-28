@@ -51,7 +51,7 @@ class User {
 
 class Group {
   final String flogCode; // 그룹 식별 아이디
-  final List<User> members; // 그룹에 해당하는 user 들 리스트화
+  final List<String> members; // 그룹에 해당하는 user 들 리스트화
   final int frog; // 모은 개구리 수
   late final int memNumber; //그룹 멤버수
 
@@ -63,15 +63,25 @@ class Group {
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
-    final user = members
-        .firstWhere((user) => user.uid == userId); //해당 userId에 해당하는 사용자를 찾기
-    return user
-        .isUpload; //해당 사용자의 isUpload 상태를 확인. 만약 해당 사용자가 이미 업로드한 상태라면 true를 반환
+    final user =
+        members.firstWhere((user) => user == userId); //해당 userId에 해당하는 사용자를 찾기
+    return true; //해당 사용자의 isUpload 상태를 확인. 만약 해당 사용자가 이미 업로드한 상태라면 true를 반환
   }
 
-  void addMember(User user) {
-    //멤버 추가하기
-    members.add(user);
-    memNumber += 1;
+  static Group fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return Group(
+        flogCode: snapshot["flogCode"],
+        members: snapshot["members"],
+        frog: snapshot["frog"],
+        memNumber: snapshot["memNumber"]);
   }
+
+  Map<String, dynamic> toJson() => {
+        'flogCode': flogCode,
+        'members': members,
+        'frog': frog,
+        'memNumber': memNumber
+      };
 }

@@ -3,8 +3,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flog/models/user.dart' as model;
+import 'package:uuid/uuid.dart';
+
+import '../providers/user_provider.dart';
 
 enum AuthStatus {
   registerSuccess,
@@ -38,7 +42,7 @@ class FirebaseAuthProvider with ChangeNotifier {
             email: email,
             birth: birth,
             nickname: nickname,
-            flogCode: "",
+            flogCode: "null",
             profile: "1",
             isAnswered: false,
             isUpload: false);
@@ -75,12 +79,14 @@ class FirebaseAuthProvider with ChangeNotifier {
             .signInWithEmailAndPassword(email: email, password: password)
             .then((credential) async {
           user = credential.user;
+
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('isLogin', true);
           prefs.setString('email', email);
           prefs.setString('password', password);
         });
         print("[+] 로그인 유저 : ${user!.email}");
+
         return AuthStatus.loginSuccess;
       } else {
         return AuthStatus.loginFail;
@@ -99,5 +105,26 @@ class FirebaseAuthProvider with ChangeNotifier {
     user = null;
     await authClient.signOut();
     print("[-] 로그아웃");
+  }
+
+  // 그룹에 유저 등록하기
+  Future<void> registerGroup(String flogCode, String uid) async {
+    final CollectionReference groupRef =
+        FirebaseFirestore.instance.collection('groups');
+    DocumentSnapshot docSnapshot = await groupRef.doc(flogCode).get();
+
+    if (docSnapshot.exists) {
+      // 그룹이 존재하는 경우 -> 그룹에 추가하기
+      List<dynamic> currentMembers = docSnapshot.get('members');
+      await groupRef.doc(flogCode).update({
+        'members': FieldValue.arrayUnion(uid as List),
+        'memNumber': currentMembers.length + 1
+      });
+    } else {
+      // 그룹이 존재하지 않는 경유 -> 그룹 생성하기
+      model.Group group = model.Group(
+          flogCode: flogCode, members: [uid], frog: 0, memNumber: 1);
+      await _firestore.collection("Group").doc(flogCode).set(group.toJson());
+    }
   }
 }

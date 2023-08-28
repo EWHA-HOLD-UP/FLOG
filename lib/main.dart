@@ -1,4 +1,6 @@
+import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
+import 'package:flog/screen/splash_screen.dart';
 //import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,15 +29,16 @@ class MyApp extends StatelessWidget {
         providers: [
           //프로바이더 추가 가능
           ChangeNotifierProvider(create: (_) => FirebaseAuthProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider())
         ],
         child: MaterialApp(
           title: 'Flog',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: '/login',
+          initialRoute: '/',
           routes: {
-            '/': (context) => const HomePage(),
+            '/': (context) => SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/register': (context) => const RegisterScreen(),
             '/index': (context) => const FlogingScreen(),
