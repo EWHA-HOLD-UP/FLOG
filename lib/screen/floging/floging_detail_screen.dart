@@ -103,7 +103,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                         child: Center(
                           child: Text(
                             widget.status,
-                            style: const TextStyle(fontSize: 20, color: Colors.white),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
                           ),
                         ),
                       ),

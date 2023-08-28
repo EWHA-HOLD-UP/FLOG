@@ -15,4 +15,10 @@ class AuthMethods {
 
     return model.User.fromSnap(documentSnapshot);
   }
+
+  // 유저 정보 수정하기
+  void updateUser(uid, field, data) async {
+    User currentUser = _auth.currentUser!;
+    _firestore.collection("User").doc(uid).update({field: data});
+  }
 }
