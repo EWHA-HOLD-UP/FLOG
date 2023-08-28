@@ -36,9 +36,9 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: '/login',
+          initialRoute: '/',
           routes: {
-            '/init': (context) => SplashScreen(),
+            '/': (context) => SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/register': (context) => const RegisterScreen(),
             '/index': (context) => const FlogingScreen(),
