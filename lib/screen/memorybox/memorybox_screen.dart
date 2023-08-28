@@ -111,7 +111,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   }
 
   Widget ourEveryday() {
-    int today = 7; //오늘 날짜
+    final now = DateTime.now(); //현재 날짜와 시간
+    final lastDayOfMonth = DateTime(now.year, now.month + 1, 0); //이번 달의 마지막 날짜
+    final daysInMonth = lastDayOfMonth.day; //이번 달의 일 수
+    int today = now.day; //오늘 날짜
+
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -138,7 +142,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         crossAxisCount: 7, //열 수
                         mainAxisSpacing: 10.0, // 행 사이의 간격
                       ),
-                      itemCount: 31, //전체 날짜 수 - 나중에 월별로 수정?
+                      itemCount: daysInMonth, //전체 날짜 수
                       itemBuilder: (BuildContext context, int index) {
                         //각 그리드 아이템에 표시할 위젯을 반환
                         final containerNumber = index + 1;
