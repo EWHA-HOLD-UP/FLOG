@@ -1,4 +1,6 @@
+import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
 
 class MemoryBoxScreen extends StatefulWidget {
@@ -116,6 +118,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     final daysInMonth = lastDayOfMonth.day; //이번 달의 일 수
     int today = now.day; //오늘 날짜
 
+    final year = DateFormat('yy').format(now);
+    final month = DateFormat('MM').format(now);
+
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -144,52 +149,71 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       ),
                       itemCount: daysInMonth, //전체 날짜 수
                       itemBuilder: (BuildContext context, int index) {
-                        //각 그리드 아이템에 표시할 위젯을 반환
+                        // 각 그리드 아이템에 표시할 위젯을 반환
                         final containerNumber = index + 1;
+                        final day = containerNumber.toString().padLeft(2, '0'); // 일을 2자리로 표현하고 앞에 0을 채웁니다.
+                        final formattedDate = '$year.$month.$day'; // 년, 월, 일을 조합해서 날짜를 만듭니다.
                         if (containerNumber > today) {
                           //containerNumber가 오늘 이후면 회색에 숫자만 적힌 빈 컨테이너
-                          return Container(
-                            margin: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                                color: const Color(0xFFCED3CE),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              containerNumber.toString(),
-                              style: const TextStyle(color: Colors.white),
+
+                          return GestureDetector(
+                            onTap: () {
+                              // '전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFFCED3CE),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                containerNumber.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           );
-                        } else {
+                        }  else {
                           //containerNumber가 오늘이거나 그 이전이면 플로깅 이미지로 채워진 컨테이너
-                          return Container(
-                            margin: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: const Color(0xFFCED3CE)
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: ClipRRect(
-                                    child: Image.asset(
-                                      "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
-                                      width: 35,
-                                      height: 35,
-                                      alignment: Alignment.center,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => MemoryBoxDetailScreen(
+                                      selectedDate: formattedDate, // formattedDate에 선택된 날짜가 들어가도록 수정
+                                    )
+                                ),
+                              );
+                              },
+                            child: Container(
+                              margin: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: const Color(0xFFCED3CE)
+                              ),
+                              child: Stack(
+                                children: [
+                                  Center(
+                                    child: ClipRRect(
+                                      child: Image.asset(
+                                        "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
+                                        width: 35,
+                                        height: 35,
+                                        alignment: Alignment.center,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Center(
-                                  child: Text(containerNumber.toString(),
-                                    style: const TextStyle(color: Colors.white),
+                                  Center(
+                                    child: Text(containerNumber.toString(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         }
-                      },
+                        },
                     ),
                   ),
                   Row(
@@ -234,6 +258,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
       ),
     );
   }
+
 
   Widget ourValuableday() {
     int solvedPuzzle = 8; //다 푼 퍼즐 수 (임의 설정) - 나중에 파이어베이스에서 불러오기
@@ -336,6 +361,4 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
       ),
     );
   }
-
-
 }
