@@ -1,5 +1,6 @@
 import 'package:flog/screen/memorybox/memorybox_book_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
+import 'package:flog/screen/memorybox/memorybox_everyday_showall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
@@ -165,7 +166,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                           // 오늘 이후인 경우
                           return GestureDetector(
                             onTap: () {
-                              // '전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
+                             //
                             },
                             child: Container(
                               margin: const EdgeInsets.all(3.0),
@@ -228,6 +229,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       const SizedBox(width: 133),
                       OutlinedButton(
                         onPressed: (){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => MemoryBoxEverydayShowAllScreen()
+                            ),
+                          );
                           //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
                         },
                         style: OutlinedButton.styleFrom(
