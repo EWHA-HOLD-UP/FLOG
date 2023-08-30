@@ -143,20 +143,26 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   const SizedBox(height: 15),
                   Flexible(
                     child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 7, //열 수
                         mainAxisSpacing: 10.0, // 행 사이의 간격
                       ),
-                      itemCount: daysInMonth, //전체 날짜 수
+                      itemCount: daysInMonth + 14, //전체 날짜 수
                       itemBuilder: (BuildContext context, int index) {
-                        // 각 그리드 아이템에 표시할 위젯을 반환
-                        final containerNumber = index + 1;
-                        final day = containerNumber.toString().padLeft(2, '0'); // 일을 2자리로 표현하고 앞에 0을 채웁니다.
-                        final formattedDate = '$year.$month.$day'; // 년, 월, 일을 조합해서 날짜를 만듭니다.
-                        if (containerNumber > today) {
-                          //containerNumber가 오늘 이후면 회색에 숫자만 적힌 빈 컨테이너
+                        //각 그리드 아이템에 표시할 위젯을 반환
+                        final containerNumber = today - 7 + index;
+                        final day = containerNumber.toString().padLeft(2, '0');
+                        final formattedDate = '$year.$month.$day';
 
+                        if (containerNumber < 1 || containerNumber > daysInMonth) {
+                          //현재 월을 벗어나는 경우 빈 컨테이너 반환
+                          return Container();
+                        }
+
+                        if (containerNumber > today) {
+                          // 오늘 이후인 경우
                           return GestureDetector(
                             onTap: () {
                               // '전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
@@ -345,7 +351,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => MemoryBoxBookScreen(),
+                            builder: (context) => const MemoryBoxBookScreen(),
                           ),
                         );
                       },
