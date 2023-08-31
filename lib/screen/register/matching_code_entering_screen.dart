@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flog/models/model_auth.dart';
+import 'package:flog/resources/auth_methods.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/user_provider.dart';
 
 class MatchingCodeEnteringScreen extends StatefulWidget {
   const MatchingCodeEnteringScreen({Key? key}) : super(key: key);
@@ -70,11 +75,17 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                   String enteredFamilycode = codeController
                       .text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
 
-                  //가족코드 파이어베이스에 저장
-                  FirebaseFirestore db = FirebaseFirestore.instance;
-                  CollectionReference groupRef = db.collection('Group');
+                  //그룹 등록하기 -> 작동안됨
+                  final authClient =
+                      Provider.of<FirebaseAuthProvider>(context, listen: false);
+                  authClient.registerGroup(
+                      enteredFamilycode, "npNGLYqe9FOcCTTzSoWf9SAP4zw2");
 
-                  if(!mounted) return;
+                  //유저 정보 flogCode 업데이트 -> 작동안됨
+                  AuthMethods().updateUser('npNGLYqe9FOcCTTzSoWf9SAP4zw2',
+                      'flogCode', enteredFamilycode);
+
+                  if (!mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,7 +100,8 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                   ),
                   backgroundColor: const Color(0xFF609966),
                   minimumSize: const Size(300, 50),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 child: const Text(
                   '완료',

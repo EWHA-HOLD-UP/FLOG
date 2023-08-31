@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,9 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(
                 builder: (context) =>
                     RootScreen(matchedFamilycode: '여기에 유저 flogCode 넣어야댐!!!!')));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       }
     });
   }

@@ -1,22 +1,29 @@
+import 'package:flog/screen/register/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/model_auth.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authClient =
+        Provider.of<FirebaseAuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.black, // 뒤로가기 버튼 아이콘 색상
-          ),// 이미지 경로 지정
+          ), // 이미지 경로 지정
           onPressed: () {
             Navigator.pop(context); // 뒤로가기 기능 추가
           },
         ),
-        title: const Text('Setting',
+        title: const Text(
+          'Setting',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold, // 굵게 설정
@@ -71,13 +78,18 @@ class SettingScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.logout), // 아이콘 예시
-              title: const Text('로그아웃'),
-              trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
-              onTap: () {
-                // 로그아웃 기능을 실행하는 코드를 여기에 추가
-              },
-            ),
+                leading: const Icon(Icons.logout), // 아이콘 예시
+                title: const Text('로그아웃'),
+                trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
+                onTap: () async {
+                  await authClient.logout();
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        content:
+                            Text('${authClient.user?.email!}님 로그아웃되었습니다')));
+                  Navigator.of(context).pushNamed('/login');
+                }),
           ],
         ),
       ),
