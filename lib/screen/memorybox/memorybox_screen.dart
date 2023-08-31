@@ -1,4 +1,8 @@
+import 'package:flog/screen/memorybox/memorybox_book_screen.dart';
+import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
+import 'package:flog/screen/memorybox/memorybox_everyday_showall_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
 
 class MemoryBoxScreen extends StatefulWidget {
@@ -116,6 +120,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     final daysInMonth = lastDayOfMonth.day; //이번 달의 일 수
     int today = now.day; //오늘 날짜
 
+    final year = DateFormat('yy').format(now);
+    final month = DateFormat('MM').format(now);
+
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -137,59 +144,84 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   const SizedBox(height: 15),
                   Flexible(
                     child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 7, //열 수
                         mainAxisSpacing: 10.0, // 행 사이의 간격
                       ),
-                      itemCount: daysInMonth, //전체 날짜 수
+                      itemCount: daysInMonth + 14, //전체 날짜 수
                       itemBuilder: (BuildContext context, int index) {
                         //각 그리드 아이템에 표시할 위젯을 반환
-                        final containerNumber = index + 1;
+                        final containerNumber = today - 7 + index;
+                        final day = containerNumber.toString().padLeft(2, '0');
+                        final formattedDate = '$year.$month.$day';
+
+                        if (containerNumber < 1 || containerNumber > daysInMonth) {
+                          //현재 월을 벗어나는 경우 빈 컨테이너 반환
+                          return Container();
+                        }
+
                         if (containerNumber > today) {
-                          //containerNumber가 오늘 이후면 회색에 숫자만 적힌 빈 컨테이너
-                          return Container(
-                            margin: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                                color: const Color(0xFFCED3CE),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              containerNumber.toString(),
-                              style: const TextStyle(color: Colors.white),
+                          // 오늘 이후인 경우
+                          return GestureDetector(
+                            onTap: () {
+                             //
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFFCED3CE),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                containerNumber.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           );
-                        } else {
+                        }  else {
                           //containerNumber가 오늘이거나 그 이전이면 플로깅 이미지로 채워진 컨테이너
-                          return Container(
-                            margin: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: const Color(0xFFCED3CE)
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: ClipRRect(
-                                    child: Image.asset(
-                                      "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
-                                      width: 35,
-                                      height: 35,
-                                      alignment: Alignment.center,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => MemoryBoxDetailScreen(
+                                      selectedDate: formattedDate, // formattedDate에 선택된 날짜가 들어가도록 수정
+                                    )
+                                ),
+                              );
+                              },
+                            child: Container(
+                              margin: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: const Color(0xFFCED3CE)
+                              ),
+                              child: Stack(
+                                children: [
+                                  Center(
+                                    child: ClipRRect(
+                                      child: Image.asset(
+                                        "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
+                                        width: 35,
+                                        height: 35,
+                                        alignment: Alignment.center,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Center(
-                                  child: Text(containerNumber.toString(),
-                                    style: const TextStyle(color: Colors.white),
+                                  Center(
+                                    child: Text(containerNumber.toString(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         }
-                      },
+                        },
                     ),
                   ),
                   Row(
@@ -197,6 +229,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       const SizedBox(width: 133),
                       OutlinedButton(
                         onPressed: (){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => MemoryBoxEverydayShowAllScreen()
+                            ),
+                          );
                           //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
                         },
                         style: OutlinedButton.styleFrom(
@@ -234,6 +271,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
       ),
     );
   }
+
 
   Widget ourValuableday() {
     int solvedPuzzle = 8; //다 푼 퍼즐 수 (임의 설정) - 나중에 파이어베이스에서 불러오기
@@ -317,7 +355,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     const SizedBox(width: 80),
                     InkWell(
                       onTap: () {
-                        //추억북 신청 화면으로 넘어가기 구현 필요
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const MemoryBoxBookScreen(),
+                          ),
+                        );
                       },
                       child: Image.asset( //전송 버튼
                           "button/book.png",
@@ -336,6 +378,4 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
       ),
     );
   }
-
-
 }
