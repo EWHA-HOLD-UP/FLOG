@@ -115,162 +115,136 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   }
 
   Widget ourEveryday() {
-    final now = DateTime.now(); //현재 날짜와 시간
-    final lastDayOfMonth = DateTime(now.year, now.month + 1, 0); //이번 달의 마지막 날짜
-    final daysInMonth = lastDayOfMonth.day; //이번 달의 일 수
-    int today = now.day; //오늘 날짜
-
-    final year = DateFormat('yy').format(now);
-    final month = DateFormat('MM').format(now);
+    final now = DateTime.now(); // 현재 날짜와 시간
+    final startDate = DateTime(now.year, now.month, now.day - 13); // 오늘부터 13일 이전의 날짜 계산
 
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
-          children: [
-            const Text('우리 가족의 모든 날',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
+        children: [
+          const Text(
+            '우리 가족의 모든 날',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+          const SizedBox(height: 10),
+          Container(
+            height: 200,
+            width: 350,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            const SizedBox(height: 10),
-            Container(
-              height: 200,
-              width: 350,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  Flexible(
-                    child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7, //열 수
-                        mainAxisSpacing: 10.0, // 행 사이의 간격
-                      ),
-                      itemCount: daysInMonth + 14, //전체 날짜 수
-                      itemBuilder: (BuildContext context, int index) {
-                        //각 그리드 아이템에 표시할 위젯을 반환
-                        final containerNumber = today - 7 + index;
-                        final day = containerNumber.toString().padLeft(2, '0');
-                        final formattedDate = '$year.$month.$day';
-
-                        if (containerNumber < 1 || containerNumber > daysInMonth) {
-                          //현재 월을 벗어나는 경우 빈 컨테이너 반환
-                          return Container();
-                        }
-
-                        if (containerNumber > today) {
-                          // 오늘 이후인 경우
-                          return GestureDetector(
-                            onTap: () {
-                             //
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(3.0),
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFCED3CE),
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                containerNumber.toString(),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          );
-                        }  else {
-                          //containerNumber가 오늘이거나 그 이전이면 플로깅 이미지로 채워진 컨테이너
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => MemoryBoxDetailScreen(
-                                      selectedDate: formattedDate, // formattedDate에 선택된 날짜가 들어가도록 수정
-                                    )
-                                ),
-                              );
-                              },
-                            child: Container(
-                              margin: const EdgeInsets.all(3.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: const Color(0xFFCED3CE)
-                              ),
-                              child: Stack(
-                                children: [
-                                  Center(
-                                    child: ClipRRect(
-                                      child: Image.asset(
-                                        "assets/emoticons/emoticon_$containerNumber.png", //날짜별 플로깅 사진으로 바꿔야함
-                                        width: 35,
-                                        height: 35,
-                                        alignment: Alignment.center,
-                                      ),
-                                    ),
-                                  ),
-                                  Center(
-                                    child: Text(containerNumber.toString(),
-                                      style: const TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        },
+            child: Column(
+              children: [
+                const SizedBox(height: 15),
+                Flexible(
+                  child: GridView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(8.0),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      mainAxisSpacing: 10.0,
                     ),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 133),
-                      OutlinedButton(
-                        onPressed: (){
+                    itemCount: 14, // 14일간의 날짜 수
+                    itemBuilder: (BuildContext context, int index) {
+                      final currentDate = startDate.add(Duration(days: index));
+                      final containerNumber = currentDate.day;
+                      final formattedDate = DateFormat('yy.MM.dd').format(currentDate);
+
+                      return GestureDetector(
+                        onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => MemoryBoxEverydayShowAllScreen()
+                              builder: (context) => MemoryBoxDetailScreen(
+                                selectedDate: formattedDate,
+                              ),
                             ),
                           );
-                          //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
                         },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+                        child: Container(
+                          margin: const EdgeInsets.all(3.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: currentDate.isAfter(now)
+                                ? const Color(0xFFCED3CE)
+                                : const Color(0xFFCED3CE).withOpacity(0.5),
+                          ),
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: ClipRRect(
+                                  child: Image.asset(
+                                    "assets/emoticons/emoticon_$containerNumber.png",
+                                    width: 35,
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  containerNumber.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: const Text(
-                          '전체 보기',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 80),
-                      InkWell(
-                        onTap: () {
-                          //자동 영상 생성 구현 필요
-                        },
-                        child: Image.asset( //전송 버튼
-                            "button/video.png",
-                            width: 35,
-                            height: 35
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                  const SizedBox(height: 15)
-                ],
-              ),
+                ),
+                Row(
+                  children: [
+                    const SizedBox(width: 133),
+                    OutlinedButton(
+                      onPressed: () {
+                        // "전체 보기" 버튼 클릭 시 동작
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MemoryBoxEverydayShowAllScreen(
+
+                            ),
+                          ),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Text(
+                        '전체 보기',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 80),
+                    InkWell(
+                      onTap: () {
+                        // 자동 영상 생성 구현 필요
+                      },
+                      child: Image.asset(
+                        "button/video.png",
+                        width: 35,
+                        height: 35,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+              ],
             ),
-          ]
+          ),
+        ],
       ),
     );
   }
+
 
 
   Widget ourValuableday() {
