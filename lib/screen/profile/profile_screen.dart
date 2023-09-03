@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flog/screen/profile/profile_edit_screen.dart';
 import 'package:flog/screen/profile/setting_screen.dart';
-import 'package:flog/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flog/utils/util.dart';
-
 
 class ProfileScreen extends StatefulWidget {
   // 유저 프로필 표시를 위해 필요한 생성자 작성해야함
@@ -18,6 +14,58 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("User");
+
+  // 프로필 수정하기
+  Future<void> editField(String field, String initialValue) async {
+    String newValue = initialValue; // 힌트 텍스트로 사용할 초기값 설정
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('닉네임을 수정하시겠어요?',
+          style: const TextStyle(color: Colors.black),
+        ),
+        content: TextField(
+          autofocus: true,
+          style: TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            hintText: initialValue,
+            hintStyle: TextStyle(color: Colors.grey),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xff609966), // 활성 상태의 밑줄 색상 변경
+            ),
+          ),
+          ),
+          onChanged: (value) {
+            newValue = value;
+          },
+        ),
+      actions: [
+        TextButton(
+          child: Text(
+            '취소',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff609966)),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        TextButton(
+          child: Text(
+            '저장',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff609966)),
+          ),
+          onPressed: () => Navigator.of(context).pop(newValue),
+        )
+      ]
+      ),
+    );
+
+    //파이어베이스 변경사항 업데이트하기
+    if (newValue.trim().length > 0) {
+      await usersCollection.doc(currentUser.email).update({field: newValue});
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Text('Error: ${snapshot.error}');
           } else {
             if (snapshot.data == null || !snapshot.data!.exists) {
-              return Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+              return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
             }
             // 이제 snapshot.data을 안전하게 사용할 수 있음
             Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
@@ -107,17 +155,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(userData['nickname'],
-                        style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.bold,)),
+                    TextButton(
+                        child: Text(userData['nickname'],  style: const TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff609966))
+                        ),
+                      onPressed: () => editField('nickname', userData['nickname']),
+                       ),
                     //여기에 user.nickname 값 불러오기
-                    Text(userData['email'], style: TextStyle(fontSize: 20,)),
+                    Text(userData['email'], style: const TextStyle(fontSize: 20,)),
                     //여기에 user.uid 값 불러오기
                     const SizedBox(height: 200),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("위젯 추가해야해요", style: TextStyle(fontSize: 15)),
+                        Text("위젯 추가해야해요", style: const TextStyle(fontSize: 15)),
                         SizedBox(width: 5),
                       ],
                     )
@@ -132,3 +183,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
 // 메서드 위젯 추가
   }
 }
+
