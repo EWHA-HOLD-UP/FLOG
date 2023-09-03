@@ -30,7 +30,7 @@ class User {
         nickname: snapshot["nickname"],
         uid: snapshot["uid"],
         email: snapshot["email"],
-        profile: snapshot["profle"],
+        profile: snapshot["profile"],
         birth: snapshot["birth"],
         flogCode: snapshot["flogCode"],
         isUpload: snapshot["isUpload"],

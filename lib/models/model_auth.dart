@@ -1,15 +1,12 @@
-// 인증 관련 기능 처리를 위한 모델
+// 인증 관련 기능 처리를 위한 모델 - 파이어베이스와의 통신 등 인증 관련 회원 정보 전반을 다룸
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flog/models/user.dart' as model;
-import 'package:uuid/uuid.dart';
 
-import '../providers/user_provider.dart';
-
+// 인증 관련 상태 표현 - 회원가입 성공/실패, 로그인 성공/실패
 enum AuthStatus {
   registerSuccess,
   registerFail,
@@ -17,10 +14,11 @@ enum AuthStatus {
   loginFail,
 }
 
+// Firebase 인증을 관리하기 위한 Provider
 class FirebaseAuthProvider with ChangeNotifier {
-  FirebaseAuth authClient;
+  FirebaseAuth authClient;    // Firebase와 연결된 인스턴스를 저장할 변수 - 앱 전역에 똑같은 authClient 유지, 제공
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  User? user;
+  User? user;   // 로그인 결과 - 현재 로그인된 유저 객체를 저장할 변수
 
   FirebaseAuthProvider({auth}) : authClient = auth ?? FirebaseAuth.instance;
 
@@ -50,7 +48,7 @@ class FirebaseAuthProvider with ChangeNotifier {
         // 데이터베이스에 저장
         await _firestore
             .collection("User")
-            .doc(credential.user!.uid)
+            .doc(credential.user!.email)
             .set(user.toJson());
 
         return AuthStatus.registerSuccess;
