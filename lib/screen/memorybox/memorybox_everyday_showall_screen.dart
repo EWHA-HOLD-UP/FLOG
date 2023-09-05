@@ -93,7 +93,15 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
     final lastDayOfMonth = DateTime(year, month + 1, 0);
     final daysInMonth = lastDayOfMonth.day;
     int today = DateTime.now().day;
-
+    //해당 월의 첫 번째 날 요일 가져오기(1: 월요일, 7: 일요일)
+    int firstDayOfWeek = DateTime(year, month, 1).weekday;
+    //일요일(7)을 1로 변경
+    if (firstDayOfWeek == 7) {
+      firstDayOfWeek = 1;
+    } else {
+      firstDayOfWeek++;
+    }
+    
     return Column(
       children: [
         const SizedBox(height: 40),
@@ -108,7 +116,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
         const SizedBox(height: 20),
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
+          children: [
             SizedBox(width: 32),
             Text("일"),
             SizedBox(width: 5),
@@ -126,12 +134,12 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
             SizedBox(width: 33)
           ],
         ),
-        _buildGrid(year, month, daysInMonth, today),
+        _buildGrid(year, month, daysInMonth, today, firstDayOfWeek),
       ],
     );
   }
 
-  Widget _buildGrid(int year, int month, int daysInMonth, int today) {
+  Widget _buildGrid(int year, int month, int daysInMonth, int today, int firstDayOfWeek) {
     final now = DateTime.now();
     final currentYear = now.year;
     final currentMonth = now.month;
@@ -148,15 +156,21 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
           crossAxisCount: 7,
           mainAxisSpacing: 10.0,
         ),
-        itemCount: daysInMonth,
+        itemCount: daysInMonth + firstDayOfWeek - 1, // 첫 번째 날 이전의 빈 칸도 포함
         itemBuilder: (BuildContext context, int index) {
-          final containerNumber = index + 1;
+          if (index < firstDayOfWeek - 1) {
+            // 첫 번째 날 이전의 빈 날짜 칸
+            return Container();
+          }
+
+          final containerNumber = index - firstDayOfWeek + 2;
           final day = containerNumber.toString().padLeft(2, '0');
           final formattedMonth = month.toString().padLeft(2, '0');
           final formattedDate = '$year.$formattedMonth.$day';
 
           if ((year == currentYear && month == currentMonth && containerNumber > today) ||
-              (year == currentYear && month > currentMonth) || (year > currentYear)) { //현재 월 이후의 날짜인 경우 회색에 숫자만 적힌 빈 컨테이너
+              (year == currentYear && month > currentMonth) || (year > currentYear)) {
+            //현재 월 이후의 날짜인 경우 회색에 숫자만 적힌 빈 컨테이너
             return GestureDetector(
               onTap: () {},
               child: Container(
@@ -172,7 +186,8 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                 ),
               ),
             );
-          } else { //현재 월 이전 또는 현재 월의 오늘 이전인 경우 플로깅 이미지로 채워진 컨테이너
+          } else {
+            //현재 월 이전 또는 현재 월의 오늘 이전인 경우 플로깅 이미지로 채워진 컨테이너
             return GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
@@ -218,4 +233,3 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
     );
   }
 }
-
