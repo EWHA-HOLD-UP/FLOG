@@ -101,19 +101,19 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
     } else {
       firstDayOfWeek++;
     }
-    
+
     return Column(
       children: [
-        const SizedBox(height: 40),
+        const SizedBox(height: 60),
         Text(
           DateFormat('yyyy.MM').format(DateTime(year, month)),
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 30),
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -134,6 +134,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
             SizedBox(width: 33)
           ],
         ),
+        const SizedBox(height: 20),
         _buildGrid(year, month, daysInMonth, today, firstDayOfWeek),
       ],
     );
@@ -151,6 +152,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(8.0),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
