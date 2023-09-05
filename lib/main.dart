@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         providers: [
           //프로바이더 추가 가능
           ChangeNotifierProvider(create: (_) => FirebaseAuthProvider()),
-          ChangeNotifierProvider(create: (_) => UserProvider())
+          ChangeNotifierProvider(create: (_) => UserProvider()),
         ],
         child: MaterialApp(
           title: 'Flog',
