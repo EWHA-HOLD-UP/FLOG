@@ -77,25 +77,25 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                   String enteredFamilycode = codeController
                       .text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
                   if (_auth.currentUser != null) {
-                    //그룹 등록하기 -> 작동안됨
+                    //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
                         listen: false);
                     authClient.registerGroup(
                         enteredFamilycode, _auth.currentUser!.email!);
 
-                    //유저 정보 flogCode 업데이트 -> 작동안됨
+                    //유저 정보 flogCode 업데이트
                     AuthMethods().updateUser(_auth.currentUser!.email!,
                         'flogCode', enteredFamilycode);
                   } else {
-                    //그룹 등록하기 -> 작동안됨
+                    //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
                         listen: false);
                     authClient.registerGroup(
                         enteredFamilycode, "currentUser가 NULL입니다.");
 
-                    //유저 정보 flogCode 업데이트 -> 작동안됨
+                    //유저 정보 flogCode 업데이트
                     AuthMethods().updateUser(
                         "currentUser가 NULL입니다.", 'flogCode', enteredFamilycode);
                   }
