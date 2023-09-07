@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
@@ -40,14 +41,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void moveScreen() async {
+    // 유저의 flogCode 가져오기
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('User');
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    DocumentSnapshot userDocument =
+        await usersCollection.doc(prefs.getString('email')).get();
+    String flogCode = userDocument.get('flogCode');
     await checkLogin().then((isLogin) {
       if (isLogin) {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    RootScreen(matchedFamilycode: '여기에 유저 flogCode 넣어야댐!!!!')));
+                builder: (context) => RootScreen(matchedFamilycode: flogCode)));
       } else {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));

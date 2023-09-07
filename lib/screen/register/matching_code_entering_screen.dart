@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/models/model_auth.dart';
 import 'package:flog/resources/auth_methods.dart';
 import 'package:flog/screen/root_screen.dart';
@@ -16,6 +17,7 @@ class MatchingCodeEnteringScreen extends StatefulWidget {
 
 class _EnteringState extends State<MatchingCodeEnteringScreen> {
   TextEditingController codeController = TextEditingController();
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -74,16 +76,29 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                 onPressed: () async {
                   String enteredFamilycode = codeController
                       .text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
+                  if (_auth.currentUser != null) {
+                    //그룹 등록하기 -> 작동안됨
+                    final authClient = Provider.of<FirebaseAuthProvider>(
+                        context,
+                        listen: false);
+                    authClient.registerGroup(
+                        enteredFamilycode, _auth.currentUser!.email!);
 
-                  //그룹 등록하기 -> 작동안됨
-                  final authClient =
-                      Provider.of<FirebaseAuthProvider>(context, listen: false);
-                  authClient.registerGroup(
-                      enteredFamilycode, "npNGLYqe9FOcCTTzSoWf9SAP4zw2");
+                    //유저 정보 flogCode 업데이트 -> 작동안됨
+                    AuthMethods().updateUser(_auth.currentUser!.email!,
+                        'flogCode', enteredFamilycode);
+                  } else {
+                    //그룹 등록하기 -> 작동안됨
+                    final authClient = Provider.of<FirebaseAuthProvider>(
+                        context,
+                        listen: false);
+                    authClient.registerGroup(
+                        enteredFamilycode, "currentUser가 NULL입니다.");
 
-                  //유저 정보 flogCode 업데이트 -> 작동안됨
-                  AuthMethods().updateUser('npNGLYqe9FOcCTTzSoWf9SAP4zw2',
-                      'flogCode', enteredFamilycode);
+                    //유저 정보 flogCode 업데이트 -> 작동안됨
+                    AuthMethods().updateUser(
+                        "currentUser가 NULL입니다.", 'flogCode', enteredFamilycode);
+                  }
 
                   if (!mounted) return;
                   Navigator.push(

@@ -16,9 +16,10 @@ enum AuthStatus {
 
 // Firebase 인증을 관리하기 위한 Provider
 class FirebaseAuthProvider with ChangeNotifier {
-  FirebaseAuth authClient;    // Firebase와 연결된 인스턴스를 저장할 변수 - 앱 전역에 똑같은 authClient 유지, 제공
+  FirebaseAuth
+      authClient; // Firebase와 연결된 인스턴스를 저장할 변수 - 앱 전역에 똑같은 authClient 유지, 제공
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  User? user;   // 로그인 결과 - 현재 로그인된 유저 객체를 저장할 변수
+  User? user; // 로그인 결과 - 현재 로그인된 유저 객체를 저장할 변수
 
   FirebaseAuthProvider({auth}) : authClient = auth ?? FirebaseAuth.instance;
 
@@ -108,18 +109,19 @@ class FirebaseAuthProvider with ChangeNotifier {
   // 그룹에 유저 등록하기
   Future<void> registerGroup(String flogCode, String uid) async {
     final CollectionReference groupRef =
-        FirebaseFirestore.instance.collection('groups');
+        FirebaseFirestore.instance.collection('Group');
     DocumentSnapshot docSnapshot = await groupRef.doc(flogCode).get();
 
     if (docSnapshot.exists) {
       // 그룹이 존재하는 경우 -> 그룹에 추가하기
+      print("[*] 기존 그룹에 추가합니다");
       List<dynamic> currentMembers = docSnapshot.get('members');
-      await groupRef.doc(flogCode).update({
-        'members': FieldValue.arrayUnion(uid as List),
-        'memNumber': currentMembers.length + 1
-      });
+      currentMembers.add(uid);
+      await groupRef.doc(flogCode).update(
+          {'members': currentMembers, 'memNumber': currentMembers.length});
     } else {
       // 그룹이 존재하지 않는 경유 -> 그룹 생성하기
+      print("[*] 새로운 그룹을 만듭니다");
       model.Group group = model.Group(
           flogCode: flogCode, members: [uid], frog: 0, memNumber: 1);
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());

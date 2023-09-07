@@ -179,17 +179,37 @@ class LoginButton extends StatelessWidget {
         onPressed: () async {
           await authClient
               .loginWithEmail(loginField.email, loginField.password)
-              .then((loginStatus) {
+              .then((loginStatus) async {
             if (loginStatus == AuthStatus.loginSuccess) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(
-                    content: Text('${authClient.user!.email!}님 환영합니다!')));
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FamilyMatchingScreen(
-                          nickname: authClient.user!.email!)));
+              // 유저의 flogCode 가져오기
+              final CollectionReference usersCollection =
+                  FirebaseFirestore.instance.collection('User');
+              DocumentSnapshot userDocument =
+                  await usersCollection.doc(loginField.email).get();
+              String flogCode = userDocument.get('flogCode');
+              if (flogCode == "null") {
+                //flogCode가 없는경우(가족 등록 안된 신규 유저)
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                      content: Text('${authClient.user!.email!}님 환영합니다!')));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FamilyMatchingScreen(
+                            nickname: authClient.user!.email!)));
+              } else {
+                // flogCode가 있는경우(가족 등록된 기존 유저)
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                      content: Text('${authClient.user!.email!}님 환영합니다!')));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            RootScreen(matchedFamilycode: flogCode)));
+              }
             } else {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
