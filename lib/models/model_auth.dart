@@ -42,7 +42,7 @@ class FirebaseAuthProvider with ChangeNotifier {
             birth: birth,
             nickname: nickname,
             flogCode: "null",
-            profile: "1",
+            profile: "0",
             isAnswered: false,
             isUpload: false);
 

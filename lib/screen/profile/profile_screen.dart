@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flog/screen/profile/profile_edit_screen.dart';
 import 'package:flog/screen/profile/setting_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final usersCollection = FirebaseFirestore.instance.collection("User");
 
-  // 프로필 수정하기
+  // 닉네임 수정하기
   Future<void> editField(String field, String initialValue) async {
     String newValue = initialValue; // 힌트 텍스트로 사용할 초기값 설정
     await showDialog(
@@ -67,6 +66,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   }
 
+  Future<void> editImage(String field, String selectedImage) async {
+    String newValue = selectedImage;
+    int selectedIndex = int.tryParse(selectedImage) ?? -1; // 인덱스를 숫자로 다룸
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '개구리 선택하기',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // '저장' 버튼을 눌렀을 때의 동작 추가
+                          if (selectedIndex != -1) {
+                            setState(() {
+                              newValue = selectedIndex.toString();
+                            });
+                            // selectedIndex에 선택된 이미지의 인덱스가 저장되어 있음
+                            debugPrint('선택된 이미지 인덱스: $selectedIndex');
+                            Navigator.pop(context); // 모달 닫기
+                          }
+                        },
+                        child: Text(
+                          '저장',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xff609966), // 버튼 텍스트 색상
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // 3열로 배치
+                      mainAxisSpacing: 5.0, // 수직 간격 설정
+                      crossAxisSpacing: 5.0, // 수평 간격 설정
+                      childAspectRatio: 1, // 가로:세로 비율을 1:1로 설정
+                    ),
+                    padding: EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
+                    itemCount: 11, // 이미지 버튼 개수
+                    itemBuilder: (context, index) {
+                      // 각 이미지를 asset에서 불러오기
+                      final imagePath = 'assets/profile/profile_$index.png';
+
+                      // 이미지 버튼 반환
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.transparent, // 이미지 버튼의 배경색 설정
+                          border: Border.all(
+                            color: selectedIndex == index
+                                ? Color(0xff609966) // 선택된 이미지의 테두리 색상
+                                : Colors.transparent, // 선택되지 않은 이미지는 테두리 없음
+                            width: 2.0, // 테두리 두께
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            debugPrint('debug: 클릭됨');
+                            setState(() {
+                              selectedIndex = index; // 선택된 이미지의 인덱스 업데이트
+                            });
+                          },
+                          child: Image.asset(
+                            imagePath, // 이미지 경로
+                            fit: BoxFit.cover, // 이미지를 적절하게 조정
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    //파이어베이스 변경사항 업데이트하기
+    if (newValue.trim().length > 0) {
+      await usersCollection.doc(currentUser.email).update({field: newValue});
+    }
+  }
+
+
+  // 화면 UI build
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,12 +234,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Stack(
                             children: [
                               Container(
+                                child: Image.asset('assets/profile/profile_${userData['profile']}.png',
+                                  fit: BoxFit.cover,
+                                ),
                                 width: 120,
                                 height: 120,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Color(0xffD9D9D9),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Color(0xff609966), // 테두리 색상
+                                    width: 2.0, // 테두리 두께
+                                  ),
                                 ),
+
                               ),
                               Positioned(
                                 bottom: 0, // 아래쪽에 위치
@@ -139,15 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 30,
                                     height: 30,
                                   ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (
-                                            context) => const ProfileEditScreen(),
-                                      ),
-                                    );
-                                  },
+                                  onPressed: () => editImage('profile', userData['profile']),
                                 ),
                               ),
                             ],
@@ -156,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 10),
                     TextButton(
-                        child: Text(userData['nickname'],  style: const TextStyle(
+                        child: Text(userData['nickname'], style: const TextStyle(
                           fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff609966))
                         ),
                       onPressed: () => editField('nickname', userData['nickname']),
