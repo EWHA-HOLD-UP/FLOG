@@ -62,6 +62,18 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
 
     familycode = String.fromCharCodes(code.cast<int>());
 
+    try {
+      final CollectionReference groupListCollection =
+          FirebaseFirestore.instance.collection('GroupList');
+
+      // 'familyCode'를 저장할 새로운 문서를 추가합니다.
+      await groupListCollection.doc(familycode).set({'flogCode': familycode});
+
+      print('Family code saved successfully.');
+    } catch (e) {
+      print('Error saving family code: $e');
+    }
+
     setState(() {
       familycode = familycode;
     });
@@ -94,7 +106,8 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
               const SizedBox(height: 5),
               Text(
                 familycode,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -119,7 +132,8 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
                   ),
                   backgroundColor: Colors.white,
                   minimumSize: const Size(300, 50),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 child: const Text(
                   'FLOG 코드 공유',
@@ -145,7 +159,8 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   backgroundColor: const Color(0xFF609966),
-                  minimumSize: const Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
+                  minimumSize:
+                      const Size(300, 50), // 버튼의 최소 크기 설정 (가로 200, 세로 50)
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8), // 내부 패딩 설정
                 ),

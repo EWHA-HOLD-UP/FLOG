@@ -41,19 +41,41 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void moveScreen() async {
-    // 유저의 flogCode 가져오기
-    final CollectionReference usersCollection =
-        FirebaseFirestore.instance.collection('User');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    DocumentSnapshot userDocument =
-        await usersCollection.doc(prefs.getString('email')).get();
-    String flogCode = userDocument.get('flogCode');
-    await checkLogin().then((isLogin) {
+    await checkLogin().then((isLogin) async {
       if (isLogin) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RootScreen(matchedFamilycode: flogCode)));
+        // 유저의 flogCode 가져오기
+        final CollectionReference usersCollection =
+            FirebaseFirestore.instance.collection('User');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        DocumentSnapshot userDocument =
+            await usersCollection.doc(prefs.getString('email')).get();
+
+        if (userDocument.exists) {
+          String flogCode = userDocument.get('flogCode');
+          if (flogCode == "null") {
+            //flogCode가 없는경우(가족 등록 안된 신규 유저)
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(
+                  content: Text('${prefs.getString('email')}님 환영합니다!')));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FamilyMatchingScreen(
+                        nickname: prefs.getString('email')!)));
+          } else {
+            // flogCode가 있는경우(가족 등록된 기존 유저)
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(
+                  content: Text('${prefs.getString('email')!}님 환영합니다!')));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        RootScreen(matchedFamilycode: flogCode)));
+          }
+        }
       } else {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));

@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/models/model_auth.dart';
 import 'package:flog/resources/auth_methods.dart';
+import 'package:flog/screen/register/login_screen.dart';
+import 'package:flog/screen/register/matching_waiting_for_family.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
+import 'matching_screen.dart';
 
 class MatchingCodeEnteringScreen extends StatefulWidget {
   const MatchingCodeEnteringScreen({Key? key}) : super(key: key);
@@ -76,7 +79,13 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                 onPressed: () async {
                   String enteredFamilycode = codeController
                       .text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
-                  if (_auth.currentUser != null) {
+
+                  final CollectionReference groupRef =
+                      FirebaseFirestore.instance.collection('GroupList');
+                  DocumentSnapshot docSnapshot =
+                      await groupRef.doc(enteredFamilycode).get();
+
+                  if (docSnapshot.exists && _auth.currentUser != null) {
                     //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
@@ -87,7 +96,7 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                     //유저 정보 flogCode 업데이트
                     AuthMethods().updateUser(_auth.currentUser!.email!,
                         'flogCode', enteredFamilycode);
-                  } else {
+                  } else if (docSnapshot.exists && _auth.currentUser == null) {
                     //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
@@ -98,6 +107,12 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                     //유저 정보 flogCode 업데이트
                     AuthMethods().updateUser(
                         "currentUser가 NULL입니다.", 'flogCode', enteredFamilycode);
+                  } else {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                          SnackBar(content: Text('flogCode를 다시 확인하여주세요!')));
+                    return;
                   }
 
                   if (!mounted) return;
