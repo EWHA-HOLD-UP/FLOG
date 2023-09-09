@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       childAspectRatio: 1, // 가로:세로 비율을 1:1로 설정
                     ),
                     padding: EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
-                    itemCount: 11, // 이미지 버튼 개수
+                    itemCount: 12, // 이미지 버튼 개수
                     itemBuilder: (context, index) {
                       // 각 이미지를 asset에서 불러오기
                       final imagePath = 'assets/profile/profile_$index.png';
