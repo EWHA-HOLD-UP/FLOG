@@ -3,6 +3,7 @@ import 'package:flog/screen/profile/setting_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   // 유저 프로필 표시를 위해 필요한 생성자 작성해야함
@@ -349,45 +350,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () => editField('nickname', userData['nickname']),
                   ),
                   Text(userData['email'], style: const TextStyle(fontSize: 15)),
-                  const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start, // 버튼을 왼쪽 정렬
-                children: [
+                  const SizedBox(height: 30),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // 세로 정렬
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextButton(
-                        child: Text("문의하기",
-                            style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                      ListTile(
+                        leading: const Text('가족코드 복사하기', style: TextStyle(fontSize: 17)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min, // 아이콘과 텍스트를 최소 크기로 설정
+                          children: [
+                            Text(
+                              userData['flogCode'],
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                        ),
-                        onPressed: () {
-                          _sendEmail(userData['nickname'], userData['email']);
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15, // 아이콘 크기 조절
+                              color: Colors.black, // 아이콘 색상 설정
+                            ),
+                          ],
+                        ),// 화살표 아이콘 예시
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: userData['flogCode']));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${userData['nickname']}님의 가족 코드가 복사되었습니다! 가족들에게 공유해주세요.'),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
                         },
                       ),
-                      Container( height:2.0,
-                        width : MediaQuery.of(context).size.width * 0.95,
-                        color: Color(0xffd9d9d9)), // 구분선 추가
-                      TextButton(
-                        child: Text("가족코드 복사하기",
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        onPressed: () {
-                          // 가족코드 복사
+                      const Divider(), // 분리선 추가
+                      ListTile(
+                        leading: const Text('문의하기', style: TextStyle(fontSize: 17)),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15, // 아이콘 크기 조절
+                          color: Colors.black, // 아이콘 색상 설정
+                        ), // 화살표 아이콘 예시
+                        onTap: () {
+                          _sendEmail(userData['nickname'], userData['email']);
                         },
                       ),
                     ],
                   ),
                 ],
-              ),
-            ]
               ),
             );
           }
