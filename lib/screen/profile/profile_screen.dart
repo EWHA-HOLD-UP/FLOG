@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flog/screen/profile/setting_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class ProfileScreen extends StatefulWidget {
   // 유저 프로필 표시를 위해 필요한 생성자 작성해야함
@@ -66,6 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   }
 
+  // 프로필 선택 및 변경하기
   Future<void> editImage(String field, String selectedImage) async {
     String newValue = selectedImage;
     int selectedIndex = int.tryParse(selectedImage) ?? -1; // 인덱스를 숫자로 다룸
@@ -176,6 +178,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // 문의하기 메일 보내기
+  void _sendEmail(String who, String id) async {
+    final Email email = Email(
+      body: '==================\n 프로그 사용에 관한 문의 사항을 작성해주세요! 빠른 시일 내에 답변드리겠습니다.\n\n문의 주시는 분 : $who, $id\n==================\n\n',
+      subject: '[FLOG 문의]',
+      recipients: ['holdup2023.ewha@gmail.com'],
+      cc: [],
+      bcc: [],
+      attachmentPaths: [],
+      isHTML: false,
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+    } catch (error) {
+      String title = "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다.\n\n아래 이메일로 연락주시면 친절하게 답변해드릴게요 :)\n\nholdup2023.ewha@gmail.com";
+      String message = "";
+      _showErrorAlert(title: title, message: message);
+    }
+  }
+
+  // 메일앱 사용 불가 시 알람창
+  void _showErrorAlert({String? title, String? message}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0.0,
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 400.0), // 알람창 크기
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (title != null)
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                if (title != null && message != null)
+                  SizedBox(height: 10.0),
+                if (message != null)
+                  Text(
+                    message,
+                    style: TextStyle(fontSize: 13.0),
+                  ),
+                SizedBox(height: 20.0),
+                Divider(),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    '확인',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   // 화면 UI build
   @override
@@ -224,74 +296,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Hero(
-                          tag: "profile",
-                          child: Stack(
-                            children: [
-                              Container(
-                                child: Image.asset('assets/profile/profile_${userData['profile']}.png',
-                                  fit: BoxFit.cover,
-                                ),
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Color(0xff609966), // 테두리 색상
-                                    width: 2.0, // 테두리 두께
-                                  ),
-                                ),
-
+                crossAxisAlignment: CrossAxisAlignment.center, // 전체적으로 센터 정렬
+                children: [
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Hero(
+                      tag: "profile",
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: Image.asset(
+                              'assets/profile/profile_${userData['profile']}.png',
+                              fit: BoxFit.cover,
+                            ),
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Color(0xff609966),
+                                width: 2.0,
                               ),
-                              Positioned(
-                                bottom: 0, // 아래쪽에 위치
-                                right: 0, // 오른쪽에 위치
-                                child: IconButton(
-                                  icon: Image.asset(
-                                    'button/edit.png',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  onPressed: () => editImage('profile', userData['profile']),
-                                ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: IconButton(
+                              icon: Image.asset(
+                                'button/edit.png',
+                                width: 30,
+                                height: 30,
                               ),
-                            ],
-                          )
+                              onPressed: () =>
+                                  editImage('profile', userData['profile']),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                        child: Text(userData['nickname'], style: const TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff609966))
+                  ),
+                  const SizedBox(height: 10),
+                  TextButton(
+                    child: Text(
+                      userData['nickname'],
+                      style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff609966)),
+                    ),
+                    onPressed: () => editField('nickname', userData['nickname']),
+                  ),
+                  Text(userData['email'], style: const TextStyle(fontSize: 15)),
+                  const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start, // 버튼을 왼쪽 정렬
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // 세로 정렬
+                    children: [
+                      TextButton(
+                        child: Text("문의하기",
+                            style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                            ),
                         ),
-                      onPressed: () => editField('nickname', userData['nickname']),
-                       ),
-                    //여기에 user.nickname 값 불러오기
-                    Text(userData['email'], style: const TextStyle(fontSize: 20,)),
-                    //여기에 user.uid 값 불러오기
-                    const SizedBox(height: 200),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("위젯 추가해야해요", style: const TextStyle(fontSize: 15)),
-                        SizedBox(width: 5),
-                      ],
-                    )
-                  ]
+                        onPressed: () {
+                          _sendEmail(userData['nickname'], userData['email']);
+                        },
+                      ),
+                      Container( height:2.0,
+                        width : MediaQuery.of(context).size.width * 0.95,
+                        color: Color(0xffd9d9d9)), // 구분선 추가
+                      TextButton(
+                        child: Text("가족코드 복사하기",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          // 가족코드 복사
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ]
               ),
             );
           }
         }
     ),
     );
-
-// 메서드 위젯 추가
   }
 }
 
