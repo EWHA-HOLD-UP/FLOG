@@ -1,7 +1,7 @@
 import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/splash_screen.dart';
-//import 'package:flog/screen/root_screen.dart';
+import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flog/screen/register/sms_login_home.dart';
@@ -36,10 +36,10 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: '/',
+          initialRoute: '/login',
           routes: {
             '/': (context) => SplashScreen(),
-            '/login': (context) => const LoginScreen(),
+            '/login': (context) => const RootScreen(matchedFamilycode: 'a'),
             '/register': (context) => const RegisterScreen(),
             '/index': (context) => const FlogingScreen(),
           },

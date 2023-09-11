@@ -4,6 +4,8 @@ import 'package:flog/screen/memorybox/memorybox_everyday_showall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
@@ -22,18 +24,18 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            const SizedBox(width: 60),
+            const SizedBox(width: 40),
             Image.asset(
               "assets/flog_logo.png",
               width: 30, height: 30,
             ),
             const SizedBox(width: 10),
-            const Text('Memory Box',
-              style: TextStyle(
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            Text('Memory Box',
+                style: GoogleFonts.balooBhaijaan2(textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
+                ))),
           ],
         ),
         elevation: 0.0, //그림자 없음

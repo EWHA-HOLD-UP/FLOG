@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 //💚💚478라인 myanswer가 해당 조각에 단 답변 저장된 곳
 //모든 조각의 답변이 이곳에 저장되므로 조각이 바뀌기 전에 파이어베이스로 넘겨서 저장해야 함 or 리스트 형식으로 myanswer를 바꾸는게 좋을지..?
@@ -37,25 +38,35 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*---상단 Q-puzzle 바---*/
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Row(
+          children: [
+            const SizedBox(width: 50),
+            Image.asset(
+              "assets/flog_logo.png",
+              width: 30, height: 30,
+            ),
+            const SizedBox(width: 10),
+            Text('Q-puzzle', style: GoogleFonts.balooBhaijaan2(textStyle: TextStyle(
+                fontSize: 30,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ))),
+          ],
+        ),
+        elevation: 0.0, //그림자 없음
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.white, //화면 배경색
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /*---상단 Q-puzzle 바---*/
-              const SizedBox(height: 10), //간격
-              Image.asset("assets/flog_logo.png", width: 55, height: 55,),
-              const Text(
-                "Q-puzzle",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF609966),
-                ),
-              ),
-              const SizedBox(height: 20),
-
+              const SizedBox(height: 30),
               /*---퍼즐을 보여주는 부분---*/
               Center(
                   child: puzzleBody()

@@ -104,7 +104,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
 
     return Column(
       children: [
-        const SizedBox(height: 60),
+        const SizedBox(height: 40),
         Text(
           DateFormat('yyyy.MM').format(DateTime(year, month)),
           style: const TextStyle(

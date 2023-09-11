@@ -22,7 +22,7 @@ dependencies:
   intl: ^0.18.1
   uuid: 3.0.7
   text_editor: ^0.7.0
-  
+  google_fonts: ^5.1.0
   firebase_core: ^2.15.0
   
   firebase_auth: ^4.7.2
