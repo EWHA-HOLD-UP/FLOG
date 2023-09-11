@@ -11,16 +11,19 @@ class FireStoreMethods {
   // Flogig 데이터베이스에 저장하기
 
   Future<String> uploadFloging(
-      Uint8List file, String uid, String flogCode) async {
+      Uint8List file, Uint8List file2, String uid, String flogCode) async {
     String res = "Some error occurred";
     try {
       String photoUrl =
-          await StorageMethods().uploadImageToStorage('floging', file, true);
+          await StorageMethods().uploadImageToStorage('Floging', file, true);
+      String photoUrl2 =
+          await StorageMethods().uploadImageToStorage('Floging', file2, true);
       String flogingId = const Uuid().v1(); // creates unique id based on time
       Floging floging = Floging(
           uid: uid,
           date: DateTime.now(),
-          downloadUrl: photoUrl,
+          downloadUrl_front: photoUrl,
+          downloadUrl_back: photoUrl2,
           flogCode: flogCode,
           flogingId: flogingId);
       _firestore.collection('Floging').doc(flogingId).set(floging.toJson());

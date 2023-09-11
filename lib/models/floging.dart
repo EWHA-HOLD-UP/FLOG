@@ -7,15 +7,16 @@ class Floging {
   final DateTime date;
   final String uid;
   final String flogCode;
-  final String downloadUrl;
+  final String downloadUrl_front;
+  final String downloadUrl_back;
 
-  Floging({
-    required this.flogingId,
-    required this.date,
-    required this.uid,
-    required this.flogCode,
-    required this.downloadUrl,
-  });
+  Floging(
+      {required this.flogingId,
+      required this.date,
+      required this.uid,
+      required this.flogCode,
+      required this.downloadUrl_front,
+      required this.downloadUrl_back});
 
   static Floging fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -25,7 +26,8 @@ class Floging {
       uid: snapshot["uid"],
       date: snapshot["date"],
       flogCode: snapshot["flogCode"],
-      downloadUrl: snapshot["downloadUrl"],
+      downloadUrl_front: snapshot["downloadUrl_front"],
+      downloadUrl_back: snapshot["downloadUrl_back"],
     );
   }
 
@@ -34,7 +36,8 @@ class Floging {
         "uid": uid,
         "date": date,
         "flogCode": flogCode,
-        "downloadUrl": downloadUrl,
+        "downloadUrl_front": downloadUrl_front,
+        "downloadUrl_back": downloadUrl_back,
       };
 }
 

@@ -23,49 +23,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text('닉네임을 수정하시겠어요?',
-          style: const TextStyle(color: Colors.black),
-        ),
-        content: TextField(
-          autofocus: true,
-          style: TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-            hintText: initialValue,
-            hintStyle: TextStyle(color: Colors.grey),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xff609966), // 활성 상태의 밑줄 색상 변경
+          backgroundColor: Colors.white,
+          title: Text(
+            '닉네임을 수정하시겠어요?',
+            style: const TextStyle(color: Colors.black),
+          ),
+          content: TextField(
+            autofocus: true,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              hintText: initialValue,
+              hintStyle: TextStyle(color: Colors.grey),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xff609966), // 활성 상태의 밑줄 색상 변경
+                ),
+              ),
             ),
+            onChanged: (value) {
+              newValue = value;
+            },
           ),
-          ),
-          onChanged: (value) {
-            newValue = value;
-          },
-        ),
-      actions: [
-        TextButton(
-          child: Text(
-            '취소',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff609966)),
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          child: Text(
-            '저장',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff609966)),
-          ),
-          onPressed: () => Navigator.of(context).pop(newValue),
-        )
-      ]
-      ),
+          actions: [
+            TextButton(
+              child: Text(
+                '취소',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Color(0xff609966)),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: Text(
+                '저장',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Color(0xff609966)),
+              ),
+              onPressed: () => Navigator.of(context).pop(newValue),
+            )
+          ]),
     );
 
     //파이어베이스 변경사항 업데이트하기
     if (newValue.trim().length > 0) {
       await usersCollection.doc(currentUser.email).update({field: newValue});
     }
-
   }
 
   // 프로필 선택 및 변경하기
@@ -132,7 +134,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisSpacing: 5.0, // 수평 간격 설정
                       childAspectRatio: 1, // 가로:세로 비율을 1:1로 설정
                     ),
-                    padding: EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
+                    padding:
+                        EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
                     itemCount: 12, // 이미지 버튼 개수
                     itemBuilder: (context, index) {
                       // 각 이미지를 asset에서 불러오기
@@ -182,7 +185,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // 문의하기 메일 보내기
   void _sendEmail(String who, String id) async {
     final Email email = Email(
-      body: '==================\n 프로그 사용에 관한 문의 사항을 작성해주세요! 빠른 시일 내에 답변드리겠습니다.\n\n문의 주시는 분 : $who, $id\n==================\n\n',
+      body:
+          '==================\n 프로그 사용에 관한 문의 사항을 작성해주세요! 빠른 시일 내에 답변드리겠습니다.\n\n문의 주시는 분 : $who, $id\n==================\n\n',
       subject: '[FLOG 문의]',
       recipients: ['holdup2023.ewha@gmail.com'],
       cc: [],
@@ -194,7 +198,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       await FlutterEmailSender.send(email);
     } catch (error) {
-      String title = "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다.\n\n아래 이메일로 연락주시면 친절하게 답변해드릴게요 :)\n\nholdup2023.ewha@gmail.com";
+      String title =
+          "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다.\n\n아래 이메일로 연락주시면 친절하게 답변해드릴게요 :)\n\nholdup2023.ewha@gmail.com";
       String message = "";
       _showErrorAlert(title: title, message: message);
     }
@@ -211,7 +216,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           elevation: 0.0,
           child: Container(
-            constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 400.0), // 알람창 크기
+            constraints:
+                BoxConstraints(maxWidth: 300.0, maxHeight: 400.0), // 알람창 크기
             padding: EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -223,8 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontSize: 18.0,
                     ),
                   ),
-                if (title != null && message != null)
-                  SizedBox(height: 10.0),
+                if (title != null && message != null) SizedBox(height: 10.0),
                 if (message != null)
                   Text(
                     message,
@@ -249,13 +254,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   // 화면 UI build
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('프로필',
+        title: const Text(
+          '프로필',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold, // 굵게 설정
@@ -281,130 +286,140 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ], // 그림자 제거
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection("User").doc(currentUser.email).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            if (snapshot.data == null || !snapshot.data!.exists) {
-              return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-            }
-            // 이제 snapshot.data을 안전하게 사용할 수 있음
-            Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
-            // 데이터 처리
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // 전체적으로 센터 정렬
-                children: [
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Hero(
-                      tag: "profile",
-                      child: Stack(
-                        children: [
-                          Container(
-                            child: Image.asset(
-                              'assets/profile/profile_${userData['profile']}.png',
-                              fit: BoxFit.cover,
-                            ),
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Color(0xff609966),
-                                width: 2.0,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'button/edit.png',
-                                width: 30,
-                                height: 30,
-                              ),
-                              onPressed: () =>
-                                  editImage('profile', userData['profile']),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextButton(
-                    child: Text(
-                      userData['nickname'],
-                      style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff609966)),
-                    ),
-                    onPressed: () => editField('nickname', userData['nickname']),
-                  ),
-                  Text(userData['email'], style: const TextStyle(fontSize: 15)),
-                  const SizedBox(height: 30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        leading: const Text('가족코드 복사하기', style: TextStyle(fontSize: 17)),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min, // 아이콘과 텍스트를 최소 크기로 설정
+          stream: FirebaseFirestore.instance
+              .collection("User")
+              .doc(currentUser.email)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              if (snapshot.data == null || !snapshot.data!.exists) {
+                return const Text(
+                    '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+              }
+              // 이제 snapshot.data을 안전하게 사용할 수 있음
+              Map<String, dynamic> userData =
+                  snapshot.data!.data() as Map<String, dynamic>;
+              // 데이터 처리
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center, // 전체적으로 센터 정렬
+                  children: [
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Hero(
+                        tag: "profile",
+                        child: Stack(
                           children: [
-                            Text(
-                              userData['flogCode'],
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                            Container(
+                              child: Image.asset(
+                                'assets/profile/profile_${userData['profile']}.png',
+                                fit: BoxFit.cover,
+                              ),
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Color(0xff609966),
+                                  width: 2.0,
+                                ),
                               ),
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 15, // 아이콘 크기 조절
-                              color: Colors.black, // 아이콘 색상 설정
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'button/edit.png',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                onPressed: () =>
+                                    editImage('profile', userData['profile']),
+                              ),
                             ),
                           ],
-                        ),// 화살표 아이콘 예시
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: userData['flogCode']));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${userData['nickname']}님의 가족 코드가 복사되었습니다! 가족들에게 공유해주세요.'),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        },
+                        ),
                       ),
-                      const Divider(), // 분리선 추가
-                      ListTile(
-                        leading: const Text('문의하기', style: TextStyle(fontSize: 17)),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 15, // 아이콘 크기 조절
-                          color: Colors.black, // 아이콘 색상 설정
-                        ), // 화살표 아이콘 예시
-                        onTap: () {
-                          _sendEmail(userData['nickname'], userData['email']);
-                        },
+                    ),
+                    const SizedBox(height: 10),
+                    TextButton(
+                      child: Text(
+                        userData['nickname'],
+                        style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff609966)),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
-        }
-    ),
+                      onPressed: () =>
+                          editField('nickname', userData['nickname']),
+                    ),
+                    Text(userData['email'],
+                        style: const TextStyle(fontSize: 15)),
+                    const SizedBox(height: 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          leading: const Text('가족코드 복사하기',
+                              style: TextStyle(fontSize: 17)),
+                          trailing: Row(
+                            mainAxisSize:
+                                MainAxisSize.min, // 아이콘과 텍스트를 최소 크기로 설정
+                            children: [
+                              Text(
+                                userData['flogCode'],
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 15, // 아이콘 크기 조절
+                                color: Colors.black, // 아이콘 색상 설정
+                              ),
+                            ],
+                          ), // 화살표 아이콘 예시
+                          onTap: () {
+                            Clipboard.setData(
+                                ClipboardData(text: userData['flogCode']));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    '${userData['nickname']}님의 가족 코드가 복사되었습니다! 가족들에게 공유해주세요.'),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          },
+                        ),
+                        const Divider(), // 분리선 추가
+                        ListTile(
+                          leading: const Text('문의하기',
+                              style: TextStyle(fontSize: 17)),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 15, // 아이콘 크기 조절
+                            color: Colors.black, // 아이콘 색상 설정
+                          ), // 화살표 아이콘 예시
+                          onTap: () {
+                            //_sendEmail(userData['nickname'], userData['email']);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }
+          }),
     );
   }
 }
-

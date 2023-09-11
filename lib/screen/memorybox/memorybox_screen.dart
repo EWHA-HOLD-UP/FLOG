@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
   @override
@@ -27,11 +26,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
             const SizedBox(width: 40),
             Image.asset(
               "assets/flog_logo.png",
-              width: 30, height: 30,
+              width: 30,
+              height: 30,
             ),
             const SizedBox(width: 10),
             Text('Memory Box',
-                style: GoogleFonts.balooBhaijaan2(textStyle: TextStyle(
+                style: GoogleFonts.balooBhaijaan2(
+                    textStyle: TextStyle(
                   fontSize: 30,
                   color: Color(0xFF609966),
                   fontWeight: FontWeight.bold,
@@ -44,8 +45,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
       /*---화면---*/
       backgroundColor: Colors.white, //화면 배경색
-      body:  ListView(
-        children: <Widget> [
+      body: ListView(
+        children: <Widget>[
           memberProfiles(numOfMem), //가족 구성원들의 프로필 보여주기
           flogCoinNum(), //모은 개구리 수 보여주기
           ourEveryday(),
@@ -102,15 +103,17 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     int coinNum = 29; //나중에 파이어베이스에서 받아오기
     return Padding(
       padding: const EdgeInsets.only(top: 20),
-      child : Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             "assets/flog_coin_green.png",
-            width: 30, height: 30,
+            width: 30,
+            height: 30,
           ),
           const SizedBox(width: 10),
-          Text('모은 개구리 수 : $coinNum마리', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
+          Text('모은 개구리 수 : $coinNum마리',
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
         ],
       ),
     );
@@ -118,7 +121,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
   Widget ourEveryday() {
     final now = DateTime.now(); // 현재 날짜와 시간
-    final startDate = DateTime(now.year, now.month, now.day - 13); // 오늘부터 13일 이전의 날짜 계산
+    final startDate =
+        DateTime(now.year, now.month, now.day - 13); // 오늘부터 13일 이전의 날짜 계산
 
     return Padding(
       padding: const EdgeInsets.only(top: 20),
@@ -144,7 +148,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   child: GridView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(8.0),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 7,
                       mainAxisSpacing: 10.0,
                     ),
@@ -152,7 +157,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       final currentDate = startDate.add(Duration(days: index));
                       final containerNumber = currentDate.day;
-                      final formattedDate = DateFormat('yy.MM.dd').format(currentDate);
+                      final formattedDate =
+                          DateFormat('yy.MM.dd').format(currentDate);
 
                       return GestureDetector(
                         onTap: () {
@@ -205,9 +211,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         // "전체 보기" 버튼 클릭 시 동작
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => MemoryBoxEverydayShowAllScreen(
-
-                            ),
+                            builder: (context) =>
+                                MemoryBoxEverydayShowAllScreen(),
                           ),
                         );
                       },
@@ -247,15 +252,14 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     );
   }
 
-
-
   Widget ourValuableday() {
     int solvedPuzzle = 8; //다 푼 퍼즐 수 (임의 설정) - 나중에 파이어베이스에서 불러오기
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          const Text('우리 가족의 소중한 날',
+          const Text(
+            '우리 가족의 소중한 날',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
@@ -273,7 +277,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: 2.0 / 3.0, //가로:세로 2:3 비율
                       crossAxisSpacing: 10.0,
@@ -281,18 +286,17 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     ),
                     itemCount: solvedPuzzle, //전체 사진 수
                     itemBuilder: (BuildContext context, int index) {
-                      int reversedIndex = solvedPuzzle - index; //역순으로 퍼즐 사진 인덱스 계산 : 가장 최근에 푼 것부터 보여주려고
-                      String imagePath = "assets/emoticons/emoticon_$reversedIndex.png"; //나중에 파이어베이스에서 받아오는 걸로 경로 수정
+                      int reversedIndex = solvedPuzzle -
+                          index; //역순으로 퍼즐 사진 인덱스 계산 : 가장 최근에 푼 것부터 보여주려고
+                      String imagePath =
+                          "assets/emoticons/emoticon_$reversedIndex.png"; //나중에 파이어베이스에서 받아오는 걸로 경로 수정
 
                       //각 그리드 아이템에 표시할 위젯을 반환
                       return Container(
                         margin: const EdgeInsets.all(3.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              color: Colors.white,
-                              width: 1.5
-                          ),
+                          border: Border.all(color: Colors.white, width: 1.5),
                           color: const Color(0xFFCED3CE),
                         ),
                         child: Center(
@@ -311,7 +315,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   children: [
                     const SizedBox(width: 133),
                     OutlinedButton(
-                      onPressed: (){
+                      onPressed: () {
                         //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
                       },
                       style: OutlinedButton.styleFrom(
@@ -322,10 +326,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       ),
                       child: const Text(
                         '전체 보기',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ),
                     const SizedBox(width: 80),
@@ -337,11 +338,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                           ),
                         );
                       },
-                      child: Image.asset( //전송 버튼
+                      child: Image.asset(
+                          //전송 버튼
                           "button/book.png",
                           width: 35,
-                          height: 35
-                      ),
+                          height: 35),
                     ),
                   ],
                 ),

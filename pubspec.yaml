@@ -40,6 +40,8 @@ dependencies:
 
   flutter_email_sender: ^6.0.1 #문의하기
 
+  http: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:
