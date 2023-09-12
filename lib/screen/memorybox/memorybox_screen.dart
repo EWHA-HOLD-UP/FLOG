@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'memorybox_valuableday_showall_screen.dart';
+import 'memorybox_video_screen.dart';
+
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
   @override
@@ -23,7 +26,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            const SizedBox(width: 40),
+            const SizedBox(width: 35),
             Image.asset(
               "assets/flog_logo.png",
               width: 30,
@@ -113,7 +116,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           ),
           const SizedBox(width: 10),
           Text('모은 개구리 수 : $coinNum마리',
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+          )),
         ],
       ),
     );
@@ -130,7 +137,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         children: [
           const Text(
             '우리 가족의 모든 날',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 10),
@@ -193,7 +204,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                               Center(
                                 child: Text(
                                   containerNumber.toString(),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: GoogleFonts.inter(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -224,16 +239,21 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       ),
                       child: const Text(
                         '전체 보기',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          )),
                       ),
-                    ),
                     const SizedBox(width: 80),
                     InkWell(
                       onTap: () {
-                        // 자동 영상 생성 구현 필요
+                        //자동 영상 생성
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MemoryBoxVideoScreen(),
+                          ),
+                        );
                       },
                       child: Image.asset(
                         "button/video.png",
@@ -260,7 +280,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         children: [
           const Text(
             '우리 가족의 소중한 날',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 10),
@@ -316,7 +340,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     const SizedBox(width: 133),
                     OutlinedButton(
                       onPressed: () {
-                        //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
+                        // "전체 보기" 버튼 클릭 시 동작
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MemoryBoxValuabledayShowAllScreen(),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),
@@ -325,9 +355,12 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         ),
                       ),
                       child: const Text(
-                        '전체 보기',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      ),
+                          '전체 보기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          )),
                     ),
                     const SizedBox(width: 80),
                     InkWell(

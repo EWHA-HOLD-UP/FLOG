@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import 'memorybox_detail_screen.dart';
@@ -21,14 +22,16 @@ class MemoryBoxEverydayShowAllScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.white,
-        title: const Row(
+        title: Row(
           children: [
-            SizedBox(width: 110),
-            Text('모든날',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+            SizedBox(width: 105),
+            Text('모든 날',
+              style: GoogleFonts.inter(
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
           ],
         ),
@@ -107,31 +110,89 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
         const SizedBox(height: 40),
         Text(
           DateFormat('yyyy.MM').format(DateTime(year, month)),
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-          ),
+          style: GoogleFonts.inter(
+              textStyle: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              )),
         ),
         const SizedBox(height: 30),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(width: 32),
-            Text("일"),
+            Text(
+              "일",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("월"),
+            Text(
+                "월",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("화"),
+            Text(
+                "화",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("수"),
+            Text(
+                "수",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("목"),
+            Text(
+                "목",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("금"),
+            Text(
+                "금",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(width: 5),
-            Text("토"),
-            SizedBox(width: 33)
+            Text(
+                "토",
+              style: GoogleFonts.inter(
+                textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(width: 33),
+
           ],
         ),
         const SizedBox(height: 20),
@@ -184,7 +245,11 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                 alignment: Alignment.center,
                 child: Text(
                   containerNumber.toString(),
-                  style: const TextStyle(color: Colors.white),
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             );
