@@ -11,44 +11,48 @@ class FlogingScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
           child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 10),
-            Image.asset(
-              "assets/flog_logo.png",
-              width: 55,
-              height: 55,
-            ),
-            Text("FLOGing",
-                style: GoogleFonts.balooBhaijaan2(
-                    textStyle: TextStyle(
-                  fontSize: 40,
-                  color: Color(0xFF609966),
-                  fontWeight: FontWeight.bold,
-                ))),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 20.0,
-                    mainAxisSpacing: 20.0,
-                    childAspectRatio: 3 / 4,
-                  ),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    String status = "플로깅 상태 ${index + 1}";
-                    return FlogCard(status: status); // FlogCard 위젯 사용
-                  },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                Image.asset(
+                  "assets/flog_logo.png",
+                  width: 55,
+                  height: 55,
                 ),
-              ),
+                Text(
+                    "FLOGing",
+                    style: GoogleFonts.balooBhaijaan2(
+                        textStyle: const TextStyle(
+                          fontSize: 40,
+                          color: Color(0xFF609966),
+                          fontWeight: FontWeight.bold,
+                        ),
+                    ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 20.0,
+                        mainAxisSpacing: 20.0,
+                        childAspectRatio: 3 / 4,
+                      ),
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        String status = "플로깅 상태 ${index + 1}";
+                        return FlogCard(status: status); // FlogCard 위젯 사용
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      )),
+          ),
+      ),
     );
   }
 }
