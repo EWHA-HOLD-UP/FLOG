@@ -300,6 +300,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                 const SizedBox(height: 10),
                 Expanded(
                   child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -383,7 +384,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 15)
+          const SizedBox(height: 40)
         ],
       ),
     );
