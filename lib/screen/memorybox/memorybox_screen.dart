@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/screen/memorybox/memorybox_book_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_everyday_showall_screen.dart';
@@ -16,7 +18,35 @@ class MemoryBoxScreen extends StatefulWidget {
 }
 
 class MemoryBoxState extends State<MemoryBoxScreen> {
-  int numOfMem = 5; // 나중에 가족 명 수 파이어베이스에서 받아오기
+  // Firestore 인스턴스 생성
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // 현재 사용자의 이메일 가져오기
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  int numOfMem = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    getnumofMem(); // initState 내에서 호출
+  }
+
+  Future<void> getnumofMem() async {
+    String? userEmail = currentUser.email; // 이메일 가져오기
+    // 'User' 컬렉션에서 사용자 문서를 가져오기
+    QuerySnapshot userQuerySnapshot = await firestore
+        .collection('User')
+        .where('email', isEqualTo: userEmail)
+        .get();
+    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
+    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
+    DocumentReference currentDocumentRef =
+    firestore.collection('Group').doc(userFlogCode);
+    // 그룹 문서를 가져와서 데이터를 읽음
+    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
+    setState(() {
+      numOfMem = groupDocumentSnapshot['memNumber']; // 가족 명 수 파이어베이스에서 받아오기
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +92,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   //가족 구성원들의 프로필 보여주기
   Widget memberProfiles(int numOfMem) {
     final List<Person> people = [];
+    for(int i = 1; i <= numOfMem; i++) {
+      people.add(Person(1, '닉네임'));
+    }
 
     /* 나중에는 아래 people.add 5줄 다 지우고,
 
@@ -75,13 +108,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
     이렇게 하면 되지 않을까??
      */
-
+/*
     people.add(Person(1, '예원'));
     people.add(Person(2, '민교'));
     people.add(Person(3, '현서'));
     people.add(Person(4, '스크롤'));
     people.add(Person(5, '확인용'));
-
+*/
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: SingleChildScrollView(
