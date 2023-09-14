@@ -6,10 +6,10 @@ import 'package:flog/screen/qpuzzle/qpuzzle_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_screen.dart';
 import 'package:flog/screen/profile/profile_screen.dart';
 
-
 class RootScreen extends StatefulWidget {
   final String matchedFamilycode;
-  const RootScreen({required this.matchedFamilycode, Key? key}) : super(key: key);
+  const RootScreen({required this.matchedFamilycode, Key? key})
+      : super(key: key);
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
@@ -26,40 +26,39 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     print('개발 중 확인용 - ${widget.matchedFamilycode}의 가족');
     return WillPopScope(
       onWillPop: () async => false,
-      child:
-        Scaffold(
-          body: _pages[_currentIndex], 
-          bottomNavigationBar: BottomTabBar(
-           currentIndex: _currentIndex,
-           onTabTapped: (index) {
-             setState(() {
-               _currentIndex = index;
-             });
-           },
-         ),
-          floatingActionButton: //Floating + 버튼 - shooting
-          SizedBox(
-            width: 60, // 원하는 너비
-            height: 60, // 원하는 높이
-            child: FloatingActionButton(
-              backgroundColor: const Color(0xFF609966),
-              onPressed: () { // 버튼 클릭 시 동작
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ShootingScreen(),
-                  ),
-                );
-              },
-              child: const Icon(Icons.add),
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      child: Scaffold(
+        body: _pages[_currentIndex],
+        bottomNavigationBar: BottomTabBar(
+          currentIndex: _currentIndex,
+          onTabTapped: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
         ),
+        floatingActionButton: //Floating + 버튼 - shooting
+            SizedBox(
+          width: 60, // 원하는 너비
+          height: 60, // 원하는 높이
+          child: FloatingActionButton(
+            backgroundColor: const Color(0xFF609966),
+            onPressed: () {
+              // 버튼 클릭 시 동작
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShootingScreen(),
+                ),
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      ),
     );
   }
 }
@@ -85,22 +84,26 @@ class BottomTabBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Image.asset('button/floging_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30),
+          activeIcon:
+              Image.asset('button/floging_fill.png', width: 30, height: 30),
           label: 'Floging',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
+          activeIcon:
+              Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
           label: 'Qpuzzle',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30),
+          activeIcon:
+              Image.asset('button/memorybox_fill.png', width: 30, height: 30),
           label: 'memory box',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/profile_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30),
+          activeIcon:
+              Image.asset('button/profile_fill.png', width: 30, height: 30),
           label: 'setting',
         ),
       ],
