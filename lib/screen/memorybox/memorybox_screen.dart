@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/screen/memorybox/memorybox_book_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_detail_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_everyday_showall_screen.dart';
@@ -6,6 +8,9 @@ import 'package:intl/intl.dart';
 import '../../widgets/member_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'memorybox_valuableday_showall_screen.dart';
+import 'memorybox_video_screen.dart';
+
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
   @override
@@ -13,7 +18,35 @@ class MemoryBoxScreen extends StatefulWidget {
 }
 
 class MemoryBoxState extends State<MemoryBoxScreen> {
-  int numOfMem = 5; // 나중에 가족 명 수 파이어베이스에서 받아오기
+  // Firestore 인스턴스 생성
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // 현재 사용자의 이메일 가져오기
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  int numOfMem = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    getnumofMem(); // initState 내에서 호출
+  }
+
+  Future<void> getnumofMem() async {
+    String? userEmail = currentUser.email; // 이메일 가져오기
+    // 'User' 컬렉션에서 사용자 문서를 가져오기
+    QuerySnapshot userQuerySnapshot = await firestore
+        .collection('User')
+        .where('email', isEqualTo: userEmail)
+        .get();
+    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
+    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
+    DocumentReference currentDocumentRef =
+    firestore.collection('Group').doc(userFlogCode);
+    // 그룹 문서를 가져와서 데이터를 읽음
+    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
+    setState(() {
+      numOfMem = groupDocumentSnapshot['memNumber']; // 가족 명 수 파이어베이스에서 받아오기
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +56,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            const SizedBox(width: 40),
+            const SizedBox(width: 35),
             Image.asset(
               "assets/flog_logo.png",
               width: 30,
@@ -59,6 +92,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   //가족 구성원들의 프로필 보여주기
   Widget memberProfiles(int numOfMem) {
     final List<Person> people = [];
+    for(int i = 1; i <= numOfMem; i++) {
+      people.add(Person(1, '닉네임'));
+    }
 
     /* 나중에는 아래 people.add 5줄 다 지우고,
 
@@ -72,13 +108,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
     이렇게 하면 되지 않을까??
      */
-
+/*
     people.add(Person(1, '예원'));
     people.add(Person(2, '민교'));
     people.add(Person(3, '현서'));
     people.add(Person(4, '스크롤'));
     people.add(Person(5, '확인용'));
-
+*/
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: SingleChildScrollView(
@@ -113,7 +149,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           ),
           const SizedBox(width: 10),
           Text('모은 개구리 수 : $coinNum마리',
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+          )),
         ],
       ),
     );
@@ -130,7 +170,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         children: [
           const Text(
             '우리 가족의 모든 날',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 10),
@@ -193,7 +237,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                               Center(
                                 child: Text(
                                   containerNumber.toString(),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: GoogleFonts.inter(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -224,16 +272,21 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                       ),
                       child: const Text(
                         '전체 보기',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          )),
                       ),
-                    ),
                     const SizedBox(width: 80),
                     InkWell(
                       onTap: () {
-                        // 자동 영상 생성 구현 필요
+                        //자동 영상 생성
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MemoryBoxVideoScreen(),
+                          ),
+                        );
                       },
                       child: Image.asset(
                         "button/video.png",
@@ -260,7 +313,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         children: [
           const Text(
             '우리 가족의 소중한 날',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 10),
@@ -276,6 +333,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                 const SizedBox(height: 10),
                 Expanded(
                   child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -316,7 +374,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     const SizedBox(width: 133),
                     OutlinedButton(
                       onPressed: () {
-                        //'전체보기' 클릭 시 나타나는 화면 제작 후 구현 필요
+                        // "전체 보기" 버튼 클릭 시 동작
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MemoryBoxValuabledayShowAllScreen(),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white),
@@ -325,9 +389,12 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         ),
                       ),
                       child: const Text(
-                        '전체 보기',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      ),
+                          '전체 보기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          )),
                     ),
                     const SizedBox(width: 80),
                     InkWell(
@@ -350,7 +417,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 15)
+          const SizedBox(height: 40)
         ],
       ),
     );

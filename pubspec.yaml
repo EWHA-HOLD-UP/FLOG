@@ -23,6 +23,7 @@ dependencies:
   uuid: 3.0.7
   text_editor: ^0.7.0
   google_fonts: ^5.1.0
+  video_player: ^2.7.1
   firebase_core: ^2.15.0
   
   firebase_auth: ^4.7.2

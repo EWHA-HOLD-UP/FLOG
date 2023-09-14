@@ -30,54 +30,57 @@ class RegisterScreen extends StatelessWidget {
           backgroundColor: Colors.transparent, // 투명 설정
           elevation: 0, // 그림자 제거
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // 세로 중간 정렬
-          children: [
-            Image.asset(
-              "assets/flog_name_3d.png",
-              width: 180,
-            ),
-            const SizedBox(height: 40),
-            const Align(
-              alignment: Alignment.centerLeft, // 좌측 정렬
-              child: Padding(
-                padding: EdgeInsets.only(left: 65.0), // 좌측으로 20.0만큼 패딩 추가
-                child: Text(
-                  '계정을 생성하세요.',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold, // 굵게 설정
-                  ),
+        body: SingleChildScrollView(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // 세로 중간 정렬
+              children: [
+                Image.asset(
+                  "assets/flog_name_3d.png",
+                  width: 180,
                 ),
-              ),
-            ),
-            const EmailInput(),
-            const PasswordInput(),
-            const PasswordConfirmInput(),
-            const NicknameInput(),
-            const BirthInput(),
-            const SizedBox(height: 10),
-            const ReisterButton(),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center, // 수직 가운데 정렬
-                children: [
-                  Text(
-                    '이미 계정이 있으신가요?',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                const SizedBox(height: 40),
+                const Align(
+                  alignment: Alignment.centerLeft, // 좌측 정렬
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 65.0), // 좌측으로 20.0만큼 패딩 추가
+                    child: Text(
+                      '계정을 생성하세요.',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold, // 굵게 설정
+                      ),
                     ),
                   ),
-                  SizedBox(width: 10), // 원하는 간격을 설정
-                  SignInButton(),
-                ],
-              ),
+                ),
+                const EmailInput(),
+                const PasswordInput(),
+                const PasswordConfirmInput(),
+                const NicknameInput(),
+                const BirthInput(),
+                const SizedBox(height: 10),
+                const ReisterButton(),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center, // 수직 가운데 정렬
+                    children: [
+                      Text(
+                        '이미 계정이 있으신가요?',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 10), // 원하는 간격을 설정
+                      SignInButton(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
         ),
+        resizeToAvoidBottomInset: true,
       ),
     );
   }

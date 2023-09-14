@@ -410,7 +410,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Colors.black, // 아이콘 색상 설정
                           ), // 화살표 아이콘 예시
                           onTap: () {
-                            //_sendEmail(userData['nickname'], userData['email']);
+                            _sendEmail(userData['nickname'], userData['email']);
                           },
                         ),
                       ],
