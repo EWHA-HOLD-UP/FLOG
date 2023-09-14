@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flog/screen/floging/ttt.dart';
+import 'package:flog/screen/root_screen.dart';
 import 'package:flog/widgets/ImageSticker/sticker_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,6 +19,7 @@ import '../../widgets/ImageSticker/sticker_model.dart';
 class ShootingEditScreen extends StatefulWidget {
   final String backImagePath;
   final String frontImagePath;
+
 
   const ShootingEditScreen({
     Key? key,
@@ -281,17 +282,9 @@ class ShootingEditState extends State<ShootingEditScreen> {
               }
 
               if (!mounted) return;
-              Navigator.push(
-                //다음 스크린으로
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TScreen(
-                    //임시 스크린인 TScreen으로 꾸민 후면, 전면 사진 넘기기
-                    backImagePath: finalbackImage,
-                    frontImagePath: finalfrontImage,
-                  ),
-                ),
-              );
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
             }
           : null, //상태 전송 버튼이 활성화 되지 않았을 때 (=후면 사진이 나타나있을 때) 버튼을 눌러도 아무것도 x
 
