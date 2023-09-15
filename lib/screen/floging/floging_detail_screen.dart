@@ -1,16 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flog/models/user.dart';
-import 'package:flog/providers/user_provider.dart';
-import 'package:flog/firebase_options.dart';
-import 'package:flog/widgets/comment_card.dart';
-import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class FlogingDetailScreen extends StatefulWidget {
-  final flogingId;
-  final String status; // 전달받은 상태 정보 저장
+  final Timestamp date;
+  final String frontImageURL;
+  final String backImageURL;
+  final String flogCode;
+  final String flogingId;
+  final String uid;
+
   const FlogingDetailScreen(
-      {Key? key, required this.flogingId, required this.status})
+      {Key? key,
+        required this.flogingId,
+        required this.date,
+        required this.flogCode,
+        required this.frontImageURL,
+        required this.backImageURL,
+        required this.uid,})
       : super(key: key);
 
   @override
@@ -18,45 +26,18 @@ class FlogingDetailScreen extends StatefulWidget {
 }
 
 class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
-  final TextEditingController commentEditingController =
-      TextEditingController();
 
-  // 댓글 작성한 후 firebase에 저장하는 함수
-  void postComment(String uid, String nickname, String profile) async {
-    /*
-    try {
-      String res = await FireStoreMethods().postComment(
-        widget.flogingId,
-        commentEditingController.text,
-        uid,
-        nickname,
-        profile,
-      );
-
-      if (res != 'success') {
-        if (context.mounted) showSnackBar(context, res);
-      }
-      setState(() {
-        commentEditingController.text = "";
-      });
-    } catch (err) {
-      showSnackBar(
-        context,
-        err.toString(),
-      );
-    }
-     */
-  }
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<UserProvider>(context).getUser;
+    final date = widget.date;
+    final frontImageURL = widget.frontImageURL;
+    final backImageURL = widget.backImageURL;
+    final flogCode = widget.flogCode;
+    final flogingId = widget.flogingId;
+    final uid = widget.uid;
 
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus(); // 다른 곳 터치 하면 키보드 내리기
-      },
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent, // 앱바 배경 색상
           elevation: 0, // 그림자 제거
@@ -82,86 +63,61 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     width: 55,
                     height: 55,
                   ),
-                  const Text(
-                    "FLOGing",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF609966),
-                    ),
-                  ),
-                  const SizedBox(height: 20), // 간격
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        width: 300,
-                        height: 400,
-                        decoration: BoxDecoration(
-                          color: const Color(0xad747474),
-                          borderRadius: BorderRadius.circular(23), // 모서리 둥글기 조절
-                        ),
-                        child: Center(
-                          child: Text(
-                            widget.status,
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.white),
-                          ),
-                        ),
+                  Text(
+                    '${uid.split('@')[0]} FLOGing',
+                    style: GoogleFonts.balooBhaijaan2(
+                      textStyle: TextStyle(
+                        fontSize: 30,
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+                  Text('${date.toDate().toString()}', style: TextStyle(color: Colors.black)),
+                  const SizedBox(height: 20), // 간격
+                  Expanded(
+                    child: Stack(
+                        children: <Widget>[
+                          Container(
+                            width: 300,
+                            height: 400,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(image: NetworkImage(backImageURL),
+                                fit: BoxFit.cover,
+                              ),
+                              color: Color(0xffd9d9d9),
+                              borderRadius: BorderRadius.circular(12.0),
+                              border: Border.all(
+                                color: Color(0xff609966),
+                                width: 5.0,
+                              ),
+                            ),
+                          ),
+                          // 후면 사진 표시 (동그란 모양)
+                          Positioned(
+                            top: 0, // 상단 위치
+                            right: 0, // 오른쪽 위치
+                            child: Container(
+                              width: 90,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(image: NetworkImage(frontImageURL),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                  color: Color(0xff609966),
+                                  width: 5.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ]),
           ),
         ),
-
-        //CommentCard 에서 댓글 불러오기
-
-        // 댓글 다는 필드
-        bottomNavigationBar: SafeArea(
-          child: Container(
-            height: kToolbarHeight,
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            padding: const EdgeInsets.only(left: 16, right: 8),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(user.profile),
-                  radius: 18,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 8),
-                    child: TextField(
-                      controller: commentEditingController,
-                      decoration: InputDecoration(
-                        hintText: 'Comment as ${user.nickname}',
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () => postComment(
-                    user.uid,
-                    user.nickname,
-                    user.profile,
-                  ),
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                    child: Image.asset(
-                      'button/send_green.png', // 이미지의 경로나 소스를 지정해야 합니다.
-                      width: 25, // 이미지의 가로 크기
-                      height: 25, // 이미지의 세로 크기
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
