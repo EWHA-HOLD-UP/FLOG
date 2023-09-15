@@ -20,7 +20,6 @@ class ShootingEditScreen extends StatefulWidget {
   final String backImagePath;
   final String frontImagePath;
 
-
   const ShootingEditScreen({
     Key? key,
     required this.backImagePath,
@@ -274,11 +273,20 @@ class ShootingEditState extends State<ShootingEditScreen> {
               final currentUser = FirebaseAuth.instance.currentUser!;
               final usersCollection =
                   FirebaseFirestore.instance.collection("User");
+              final groupCollection =
+                  FirebaseFirestore.instance.collection("Group");
               DocumentSnapshot userDocument =
                   await usersCollection.doc(currentUser.email).get();
               if (userDocument.exists) {
                 String flogCode = userDocument.get('flogCode');
                 postImage(currentUser.email!, flogCode);
+                DocumentSnapshot groupDocument =
+                    await groupCollection.doc(flogCode).get();
+                if (groupDocument.exists) {
+                  int frog = groupDocument.get('frog');
+                  frog = frog + 1;
+                  await groupCollection.doc(flogCode).update({'frog': frog});
+                }
               }
 
               if (!mounted) return;
