@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flog/resources/firestore_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,6 +33,17 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   // 현재 사용자의 이메일 가져오기
   final currentUser = FirebaseAuth.instance.currentUser!;
+
+  void postImage(String flogCode, int puzzleNo) async {
+    try {
+      // upload to storage and db
+      Uint8List img = await image?.readAsBytes() as Uint8List;
+      String res =
+          await FireStoreMethods().uploadQpuzzle(img, flogCode, puzzleNo);
+    } catch (err) {
+      print(err);
+    }
+  }
 
   //안내메시지 - 추후 코드 수정 필요
   Map<int, String> status = {
@@ -229,7 +242,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
         child: Center(
           child: InkWell(
             //+버튼 누르면 앨범에서 사진 선택 가능
-            onTap: () {
+            onTap: () async {
               onPickImage(); //갤러리에서 사진 선택하여 불러오는 함수
             },
             child: Image.asset("button/plus.png", //추후에 이미지+ 버튼 제작하여 변경?
@@ -268,29 +281,38 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     setState(() {
       this.image = XFile(croppedImage!.path);
     });
+    final currentUser = FirebaseAuth.instance.currentUser!;
+    final usersCollection = FirebaseFirestore.instance.collection("User");
+    DocumentSnapshot userDocument =
+        await usersCollection.doc(currentUser.email).get();
+    if (userDocument.exists) {
+      String flogCode = userDocument.get('flogCode');
+      postImage(flogCode, 1);
+    }
   }
 
   //질문창 나타나게 하는 함수
   void showQuestionSheet(context) async {
-
     String? userEmail = currentUser.email; // 이메일 가져오기
     // 'User' 컬렉션에서 사용자 문서를 가져오기
-    QuerySnapshot userQuerySnapshot = await firestore.collection('User').where('email', isEqualTo: userEmail).get();
+    QuerySnapshot userQuerySnapshot = await firestore
+        .collection('User')
+        .where('email', isEqualTo: userEmail)
+        .get();
     String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
     // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
-    DocumentReference currentDocumentRef = firestore.collection('Group').doc(userFlogCode);
+    DocumentReference currentDocumentRef =
+        firestore.collection('Group').doc(userFlogCode);
     // 그룹 문서를 가져와서 데이터를 읽음
     DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
     int familymem = groupDocumentSnapshot['memNumber'];
     print('가족 인원 수: $familymem');
-
 
     isQuestionSheetShowed = true; //질문창이 나타나면 해당 변수 boolean값 true로 변경
     if (isAnswered == true) {
       isQuestionSheetShowed = false;
     } //다음 조각을 위해 false로 초기화
 
-    
     showModalBottomSheet(
         context: context,
         backgroundColor: const Color(0xFF96B785), //질문창 배경색
@@ -455,11 +477,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                 onTap: () {
                                   setState(() {
                                     isAnswered = true; //전송버튼 누르면 답변한 것으로
-                                    unlockStates[selectedCellIndex] = true; //답변한 조각을 unlock 상태로 변경
+                                    unlockStates[selectedCellIndex] =
+                                        true; //답변한 조각을 unlock 상태로 변경
                                   });
                                   Navigator.pop(context); //답변창 닫기
                                   Navigator.pop(context); //질문창 닫기
-                                  showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
+                                  showQuestionSheet(
+                                      context); //질문창 띄우기 - 답변 새로고침 위함
                                   print(myanswer); //💥 내 답변 잘 저장되는지 확인용
                                   //💚나중에 파이어베이스에 넣었다가 다른 구성원 답변들과 함께 리스트에 저장하여 불러오기
                                 },
