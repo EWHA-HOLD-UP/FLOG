@@ -45,18 +45,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Firebase 초기화 코드
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
-
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: selectNotification,
-  );
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -89,9 +77,4 @@ class MyApp extends StatelessWidget {
           },
         ));
   }
-}
-
-Future<void> selectNotification(Notification) async {
-  // 알림을 터치하여 처리할 동작을 정의할 수 있습니다.
-  // payload 매개변수를 사용하여 추가 데이터를 처리할 수 있습니다.
 }
