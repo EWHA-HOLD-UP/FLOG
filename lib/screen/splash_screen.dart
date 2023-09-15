@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
@@ -85,6 +87,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    LocalNotification.initialize();
+    Future.delayed(
+        const Duration(seconds: 3), LocalNotification.requestPermission());
     super.initState();
     Timer(Duration(microseconds: 1500), () {
       moveScreen();

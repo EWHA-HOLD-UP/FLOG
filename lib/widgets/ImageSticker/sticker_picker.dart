@@ -14,8 +14,8 @@ class StickerPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFF609966).withOpacity(0.7),
-      height: 200,
-      width: 100,
+      height: 250,
+      width: 200,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -67,11 +67,24 @@ class StickerPicker extends StatelessWidget {
                   ),
                 )),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(1, (index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      onStickerTap(index + 10);
+                    },
+                    child: Image.asset(
+                      'assets/emoticons/emoticon_${index + 10}.png',
+                      height: 55,
+                    ),
+                  ),
+                )),
+              ),
             ]
         ),
       ),
     );
   }
-
-
 }

@@ -1,3 +1,4 @@
+import 'package:flog/notification/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/screen/profile/setting_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

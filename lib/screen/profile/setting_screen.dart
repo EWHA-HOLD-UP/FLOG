@@ -1,3 +1,4 @@
+import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +58,9 @@ class SettingScreen extends StatelessWidget {
               title: const Text('알림 설정'),
               trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
               onTap: () {
+                print('알림설정');
+
+                LocalNotification.showNotification();
                 // 알림 설정 화면으로 이동하는 코드를 여기에 추가
               },
             ),

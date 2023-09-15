@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flog/models/qpuzzle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flog/resources/storage_methods.dart';
@@ -69,6 +70,33 @@ class FireStoreMethods {
     try {
       await _firestore.collection('posts').doc(flogingId).delete();
       res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  // Q-puzzle 데이터베이스에 저장하기
+
+  Future<String> uploadQpuzzle(
+      Uint8List file, String flogCode, int puzzleNo) async {
+    String res = "Some error occurred";
+    try {
+      String photoUrl =
+          await StorageMethods().uploadImageToStorage('Qpuzzle', file, true);
+      String puzzleId = const Uuid().v1(); // creates unique id based on time
+      Qpuzzle qpuzzle = Qpuzzle(
+          puzzleId: puzzleId,
+          date: DateTime.now(),
+          flogCode: flogCode,
+          puzzleNo: puzzleNo,
+          isComplete: false,
+          pictureUrl: photoUrl,
+          currentPiece: 0,
+          unlock: [false, false, false, false, false, false]);
+
+      _firestore.collection('Qpuzzle').doc(puzzleId).set(qpuzzle.toJson());
+      res = "success";
     } catch (err) {
       res = err.toString();
     }
