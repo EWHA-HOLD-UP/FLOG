@@ -22,117 +22,120 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   // 현재 사용자의 이메일 가져오기
   final currentUser = FirebaseAuth.instance.currentUser!;
-  int numOfMem = 1;
+  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
 
   @override
   void initState() {
     super.initState();
-    getnumofMem(); // initState 내에서 호출
+    getUserFlogCode(); // initState 내에서 호출
   }
 
-  Future<void> getnumofMem() async {
-    String? userEmail = currentUser.email; // 이메일 가져오기
-    // 'User' 컬렉션에서 사용자 문서를 가져오기
-    QuerySnapshot userQuerySnapshot = await firestore
+  // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  Future<void> getUserFlogCode() async {
+    final userDoc = await FirebaseFirestore.instance
         .collection('User')
-        .where('email', isEqualTo: userEmail)
+        .doc(currentUser.email)
         .get();
-    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
-    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
-    DocumentReference currentDocumentRef =
-    firestore.collection('Group').doc(userFlogCode);
-    // 그룹 문서를 가져와서 데이터를 읽음
-    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
-    setState(() {
-      numOfMem = groupDocumentSnapshot['memNumber']; // 가족 명 수 파이어베이스에서 받아오기
-    });
+
+    if (userDoc.exists) {
+      setState(() {
+        currentUserFlogCode = userDoc.data()!['flogCode'];
+      });
+    }
+    print(currentUserFlogCode);
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      /*---상단 Memory Box 바---*/
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            const SizedBox(width: 35),
-            Image.asset(
-              "assets/flog_logo.png",
-              width: 30,
-              height: 30,
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('User').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+
+        final documents = snapshot.data!.docs;
+        final profiles = documents
+            .where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return data['flogCode'] == currentUserFlogCode;
+        })
+            .map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return Person(
+            profileNum: data['profile'],
+            nickname: data['nickname'],
+          );
+        })
+            .toList();
+
+        return Scaffold(
+          /*---상단 Memory Box 바---*/
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                const SizedBox(width: 35),
+                Image.asset(
+                  "assets/flog_logo.png",
+                  width: 30,
+                  height: 30,
+                ),
+                const SizedBox(width: 10),
+                Text('Memory Box',
+                    style: GoogleFonts.balooBhaijaan2(
+                      textStyle: TextStyle(
+                        fontSize: 30,
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ],
             ),
-            const SizedBox(width: 10),
-            Text('Memory Box',
-                style: GoogleFonts.balooBhaijaan2(
-                    textStyle: TextStyle(
-                  fontSize: 30,
-                  color: Color(0xFF609966),
-                  fontWeight: FontWeight.bold,
-                ))),
-          ],
-        ),
-        elevation: 0.0, //그림자 없음
-        centerTitle: true,
-      ),
+            elevation: 0.0, //그림자 없음
+            centerTitle: true,
+          ),
 
-      /*---화면---*/
-      backgroundColor: Colors.white, //화면 배경색
-      body: ListView(
-        children: <Widget>[
-          memberProfiles(numOfMem), //가족 구성원들의 프로필 보여주기
-          flogCoinNum(), //모은 개구리 수 보여주기
-          ourEveryday(),
-          ourValuableday(), //하단
-        ],
-      ),
+          /*---화면---*/
+          backgroundColor: Colors.white, //화면 배경색
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      for (final profile in profiles)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Person(
+                            profileNum: profile.profileNum,
+                            nickname: profile.nickname,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              flogCoinNum(),
+              ourEveryday(),
+              ourValuableday(),
+            ],
+          ),
+
+        );
+      },
     );
   }
 
-  //가족 구성원들의 프로필 보여주기
-  Widget memberProfiles(int numOfMem) {
-    final List<Person> people = [];
-    for(int i = 1; i <= numOfMem; i++) {
-      people.add(Person(1, '닉네임'));
-    }
 
-    /* 나중에는 아래 people.add 5줄 다 지우고,
 
-    getProfileNums{여기에 파이어베이스에서 순서대로 숫자:프사 인덱스 받아오는 함수 구현}
-    getNicknames{여기에 파이어베이스에서 순서대로 닉네임 받아오는 함수 구현}
-    for(int i = 1; i <= numOfMem; i++) {
-      int 숫자 = getProfileNums();
-      String 닉네임 = getNicknames();
-      people.add(Person(숫자, 닉네임));
-    }
-
-    이렇게 하면 되지 않을까??
-     */
-/*
-    people.add(Person(1, '예원'));
-    people.add(Person(2, '민교'));
-    people.add(Person(3, '현서'));
-    people.add(Person(4, '스크롤'));
-    people.add(Person(5, '확인용'));
-*/
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal, // 가로 스크롤 설정
-        child: Row(
-          children: [
-            for (final person in people)
-              Row(
-                children: [
-                  const SizedBox(width: 20),
-                  Profiles(person),
-                ],
-              )
-          ],
-        ),
-      ),
-    );
-  }
 
   //모은 개구리 수 보여주기
   Widget flogCoinNum() {
