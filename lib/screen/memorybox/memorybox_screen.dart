@@ -24,9 +24,31 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
 
+  int coinNum = 1;
+
+
+  Future<void> getnumofCoin() async {
+    String? userEmail = currentUser.email; // 이메일 가져오기
+    // 'User' 컬렉션에서 사용자 문서를 가져오기
+    QuerySnapshot userQuerySnapshot = await firestore
+        .collection('User')
+        .where('email', isEqualTo: userEmail)
+        .get();
+    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
+    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
+    DocumentReference currentDocumentRef =
+    firestore.collection('Group').doc(userFlogCode);
+    // 그룹 문서를 가져와서 데이터를 읽음
+    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
+    setState(() {
+      coinNum = groupDocumentSnapshot['frog']; // 가족 명 수 파이어베이스에서 받아오기
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getnumofCoin(); // initState 내에서 호출
     getUserFlogCode(); // initState 내에서 호출
   }
 
@@ -134,12 +156,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     );
   }
 
-
-
-
+  
   //모은 개구리 수 보여주기
   Widget flogCoinNum() {
-    int coinNum = 29; //나중에 파이어베이스에서 받아오기
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Row(
