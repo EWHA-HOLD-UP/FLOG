@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/models/model_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,13 +17,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  var MessageString = "";
-
-  void getMyDevicdeToken() async {
-    final token = await FirebaseMessaging.instance.getToken();
-    print("내 디바이스 토큰: $token");
-  }
-
   Future<bool> checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final authClient =
@@ -94,25 +85,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    getMyDevicdeToken();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      RemoteNotification? notification = message.notification;
-
-      if (notification != null) {
-        FlutterLocalNotificationsPlugin().show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            const NotificationDetails(
-                android: AndroidNotificationDetails(
-                    'high_importance_channel', 'high_importance_notification',
-                    importance: Importance.max)));
-        setState(() {
-          MessageString = message.notification!.body!;
-          print("Foreground 메시지 수신: $MessageString");
-        });
-      }
-    });
     super.initState();
     Timer(Duration(microseconds: 1500), () {
       moveScreen();
@@ -129,12 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       appBar: null,
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("메시지 내용: $MessageString"),
-          ],
-        ),
+        child: Text('Splash Screen'),
       ),
     );
   }
