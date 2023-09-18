@@ -41,6 +41,8 @@ dependencies:
 
   flutter_email_sender: ^6.0.1 #문의하기
 
+
+  workmanager: ^0.5.1
   http: ^1.0.0
 
 

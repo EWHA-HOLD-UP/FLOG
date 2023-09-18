@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flog/screen/register/sms_login_home.dart';
 import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 import 'models/model_auth.dart';
 import 'screen/register/login_screen.dart';
 import 'screen/register/register_screen.dart';
+import 'package:flog/notification/scheduling.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+
+  Workmanager().initialize(callbackDispatcher);
+  Workmanager().registerPeriodicTask(
+    '1',
+    'simpleTask',
+    initialDelay: Duration(minutes: 1), // 초기 딜레이 설정
+    frequency: Duration(minutes: 1), // 주기 설정
+  );
 }
 
 class MyApp extends StatelessWidget {

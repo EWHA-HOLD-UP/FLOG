@@ -60,7 +60,11 @@ class SettingScreen extends StatelessWidget {
               onTap: () {
                 print('알림설정');
 
-                LocalNotification.showNotification();
+                LocalNotification.showNotification(
+                    channelId: "channel_id_1",
+                    context: context,
+                    title: '!!FLOG TIME입니다!!',
+                    message: '가족들은 무엇을 하고 있을까요? 지금 당장 상태를 알리고 확인하세요!');
                 // 알림 설정 화면으로 이동하는 코드를 여기에 추가
               },
             ),
