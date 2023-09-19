@@ -62,140 +62,134 @@ class FlogingScreenState extends State<FlogingScreen> {
         }
 
         final userDocuments = userSnapshot.data!.docs;
-
-
-                return Scaffold(
-                  extendBodyBehindAppBar: true,
-                  appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  elevation: 0.0,
-                  centerTitle: true,
-                  title:
-                  Text(
-                    'FLOGing',
-                    style: GoogleFonts.balooBhaijaan2(
-                      textStyle: TextStyle(
-                        fontSize: 30,
-                        color: Color(0xFF609966),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0.0,
+            centerTitle: true,
+            title:
+            Text(
+              'FLOGing',
+              style: GoogleFonts.balooBhaijaan2(
+                textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
                 ),
-                  body: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: ListView.builder(
-                      itemCount: userDocuments.length,
-                      itemBuilder: (context, index) {
-                        final userData = userDocuments[index].data() as Map<String, dynamic>;
-                        final userProfile = userData['profile'];
-                        final userNickname = userData['nickname'];
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Hero(
-                                    tag: "profile",
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.grey[200],
-                                          ),
-                                          child: Center(
-                                            child: ClipOval(
-                                              child: Image.asset(
-                                                "assets/profile/profile_${userProfile}.png",
-                                                width: 50,
-                                                height: 50,
-                                                alignment: Alignment.center,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+              ),
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: ListView.builder(
+              itemCount: userDocuments.length,
+              itemBuilder: (context, index) {
+                final userData = userDocuments[index].data() as Map<String, dynamic>;
+                final userProfile = userData['profile'];
+                final userNickname = userData['nickname'];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Hero(
+                            tag: "profile",
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey[200],
+                                  ),
+                                  child: Center(
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        "assets/profile/profile_${userProfile}.png",
+                                        width: 50,
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                      ),
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    userNickname,
-                                    style: GoogleFonts.nanumGothic(
-                                      textStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff609966),
-                                    ),
-                                    ),
-                                  ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            userNickname,
+                            style: GoogleFonts.nanumGothic(
+                              textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xff609966),
                               ),
                             ),
-                            SizedBox(height: 20),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('Floging')
-                                  .where('uid', isEqualTo: userData['email'])
-                                  .snapshots(),
-                              builder: (context, flogSnapshot) {
-                                if (flogSnapshot.hasError) {
-                                  return Text('Error: ${flogSnapshot.error}');
-                                }
-
-                                if (flogSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                }
-
-                                final flogDocuments = flogSnapshot.data!.docs;
-
-                                // 데이터를 날짜를 기준으로 내림차순으로 정렬
-                                flogDocuments.sort((a, b) {
-                                  final aData = a.data() as Map<String, dynamic>;
-                                  final bData = b.data() as Map<String, dynamic>;
-                                  final aDate = aData['date'] as Timestamp;
-                                  final bDate = bData['date'] as Timestamp;
-                                  return bDate.compareTo(aDate); // 내림차순으로 정렬
-                                });
-
-                                return Container(
-                                  height: 200,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: flogDocuments.map((flogDoc) {
-                                      final flogData = flogDoc.data() as Map<String, dynamic>;
-                                      return Row(
-                                        children: [
-                                          FlogCard(
-                                            date: flogData['date'],
-                                            frontImageURL: flogData['downloadUrl_front'],
-                                            backImageURL: flogData['downloadUrl_back'],
-                                            flogCode: flogData['flogCode'],
-                                            flogingId: flogData['flogingId'],
-                                            uid: flogData['uid'],
-                                          ),
-                                          SizedBox(width: 10),
-                                        ],
-                                      );
-                                    }).toList(),
-                                  ),
-                                );
-                              },
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                        );
-                      },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-            );
+                    SizedBox(height: 20),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Floging')
+                          .where('uid', isEqualTo: userData['email'])
+                          .snapshots(),
+                      builder: (context, flogSnapshot) {
+                        if (flogSnapshot.hasError) {
+                          return Text('Error: ${flogSnapshot.error}');
+                        }
+                        if (flogSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        }
+                        final flogDocuments = flogSnapshot.data!.docs;
+
+                        // 데이터를 날짜를 기준으로 내림차순으로 정렬
+                        flogDocuments.sort((a, b) {
+                          final aData = a.data() as Map<String, dynamic>;
+                          final bData = b.data() as Map<String, dynamic>;
+                          final aDate = aData['date'] as Timestamp;
+                          final bDate = bData['date'] as Timestamp;
+                          return bDate.compareTo(aDate); // 내림차순으로 정렬
+                        });
+                        return Container(
+                          height: 200,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: flogDocuments.map((flogDoc) {
+                              final flogData = flogDoc.data() as Map<String, dynamic>;
+                              return Row(
+                                children: [
+                                  FlogCard(
+                                    date: flogData['date'],
+                                    frontImageURL: flogData['downloadUrl_front'],
+                                    backImageURL: flogData['downloadUrl_back'],
+                                    flogCode: flogData['flogCode'],
+                                    flogingId: flogData['flogingId'],
+                                    uid: flogData['uid'],
+                                  ),
+                                  SizedBox(width: 10),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        );
+                        },
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                );
+                },
+            ),
+          ),
+        );
       },
     );
   }
