@@ -89,12 +89,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '개구리 선택하기',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      SizedBox(width: 40),
+                      Expanded(
+                        child: Text(
+                          '개구리 선택하기',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
                       ),
                       TextButton(
                         onPressed: () {
@@ -120,56 +124,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  height: 400,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, // 3열로 배치
-                      mainAxisSpacing: 5.0, // 수직 간격 설정
-                      crossAxisSpacing: 5.0, // 수평 간격 설정
-                      childAspectRatio: 1, // 가로:세로 비율을 1:1로 설정
-                    ),
-                    padding:
-                        EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
-                    itemCount: 12, // 이미지 버튼 개수
-                    itemBuilder: (context, index) {
-                      // 각 이미지를 asset에서 불러오기
-                      final imagePath = 'assets/profile/profile_$index.png';
+                Expanded(
+                  child: Container(
+                      height: 400,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // 3열로 배치
+                          mainAxisSpacing: 5.0, // 수직 간격 설정
+                          crossAxisSpacing: 5.0, // 수평 간격 설정
+                          childAspectRatio: 1, // 가로:세로 비율을 1:1로 설정
+                        ),
+                        padding:
+                            EdgeInsets.fromLTRB(20, 5, 20, 20), // GridView 내부 패딩 설정
+                        itemCount: 12, // 이미지 버튼 개수
+                        itemBuilder: (context, index) {
+                          // 각 이미지를 asset에서 불러오기
+                          final imagePath = 'assets/profile/profile_$index.png';
 
-                      // 이미지 버튼 반환
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.transparent, // 이미지 버튼의 배경색 설정
-                          border: Border.all(
-                            color: selectedIndex == index
-                                ? Color(0xff609966) // 선택된 이미지의 테두리 색상
-                                : Colors.transparent, // 선택되지 않은 이미지는 테두리 없음
-                            width: 2.0, // 테두리 두께
-                          ),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            debugPrint('debug: 클릭됨');
-                            setState(() {
-                              selectedIndex = index; // 선택된 이미지의 인덱스 업데이트
-                            });
-                          },
-                          child: Image.asset(
-                            imagePath, // 이미지 경로
-                            fit: BoxFit.cover, // 이미지를 적절하게 조정
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                          // 이미지 버튼 반환
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.transparent, // 이미지 버튼의 배경색 설정
+                              border: Border.all(
+                                color: selectedIndex == index
+                                    ? Color(0xff609966) // 선택된 이미지의 테두리 색상
+                                    : Colors.transparent, // 선택되지 않은 이미지는 테두리 없음
+                                width: 2.0, // 테두리 두께
+                              ),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                debugPrint('debug: 클릭됨');
+                                setState(() {
+                                  selectedIndex = index; // 선택된 이미지의 인덱스 업데이트
+                                });
+                              },
+                              child: Image.asset(
+                                imagePath, // 이미지 경로
+                                fit: BoxFit.cover, // 이미지를 적절하게 조정
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                 ),
               ],
             );
@@ -334,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Center(
                                 child: ClipOval(
                                   child: Image.asset(
-                                    "assets/profile/profile_${userData['profile']}.png", //현재는 모두 임의로 넣어둠 나중에 현서가 만든 프로필 사진들로 바꿔야함
+                                    "assets/profile/profile_${userData['profile']}.png",
                                     width: 100,
                                     height: 100,
                                     alignment: Alignment.center,
