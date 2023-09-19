@@ -54,12 +54,14 @@ class Group {
   final List<String> members; // 그룹에 해당하는 user 들 리스트화
   final int frog; // 모은 개구리 수
   late final int memNumber; //그룹 멤버수
+  final String qpuzzleUrl; // 현재 진행중인 큐퍼즐사진
 
   Group(
       {required this.flogCode,
       required this.members,
       required this.frog,
-      required this.memNumber});
+      required this.memNumber,
+      required this.qpuzzleUrl});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -72,16 +74,19 @@ class Group {
     var snapshot = snap.data() as Map<String, dynamic>;
 
     return Group(
-        flogCode: snapshot["flogCode"],
-        members: snapshot["members"],
-        frog: snapshot["frog"],
-        memNumber: snapshot["memNumber"]);
+      flogCode: snapshot["flogCode"],
+      members: snapshot["members"],
+      frog: snapshot["frog"],
+      memNumber: snapshot["memNumber"],
+      qpuzzleUrl: snapshot["qpuzzleUrl"],
+    );
   }
 
   Map<String, dynamic> toJson() => {
         'flogCode': flogCode,
         'members': members,
         'frog': frog,
-        'memNumber': memNumber
+        'memNumber': memNumber,
+        'qpuzzleUrl': qpuzzleUrl,
       };
 }
