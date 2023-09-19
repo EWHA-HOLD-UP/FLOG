@@ -98,29 +98,23 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
         return Scaffold(
           /*---상단 Memory Box 바---*/
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                const SizedBox(width: 35),
-                Image.asset(
-                  "assets/flog_logo.png",
-                  width: 30,
-                  height: 30,
-                ),
-                const SizedBox(width: 10),
-                Text('Memory Box',
-                    style: GoogleFonts.balooBhaijaan2(
-                      textStyle: TextStyle(
-                        fontSize: 30,
-                        color: Color(0xFF609966),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )),
-              ],
-            ),
-            elevation: 0.0, //그림자 없음
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0.0, // 그림자 없음
             centerTitle: true,
+            title:
+            Text(
+              'Memory Box',
+              style: GoogleFonts.balooBhaijaan2(
+                textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
 
           /*---화면---*/
