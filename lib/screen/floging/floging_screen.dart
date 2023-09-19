@@ -165,6 +165,47 @@ class FlogingScreenState extends State<FlogingScreen> {
                                   return bDate.compareTo(aDate); // 내림차순으로 정렬
                                 });
 
+                                if (flogDocuments.isEmpty) {
+                                  // 만약 Flog Card가 없다면 빈 박스와 메시지를 표시
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        height: 200,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffd9d9d9),
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'button/padlock.png', // 이미지 파일 경로
+                                                width: 30, // 이미지 너비
+                                                height: 30, // 이미지 높이
+                                                // 다른 이미지 속성 설정
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                '아직 상태를 업로드하지 않았어요.',
+                                                style: GoogleFonts.nanumGothic(
+                                                  textStyle: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+
+                                    ],
+                                  );
+                                }
+
                                 return Container(
                                   height: 200,
                                   child: ListView(
