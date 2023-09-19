@@ -31,8 +31,29 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   String myanswer = ''; //내 답변 저장할 변수
   // Firestore 인스턴스 생성
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // 현재 사용자의 이메일 가져오기
   final currentUser = FirebaseAuth.instance.currentUser!;
+  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+
+  @override
+  void initState() {
+    super.initState();
+    getUserFlogCode();
+  }
+
+  // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  Future<void> getUserFlogCode() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        currentUserFlogCode = userDoc.data()!['flogCode'];
+      });
+    }
+    print(currentUserFlogCode);
+  }
 
   void postImage(String flogCode, int puzzleNo) async {
     try {
@@ -57,40 +78,109 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      /*---상단 Q-puzzle 바---*/
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        elevation: 0.0, // 그림자 없음
-        centerTitle: true,
-        title:
-        Text(
-          'Qpuzzle',
-          style: GoogleFonts.balooBhaijaan2(
-            textStyle: TextStyle(
-              fontSize: 30,
-              color: Color(0xFF609966),
-              fontWeight: FontWeight.bold,
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Group')
+          .where('flogCode', isEqualTo: currentUserFlogCode)
+          .snapshots(),
+      builder: (context, groupSnapshot) {
+        if (groupSnapshot.hasError) {
+          return Text('Error: ${groupSnapshot.error}');
+        }
+
+        if (groupSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+        final groupDocuments = groupSnapshot.data!.docs;
+
+        // qpuzzleUrl 가져오는 함수
+        String? qpuzzleUrl = groupDocuments.isNotEmpty
+            ? groupDocuments[0]['qpuzzleUrl'] // qpuzzleUrl 필드가 있는지 확인
+            : null;
+
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0.0,
+            centerTitle: true,
+            title: Text(
+              'Qpuzzle',
+              style: GoogleFonts.balooBhaijaan2(
+                textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      backgroundColor: Colors.white, //화면 배경색
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              /*---퍼즐을 보여주는 부분---*/
-              Center(child: puzzleBody()),
-            ],
-          ),
-        ),
-      ),
-    );
+          body: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 30),
+                  if (qpuzzleUrl != null) // qpuzzleUrl이 있을 때 !! 이미지를 표시
+                    Image.network(
+                      qpuzzleUrl,
+                      width: 330,
+                      height: 495,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // 이미지 로드 중 오류가 발생한 경우
+                        return Container(
+                          width: 330,
+                          height: 495,
+                          decoration: BoxDecoration(
+                            color: const Color(0xad747474),
+                            borderRadius: BorderRadius.circular(23),
+                          ),
+                          child: Center(
+                            child: InkWell(
+                              onTap: () async {
+                                onPickImage(); // 갤러리에서 사진 선택하여 불러오는 함수
+                              },
+                              child: Image.asset(
+                                "button/plus.png",
+                                width: 30,
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  if (qpuzzleUrl == null) // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
+                    Container(
+                      width: 330,
+                      height: 495,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200], // 회색 상자
+                        borderRadius: BorderRadius.circular(23), // 둥근 모서리
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: () async {
+                            onPickImage(); // 갤러리에서 사진 선택하여 불러오는 함수
+                          },
+                          child: Image.asset(
+                            "button/plus.png",
+                            width: 30,
+                            height: 30,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
   }
 
   /*-----------------------------위젯-----------------------------*/
