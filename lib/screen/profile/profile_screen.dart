@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatefulWidget {
   // 유저 프로필 표시를 위해 필요한 생성자 작성해야함
@@ -259,16 +260,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text(
-          '프로필',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold, // 굵게 설정
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        elevation: 0.0, // 그림자 없음
+        centerTitle: true,
+        title:
+        Text(
+          'Profile',
+          style: GoogleFonts.balooBhaijaan2(
+            textStyle: TextStyle(
+              fontSize: 30,
+              color: Color(0xFF609966),
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        backgroundColor: Colors.transparent, // 투명 설정
-        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(
@@ -284,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             },
           ),
-        ], // 그림자 제거
+        ],
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
