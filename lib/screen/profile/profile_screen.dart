@@ -325,18 +325,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Stack(
                           children: [
                             Container(
-                              child: Image.asset(
-                                'assets/profile/profile_${userData['profile']}.png',
-                                fit: BoxFit.cover,
-                              ),
                               width: 120,
                               height: 120,
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Color(0xff609966),
-                                  width: 2.0,
+                                shape: BoxShape.circle, //원 모양 프로필 사진
+                                color: Colors.grey[300], //배경색
+                              ),
+                              child: Center(
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    "assets/profile/profile_${userData['profile']}.png", //현재는 모두 임의로 넣어둠 나중에 현서가 만든 프로필 사진들로 바꿔야함
+                                    width: 100,
+                                    height: 100,
+                                    alignment: Alignment.center,
+                                  ),
                                 ),
                               ),
                             ),
