@@ -102,57 +102,55 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   .toList();
 
 
-        return Scaffold(
-          /*---상단 Memory Box 바---*/
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            elevation: 0.0, // 그림자 없음
-            centerTitle: true,
-            title:
-            Text(
-              'Memory Box',
-              style: GoogleFonts.balooBhaijaan2(
-                textStyle: TextStyle(
-                  fontSize: 30,
-                  color: Color(0xFF609966),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          /*---화면---*/
-          backgroundColor: Colors.white, //화면 배경색
-          body: ListView(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      for (final profile in profiles)
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Person(
-                            profileNum: profile.profileNum,
-                            nickname: profile.nickname,
-                          ),
-                        ),
-                    ],
+              return Scaffold(
+                /*---상단 Memory Box 바---*/
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  elevation: 0.0, // 그림자 없음
+                  centerTitle: true,
+                  title: Text(
+                    'Memory Box',
+                    style: GoogleFonts.balooBhaijaan2(
+                      textStyle: TextStyle(
+                        fontSize: 30,
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              flogCoinNum(),
-              ourEveryday(),
-              ourValuableday(),
-            ],
-          ),
 
-        );
+                /*---화면---*/
+                backgroundColor: Colors.white, //화면 배경색
+                body: ListView(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            for (final profile in profiles)
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Person(
+                                  profileNum: profile.profileNum,
+                                  nickname: profile.nickname,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    flogCoinNum(),
+                    ourEveryday(),
+                    ourValuableday(),
+                  ],
+                ),
+              );
             }
         );
       },
