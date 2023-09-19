@@ -123,7 +123,11 @@ class FirebaseAuthProvider with ChangeNotifier {
       // 그룹이 존재하지 않는 경유 -> 그룹 생성하기
       print("[*] 새로운 그룹을 만듭니다");
       model.Group group = model.Group(
-          flogCode: flogCode, members: [uid], frog: 0, memNumber: 1);
+          flogCode: flogCode,
+          members: [uid],
+          frog: 0,
+          memNumber: 1,
+          qpuzzleUrl: "");
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
     }
   }
