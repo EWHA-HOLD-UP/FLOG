@@ -26,35 +26,17 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
   int coinNum = 1;
 
-
-  Future<void> getnumofCoin() async {
-    String? userEmail = currentUser.email; // 이메일 가져오기
-    // 'User' 컬렉션에서 사용자 문서를 가져오기
-    QuerySnapshot userQuerySnapshot = await firestore
-        .collection('User')
-        .where('email', isEqualTo: userEmail)
-        .get();
-    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
-    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
-    DocumentReference currentDocumentRef =
-    firestore.collection('Group').doc(userFlogCode);
-    // 그룹 문서를 가져와서 데이터를 읽음
-    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
-    setState(() {
-      coinNum = groupDocumentSnapshot['frog']; // 가족 명 수 파이어베이스에서 받아오기
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    getnumofCoin(); // initState 내에서 호출
     getUserFlogCode(); // initState 내에서 호출
+    //getnumofCoin(); // initState 내에서 호출
+
   }
 
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
-  Future<void> getUserFlogCode() async {
-    final userDoc = await FirebaseFirestore.instance
+  void getUserFlogCode() async {
+    final userDoc = await firestore
         .collection('User')
         .doc(currentUser.email)
         .get();
@@ -126,10 +108,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       for (final profile in profiles)
                         Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Person(
                             profileNum: profile.profileNum,
                             nickname: profile.nickname,
