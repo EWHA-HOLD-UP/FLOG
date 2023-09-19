@@ -38,52 +38,33 @@ class FlogingScreenState extends State<FlogingScreen> {
     print(currentUserFlogCode);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Floging').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+        stream: FirebaseFirestore.instance
+        .collection('User')
+            .where('flogCode', isEqualTo: currentUserFlogCode)
+            .snapshots(),
+        builder: (context, userSnapshot) {
+        if (userSnapshot.hasError) {
+        return Text('Error: ${userSnapshot.error}');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
         }
 
-        final documents = snapshot.data!.docs;
-        final flogCards = documents
-            .where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return data['flogCode'] == currentUserFlogCode;
-        })
-            .map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return FlogCard(
-            date: data['date'],
-            frontImageURL: data['downloadUrl_front'],
-            backImageURL: data['downloadUrl_back'],
-            flogCode: data['flogCode'],
-            flogingId: data['flogingId'],
-            uid: data['uid'],
-          );
-        })
-            .toList();
-        // 날짜 기준으로 flogCards 리스트 정렬 (최신 순서대로)
-        flogCards.sort((a, b) => b.date.compareTo(a.date));
-        // 최신 요소 가져오기 (가장 첫 번째 요소)
-        final latestFlogCard = flogCards.isNotEmpty ? flogCards[0] : null;
+        final userDocuments = userSnapshot.data!.docs;
 
 
-        return  Scaffold(
-          extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              elevation: 0.0, // 그림자 없음
-              centerTitle: true,
-              title:
+                return Scaffold(
+              extendBodyBehindAppBar: true,
+                  appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  elevation: 0.0,
+                  centerTitle: true,
+                  title:
                   Text(
                     'FLOGing',
                     style: GoogleFonts.balooBhaijaan2(
@@ -92,33 +73,123 @@ class FlogingScreenState extends State<FlogingScreen> {
                         color: Color(0xFF609966),
                         fontWeight: FontWeight.bold,
                       ),
+                    ),
                   ),
-              ),
-            ),
+                ),
+                  body: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView.builder(
+                      itemCount: userDocuments.length,
+                      itemBuilder: (context, index) {
+                        final userData = userDocuments[index].data() as Map<String, dynamic>;
+                        final userProfile = userData['profile'];
+                        final userNickname = userData['nickname'];
 
-          body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20.0,
-                mainAxisSpacing: 20.0,
-                childAspectRatio: 3 / 4,
-              ),
-              itemCount: flogCards.length,
-              itemBuilder: (context, index) {
-                return FlogCard(
-                  date: flogCards[index].date,
-                  frontImageURL: flogCards[index].frontImageURL,
-                  backImageURL: flogCards[index].backImageURL,
-                  flogCode: flogCards[index].flogCode,
-                  flogingId: flogCards[index].flogingId,
-                  uid: flogCards[index].uid,
-                );
-              },
-            ),
-          ),
-        );
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 20),
+                            Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Hero(
+                                    tag: "profile",
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey[200],
+                                          ),
+                                          child: Center(
+                                            child: ClipOval(
+                                              child: Image.asset(
+                                                "assets/profile/profile_${userProfile}.png",
+                                                width: 50,
+                                                height: 50,
+                                                alignment: Alignment.center,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    userNickname,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff609966),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Floging')
+                                  .where('uid', isEqualTo: userData['email'])
+                                  .snapshots(),
+                              builder: (context, flogSnapshot) {
+                                if (flogSnapshot.hasError) {
+                                  return Text('Error: ${flogSnapshot.error}');
+                                }
+
+                                if (flogSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                }
+
+                                final flogDocuments = flogSnapshot.data!.docs;
+
+                                // 데이터를 날짜를 기준으로 내림차순으로 정렬
+                                flogDocuments.sort((a, b) {
+                                  final aData = a.data() as Map<String, dynamic>;
+                                  final bData = b.data() as Map<String, dynamic>;
+                                  final aDate = aData['date'] as Timestamp;
+                                  final bDate = bData['date'] as Timestamp;
+                                  return bDate.compareTo(aDate); // 내림차순으로 정렬
+                                });
+
+                                return Container(
+                                  height: 200,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: flogDocuments.map((flogDoc) {
+                                      final flogData = flogDoc.data() as Map<String, dynamic>;
+                                      return Row(
+                                        children: [
+                                          FlogCard(
+                                            date: flogData['date'],
+                                            frontImageURL: flogData['downloadUrl_front'],
+                                            backImageURL: flogData['downloadUrl_back'],
+                                            flogCode: flogData['flogCode'],
+                                            flogingId: flogData['flogingId'],
+                                            uid: flogData['uid'],
+                                          ),
+                                          SizedBox(width: 10),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                );
+                              },
+                            ),
+
+
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+            );
       },
     );
   }

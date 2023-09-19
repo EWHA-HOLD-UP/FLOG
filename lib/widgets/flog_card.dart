@@ -42,6 +42,8 @@ class FlogCard extends StatelessWidget {
       child: Stack(
       children: <Widget>[
         Container(
+          width: 150, // FlogCard의 너비 설정
+          height: 200, // FlogCard의 높이 설정
           decoration: BoxDecoration(
                 image: DecorationImage(image: NetworkImage(backImageURL),
                     fit: BoxFit.cover,
