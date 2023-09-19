@@ -96,6 +96,8 @@ class FireStoreMethods {
           unlock: [false, false, false, false, false, false]);
 
       _firestore.collection('Qpuzzle').doc(puzzleId).set(qpuzzle.toJson());
+      final CollectionReference groupRef = _firestore.collection('Group');
+      await groupRef.doc(flogCode).update({'qpuzzleUrl': photoUrl});
       res = "success";
     } catch (err) {
       res = err.toString();
