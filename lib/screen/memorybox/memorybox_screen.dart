@@ -18,9 +18,7 @@ class MemoryBoxScreen extends StatefulWidget {
 }
 
 class MemoryBoxState extends State<MemoryBoxScreen> {
-  // Firestore 인스턴스 생성
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // 현재 사용자의 이메일 가져오기
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
   int frog = 0;
@@ -29,12 +27,10 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   @override
   void initState() {
     super.initState();
-    getUserFlogCode(); // initState 내에서 호출
-    //getnumofCoin(); // initState 내에서 호출
-
+    getUserFlogCode();
   }
 
-  // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  //현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
   Future<void> getUserFlogCode() async {
     final userDoc = await FirebaseFirestore.instance
         .collection('User')

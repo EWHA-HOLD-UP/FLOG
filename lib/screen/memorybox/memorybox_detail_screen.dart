@@ -18,34 +18,13 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
-  //int numOfMem = 0;
-
 
   @override
   void initState() {
     super.initState();
     getUserFlogCode();
-    //getnumofMem(); // initState 내에서 호출
   }
-/*
-  Future<void> getnumofMem() async {
-    String? userEmail = currentUser.email; // 이메일 가져오기
-    // 'User' 컬렉션에서 사용자 문서를 가져오기
-    QuerySnapshot userQuerySnapshot = await firestore
-        .collection('User')
-        .where('email', isEqualTo: userEmail)
-        .get();
-    String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
-    // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
-    DocumentReference currentDocumentRef =
-    firestore.collection('Group').doc(userFlogCode);
-    // 그룹 문서를 가져와서 데이터를 읽음
-    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
-    setState(() {
-      numOfMem = groupDocumentSnapshot['memNumber']; // 가족 명 수 파이어베이스에서 받아오기
-    });
-  }
-*/
+
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
   Future<void> getUserFlogCode() async {
     final userDoc = await FirebaseFirestore.instance
@@ -60,6 +39,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
     }
     print(currentUserFlogCode);
   }
+
 
   @override
   Widget build(BuildContext context) {
