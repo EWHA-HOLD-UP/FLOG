@@ -60,27 +60,21 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     return Scaffold(
       /*---상단 Q-puzzle 바---*/
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            const SizedBox(width: 50),
-            Image.asset(
-              "assets/flog_logo.png",
-              width: 30,
-              height: 30,
-            ),
-            const SizedBox(width: 10),
-            Text('Q-puzzle',
-                style: GoogleFonts.balooBhaijaan2(
-                    textStyle: TextStyle(
-                  fontSize: 30,
-                  color: Color(0xFF609966),
-                  fontWeight: FontWeight.bold,
-                ))),
-          ],
-        ),
-        elevation: 0.0, //그림자 없음
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        elevation: 0.0, // 그림자 없음
         centerTitle: true,
+        title:
+        Text(
+          'Qpuzzle',
+          style: GoogleFonts.balooBhaijaan2(
+            textStyle: TextStyle(
+              fontSize: 30,
+              color: Color(0xFF609966),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
       backgroundColor: Colors.white, //화면 배경색
       body: SafeArea(
