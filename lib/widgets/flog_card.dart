@@ -42,7 +42,7 @@ class FlogCard extends StatelessWidget {
       child: Stack(
       children: <Widget>[
         Container(
-          width: 150, // FlogCard의 너비 설정
+          width: 130, // FlogCard의 너비 설정
           height: 200, // FlogCard의 높이 설정
           decoration: BoxDecoration(
                 image: DecorationImage(image: NetworkImage(backImageURL),
@@ -50,18 +50,14 @@ class FlogCard extends StatelessWidget {
                 ),
             color: Color(0xffd9d9d9),
             borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(
-              color: Color(0xff609966),
-              width: 3.0,
-            ),
           ),
         ),
         // 후면 사진 표시 (동그란 모양)
         Positioned(
-          top: 0, // 상단 위치
-          right: 0, // 오른쪽 위치
+          top: 8, // 상단 위치
+          right: 8, // 오른쪽 위치
           child: Container(
-            width: 60,
+            width: 52,
             height: 80,
             decoration: BoxDecoration(
               image: DecorationImage(image: NetworkImage(frontImageURL),
@@ -69,8 +65,8 @@ class FlogCard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: Color(0xff609966),
-                width: 3.0,
+                color: Colors.white,
+                width: 2.0,
               ),
             ),
           ),
@@ -84,7 +80,7 @@ class FlogCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text('${uid.split('@')[0]}', style: TextStyle(color: Colors.white),),
-                Text('${date.toDate().toString()}', style: TextStyle(color: Colors.white)),
+                Text('${date.toDate().hour.toString().padLeft(2, '0')}:${date.toDate().minute.toString().padLeft(2, '0')}', style: TextStyle(color: Colors.white)), //hh:mm 형식으로 표시
               ],
             ),
           ),

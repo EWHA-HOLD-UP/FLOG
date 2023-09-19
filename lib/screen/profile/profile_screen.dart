@@ -369,10 +369,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     TextButton(
                       child: Text(
                         userData['nickname'],
-                        style: const TextStyle(
+                        style: GoogleFonts.nanumGothic(
+                          textStyle: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xff609966)),
+                            color: Color(0xff609966)
+                          ),
+                        ),
                       ),
                       onPressed: () =>
                           editField('nickname', userData['nickname']),

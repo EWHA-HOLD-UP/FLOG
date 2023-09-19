@@ -36,7 +36,7 @@ class Person extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           '$nickname',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.nanumGothic(
               textStyle: TextStyle(
                 fontSize: 15,
                 color: Colors.black,
