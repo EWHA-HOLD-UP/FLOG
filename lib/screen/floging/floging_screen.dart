@@ -40,6 +40,13 @@ class FlogingScreenState extends State<FlogingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final year = now.year;
+    final month = now.month;
+    final day = now.day;
+
+    final formattedDate = '$year.$month.$day';
+
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
         .collection('User')
@@ -58,7 +65,7 @@ class FlogingScreenState extends State<FlogingScreen> {
 
 
                 return Scaffold(
-              extendBodyBehindAppBar: true,
+                  extendBodyBehindAppBar: true,
                   appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   automaticallyImplyLeading: false,
@@ -88,7 +95,6 @@ class FlogingScreenState extends State<FlogingScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 20),
                             Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -121,10 +127,12 @@ class FlogingScreenState extends State<FlogingScreen> {
                                   SizedBox(width: 10),
                                   Text(
                                     userNickname,
-                                    style: TextStyle(
+                                    style: GoogleFonts.nanumGothic(
+                                      textStyle: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xff609966),
+                                    ),
                                     ),
                                   ),
                                 ],
@@ -181,8 +189,6 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 );
                               },
                             ),
-
-
                             SizedBox(height: 20),
                           ],
                         );
