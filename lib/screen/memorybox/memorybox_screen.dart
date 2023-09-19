@@ -23,7 +23,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   // 현재 사용자의 이메일 가져오기
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
-
+  int frog = 0;
   int coinNum = 1;
 
   @override
@@ -35,8 +35,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   }
 
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
-  void getUserFlogCode() async {
-    final userDoc = await firestore
+  Future<void> getUserFlogCode() async {
+    final userDoc = await FirebaseFirestore.instance
         .collection('User')
         .doc(currentUser.email)
         .get();
@@ -48,7 +48,6 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     }
     print(currentUserFlogCode);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +76,31 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           );
         })
             .toList();
+
+        return StreamBuilder<QuerySnapshot> (
+            stream: FirebaseFirestore.instance.collection('Group').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+
+              final documents = snapshot.data!.docs;
+              final frogs = documents
+                  .where((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return data['flogCode'] == currentUserFlogCode;
+              })
+                  .map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                frog = data['frog'];
+                return frog;
+              })
+                  .toList();
+
 
         return Scaffold(
           /*---상단 Memory Box 바---*/
@@ -129,6 +153,8 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           ),
 
         );
+            }
+        );
       },
     );
   }
@@ -147,7 +173,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
             height: 30,
           ),
           const SizedBox(width: 10),
-          Text('모은 개구리 수 : $coinNum마리',
+          Text('모은 개구리 수 : $frog마리',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.black,
