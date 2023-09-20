@@ -29,6 +29,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   //💚나중에 다른 사용자들의 답변 여부도 파이어베이스에서 불러와야함
 
   String myanswer = ''; //내 답변 저장할 변수
+
   // Firestore 인스턴스 생성
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
@@ -46,15 +47,15 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
         .collection('User')
         .doc(currentUser.email)
         .get();
-
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
 
+  //Qpuzzle 사진 파이어베이스에 업로드
   void postImage(String flogCode, int puzzleNo) async {
     try {
       // upload to storage and db
@@ -72,9 +73,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     1: "답변을 작성한 후 확인하세요.",
     2: "답변 작성하기", //'나'인 경우
   };
-
   //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [0, 1, 2];
+  List<int> memberStatus = [0, 1, 1, 2];
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +90,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
         }
 
         if (groupSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
         final groupDocuments = groupSnapshot.data!.docs;
 
-        // qpuzzleUrl 가져오는 함수
+        //qpuzzleUrl 가져오는 함수
         String? qpuzzleUrl = groupDocuments.isNotEmpty
             ? groupDocuments[0]['qpuzzleUrl'] // qpuzzleUrl 필드가 있는지 확인
             : null;
@@ -123,37 +124,143 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 30),
-                  if (qpuzzleUrl != null) // qpuzzleUrl이 있을 때 !! 이미지를 표시
-                    Image.network(
-                      qpuzzleUrl,
-                      width: 330,
-                      height: 495,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        // 이미지 로드 중 오류가 발생한 경우
-                        return Container(
+                  if (qpuzzleUrl != null) //qpuzzleUrl이 있을 때 !! 이미지를 표시
+                    Stack(
+                      children: [
+                        Container(
                           width: 330,
                           height: 495,
                           decoration: BoxDecoration(
-                            color: const Color(0xad747474),
                             borderRadius: BorderRadius.circular(23),
-                          ),
-                          child: Center(
-                            child: InkWell(
-                              onTap: () async {
-                                onPickImage(); // 갤러리에서 사진 선택하여 불러오는 함수
-                              },
-                              child: Image.asset(
-                                "button/plus.png",
-                                width: 30,
-                                height: 30,
-                              ),
+                            image: DecorationImage(
+                              image: NetworkImage(qpuzzleUrl),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  if (qpuzzleUrl == null) // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
+                        ),
+                        SizedBox(
+                          width: 330,
+                          height: 495,
+                          child: Column(
+                            children: [
+                              for (int row = 0; row < 3; row++) //3행
+                                Row(
+                                  children: [
+                                    for (int col = 0; col < 2; col++) //2열
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (!unlockStates[row * 2 + col] &&
+                                              isQuestionSheetShowed == false ||
+                                              selectedCellIndex == row * 2 + col) {
+                                            //한 번 어떤 퍼즐의 QuestionSheet 봤으면 대답 누르고 확인 누르기 전에 다른 조각 열람 불가
+                                            //그러나 선택했던 조각이라면 QuestionSheet 봤어도 다시 클릭 가능
+                                            if (selectedCellIndex != row * 2 + col) {
+                                              //만약 새로운 조각 클릭 시,
+                                              isAnswered =
+                                              false; //해당 조각의 질문은 아직 작성되지 않았으므로 다시 false로 초기화
+                                            }
+                                            setState(() {
+                                              selectedCellIndex = row * 2 + col;
+                                            });
+                                            // 0 1
+                                            // 2 3
+                                            // 4 5
+                                            //형태로 조각 인덱싱하고, 해당 조각 클릭시 인덱스를 저장
+                                            showQuestionSheet(context); //질문창 나타나기
+                                          }
+                                        },
+                                        child: Container(
+                                          //분할된 조각
+                                          width: 165,
+                                          height: 165,
+                                          decoration: BoxDecoration(
+                                            color: unlockStates[row * 2 + col]
+                                                ? Colors.transparent //unlock되면 투명해져서 사진이 드러남
+                                                : const Color(
+                                                0xFF000000), //unlock되지 않았으면 검정색 조각으로 덮음
+                                            border: Border.all(
+                                              //테두리
+                                              color: unlockStates[row * 2 + col]
+                                                  ? const Color(0xFF609966) //unlock되면 초록 테두리
+                                                  : Colors.white, //unlock되지 않았으면 흰색 테두리
+                                              width: 2.0, //테두리 두께
+                                            ),
+                                            borderRadius: BorderRadius.only(
+                                              //둥근 테두리 설정
+                                              topLeft: Radius.circular((row == 0 && col == 0)
+                                                  ? 23.0
+                                                  : 0.0), // 1행 1열 - 좌측 상단 모서리
+                                              topRight: Radius.circular((row == 0 && col == 1)
+                                                  ? 23.0
+                                                  : 0.0), // 1행 2열 - 우측 상단 모서리
+                                              bottomLeft: Radius.circular(
+                                                  (row == 2 && col == 0)
+                                                      ? 23.0
+                                                      : 0.0), // 3행 1열 - 좌측 하단 모서리
+                                              bottomRight: Radius.circular(
+                                                  (row == 2 && col == 1)
+                                                      ? 23.0
+                                                      : 0.0), // 3행 2열 - 우측 하단 모서리
+                                            ),
+                                          ),
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              //현재 진행 중인 조각이면 - 선택된 조각이 아직 unlock되지 않았고 선택한 조각이면
+                                              if (selectedCellIndex == row * 2 + col &&
+                                                  unlockStates[row * 2 + col] == false)
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                          //초록 테두리
+                                                          color: const Color(0xFF609966),
+                                                          width: 2.0,
+                                                        ),
+                                                        borderRadius: BorderRadius.only(
+                                                          //둥근 모서리
+                                                          topLeft: Radius.circular(
+                                                              (row == 0 && col == 0)
+                                                                  ? 23.0
+                                                                  : 0.0), // 1행 1열
+                                                          topRight: Radius.circular(
+                                                              (row == 0 && col == 1)
+                                                                  ? 23.0
+                                                                  : 0.0), // 1행 2열
+                                                          bottomLeft: Radius.circular(
+                                                              (row == 2 && col == 0)
+                                                                  ? 23.0
+                                                                  : 0.0), // 3행 1열
+                                                          bottomRight: Radius.circular(
+                                                              (row == 2 && col == 1)
+                                                                  ? 23.0
+                                                                  : 0.0), // 3행 2열
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Center(
+                                                      child: Image.asset(
+                                                        //발자국 표시
+                                                        "assets/flog_foot_green.png",
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  else // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
                     Container(
                       width: 330,
                       height: 495,
@@ -183,176 +290,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       );
   }
 
-  /*-----------------------------위젯-----------------------------*/
-  Widget puzzleBody() {
-    if (image != null) {
-      //이미지가 선택되었다면
-      return Stack(
-        children: [
-          puzzleImage(), //앨범에서 선택한 사진을 하단에 깔고
 
-          //그 위를 분할하여 덮고 unlock하기
-          SizedBox(
-            width: 330,
-            height: 495,
-            child: Column(
-              children: [
-                for (int row = 0; row < 3; row++) //3행
-                  Row(
-                    children: [
-                      for (int col = 0; col < 2; col++) //2열
-                        GestureDetector(
-                          onTap: () {
-                            if (!unlockStates[row * 2 + col] &&
-                                    isQuestionSheetShowed == false ||
-                                selectedCellIndex == row * 2 + col) {
-                              //한 번 어떤 퍼즐의 QuestionSheet 봤으면 대답 누르고 확인 누르기 전에 다른 조각 열람 불가
-                              //그러나 선택했던 조각이라면 QuestionSheet 봤어도 다시 클릭 가능
-                              if (selectedCellIndex != row * 2 + col) {
-                                //만약 새로운 조각 클릭 시,
-                                isAnswered =
-                                    false; //해당 조각의 질문은 아직 작성되지 않았으므로 다시 false로 초기화
-                              }
-                              setState(() {
-                                selectedCellIndex = row * 2 + col;
-                              });
-                              // 0 1
-                              // 2 3
-                              // 4 5
-                              //형태로 조각 인덱싱하고, 해당 조각 클릭시 인덱스를 저장
-                              showQuestionSheet(context); //질문창 나타나기
-                            }
-                          },
-                          child: Container(
-                            //분할된 조각
-                            width: 165,
-                            height: 165,
-                            decoration: BoxDecoration(
-                              color: unlockStates[row * 2 + col]
-                                  ? Colors.transparent //unlock되면 투명해져서 사진이 드러남
-                                  : const Color(
-                                      0xFF000000), //unlock되지 않았으면 검정색 조각으로 덮음
-                              border: Border.all(
-                                //테두리
-                                color: unlockStates[row * 2 + col]
-                                    ? const Color(0xFF609966) //unlock되면 초록 테두리
-                                    : Colors.white, //unlock되지 않았으면 흰색 테두리
-                                width: 2.0, //테두리 두께
-                              ),
-                              borderRadius: BorderRadius.only(
-                                //둥근 테두리 설정
-                                topLeft: Radius.circular((row == 0 && col == 0)
-                                    ? 23.0
-                                    : 0.0), // 1행 1열 - 좌측 상단 모서리
-                                topRight: Radius.circular((row == 0 && col == 1)
-                                    ? 23.0
-                                    : 0.0), // 1행 2열 - 우측 상단 모서리
-                                bottomLeft: Radius.circular(
-                                    (row == 2 && col == 0)
-                                        ? 23.0
-                                        : 0.0), // 3행 1열 - 좌측 하단 모서리
-                                bottomRight: Radius.circular(
-                                    (row == 2 && col == 1)
-                                        ? 23.0
-                                        : 0.0), // 3행 2열 - 우측 하단 모서리
-                              ),
-                            ),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                //현재 진행 중인 조각이면 - 선택된 조각이 아직 unlock되지 않았고 선택한 조각이면
-                                if (selectedCellIndex == row * 2 + col &&
-                                    unlockStates[row * 2 + col] == false)
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            //초록 테두리
-                                            color: const Color(0xFF609966),
-                                            width: 2.0,
-                                          ),
-                                          borderRadius: BorderRadius.only(
-                                            //둥근 모서리
-                                            topLeft: Radius.circular(
-                                                (row == 0 && col == 0)
-                                                    ? 23.0
-                                                    : 0.0), // 1행 1열
-                                            topRight: Radius.circular(
-                                                (row == 0 && col == 1)
-                                                    ? 23.0
-                                                    : 0.0), // 1행 2열
-                                            bottomLeft: Radius.circular(
-                                                (row == 2 && col == 0)
-                                                    ? 23.0
-                                                    : 0.0), // 3행 1열
-                                            bottomRight: Radius.circular(
-                                                (row == 2 && col == 1)
-                                                    ? 23.0
-                                                    : 0.0), // 3행 2열
-                                          ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Image.asset(
-                                          //발자국 표시
-                                          "assets/flog_foot_green.png",
-                                          width: 50,
-                                          height: 50,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                          ),
-                        )
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        ],
-      );
-    } else {
-      //이미지가 아직 선택되지 않았다면
-      return Container(
-        width: 330,
-        height: 495,
-        decoration: BoxDecoration(
-          color: const Color(0xad747474), //회색 상자
-          borderRadius: BorderRadius.circular(23), //둥근 모서리
-        ),
-        child: Center(
-          child: InkWell(
-            //+버튼 누르면 앨범에서 사진 선택 가능
-            onTap: () async {
-              onPickImage(); //갤러리에서 사진 선택하여 불러오는 함수
-            },
-            child: Image.asset("button/plus.png", //추후에 이미지+ 버튼 제작하여 변경?
-                width: 30,
-                height: 30),
-          ),
-        ),
-      );
-    }
-  }
-
-  /*-----------------------------위젯 속 위젯-----------------------------*/
-  //앨범에서 선택한 사진
-  Widget puzzleImage() {
-    return Container(
-      width: 330,
-      height: 495,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: FileImage(File(image!.path)),
-          fit: BoxFit.cover,
-        ),
-        borderRadius: BorderRadius.circular(23),
-      ),
-    );
-  }
 
   /*-----------------------------함수-----------------------------*/
   //갤러리에서 사진 선택하여 불러오는 함수
