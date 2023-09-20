@@ -255,7 +255,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                               height: 50,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.grey[300],
+                                color: Colors.grey[200],
                               ),
                               child: Center(
                                 child: ClipOval(
