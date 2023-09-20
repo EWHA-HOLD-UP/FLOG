@@ -9,7 +9,7 @@ import '../models/floging.dart';
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Flogig 데이터베이스에 저장하기
+  // Floging 데이터베이스에 저장하기
 
   Future<String> uploadFloging(
       Uint8List file, Uint8List file2, String uid, String flogCode) async {

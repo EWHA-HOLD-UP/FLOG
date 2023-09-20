@@ -55,13 +55,16 @@ class Group {
   final int frog; // 모은 개구리 수
   late final int memNumber; //그룹 멤버수
   final String qpuzzleUrl; // 현재 진행중인 큐퍼즐사진
+  final List<bool> unlock; // 현재 진행중인 큐퍼즐의 잠금해제여부
 
   Group(
       {required this.flogCode,
       required this.members,
       required this.frog,
       required this.memNumber,
-      required this.qpuzzleUrl});
+      required this.qpuzzleUrl,
+      required this.unlock
+      });
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -79,6 +82,7 @@ class Group {
       frog: snapshot["frog"],
       memNumber: snapshot["memNumber"],
       qpuzzleUrl: snapshot["qpuzzleUrl"],
+      unlock: snapshot["unlock"]
     );
   }
 
@@ -88,5 +92,6 @@ class Group {
         'frog': frog,
         'memNumber': memNumber,
         'qpuzzleUrl': qpuzzleUrl,
+        'unlock' : unlock
       };
 }
