@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flog/screen/floging/floging_detail_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flog/screen/floging/floging_detail_screen.dart'; // 다른 파일의 Floging_Detail_Screen import
 import 'package:flog/widgets/flog_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -206,23 +206,43 @@ class FlogingScreenState extends State<FlogingScreen> {
                             scrollDirection: Axis.horizontal,
                             children: flogDocuments.map((flogDoc) {
                               final flogData = flogDoc.data() as Map<String, dynamic>;
-                              return Row(
-                                children: [
-                                  FlogCard(
-                                    date: flogData['date'],
-                                    frontImageURL: flogData['downloadUrl_front'],
-                                    backImageURL: flogData['downloadUrl_back'],
-                                    flogCode: flogData['flogCode'],
-                                    flogingId: flogData['flogingId'],
-                                    uid: flogData['uid'],
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
+                              final flogingId = flogData['flogingId'];
+                              final flogCode = flogData['flogCode'];
+                              final date = flogData['date'];
+                              final frontImageURL = flogData['downloadUrl_front'];
+                              final backImageURL = flogData['downloadUrl_back'];
+                              final uid = flogData['uid'];
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FlogingDetailScreen(
+                                        flogingId: flogingId,
+                                      ),
+                                    ),
+                                  );
+                                },
+
+                                child: Row(
+                                  children: [
+                                    FlogCard(
+                                      date: date,
+                                      frontImageURL: frontImageURL,
+                                      backImageURL: backImageURL,
+                                      flogCode: flogCode,
+                                      flogingId: flogingId,
+                                      uid: uid,
+                                    ),
+                                    SizedBox(width: 10),
+                                  ],
+                                ),
                               );
                             }).toList(),
                           ),
                         );
-                        },
+                      },
                     ),
                     SizedBox(height: 20),
                   ],

@@ -1,7 +1,6 @@
 // 업로드한 상태를 보여주는 카드 기능 구현
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flog/screen/floging/floging_detail_screen.dart';
 
 
 class FlogCard extends StatelessWidget {
@@ -23,23 +22,7 @@ class FlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FlogingDetailScreen(
-                flogingId: flogingId,
-                flogCode: flogCode,
-                date: date,
-                frontImageURL: frontImageURL,
-                backImageURL: backImageURL,
-                uid: uid,),
-            ),
-          );
-        },
-
-      child: Stack(
+    return Stack(
       children: <Widget>[
         Container(
           width: 130, // FlogCard의 너비 설정
@@ -86,7 +69,6 @@ class FlogCard extends StatelessWidget {
           ),
         )
       ],
-    ),
     );
   }
 }
