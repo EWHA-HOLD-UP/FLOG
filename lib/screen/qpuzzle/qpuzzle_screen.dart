@@ -73,7 +73,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     2: "답변 작성하기", //'나'인 경우
   };
   //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [0, 2];
+  List<int> memberStatus = [0, 1, 1, 2];
 
   @override
   Widget build(BuildContext context) {
