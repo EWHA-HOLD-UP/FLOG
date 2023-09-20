@@ -53,7 +53,7 @@ class CommentCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    DateFormat('dd.MM.yy HH:mm').format(date.toDate()),
+                    DateFormat('yy.MM.dd HH:mm').format(date.toDate()),
                     style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w400,),
                   ),
