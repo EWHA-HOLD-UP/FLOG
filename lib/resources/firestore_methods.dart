@@ -3,7 +3,6 @@ import 'package:flog/models/qpuzzle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flog/resources/storage_methods.dart';
-
 import '../models/floging.dart';
 
 class FireStoreMethods {

@@ -176,10 +176,9 @@ class FlogingScreenState extends State<FlogingScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Image.asset(
-                                        'button/padlock.png', // 이미지 파일 경로
-                                        width: 30, // 이미지 너비
-                                        height: 30, // 이미지 높이
-                                        // 다른 이미지 속성 설정
+                                        'button/padlock.png',
+                                        width: 30,
+                                        height: 30,
                                       ),
                                       SizedBox(height: 10),
                                       Text(

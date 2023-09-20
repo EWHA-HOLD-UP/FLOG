@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flog/widgets/flog_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flog/resources/firestore_methods.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
+import 'package:flog/widgets/comment_card.dart';
 
 
 class FlogingDetailScreen extends StatefulWidget {
@@ -15,6 +18,38 @@ class FlogingDetailScreen extends StatefulWidget {
 }
 
 class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+  FireStoreMethods fireStoreMethods = FireStoreMethods();
+  final _commentTextController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserFlogCode();
+  }
+
+  // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  Future<void> getUserFlogCode() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        currentUserFlogCode = userDoc.data()!['flogCode'];
+      });
+    }
+    print(currentUserFlogCode);
+  }
+
+  // 텍스트 필드 클리어 및 키보드 숨김 함수
+  void clearTextFieldAndHideKeyboard() {
+    _commentTextController.clear();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +98,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     TextSpan(
                       text: '${flogData['date'].toDate().hour.toString().padLeft(2, '0')}:${flogData['date'].toDate().minute.toString().padLeft(2, '0')}',
                       style: TextStyle(
-                        fontSize: 15, // 원하는 크기로 조정하세요
+                        fontSize: 15,
                         color: Color(0xFF609966),
                         fontWeight: FontWeight.bold,
                       ),
@@ -92,8 +127,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 Stack(
                 children: <Widget>[
                   Container(
-                  width: 260, // FlogCard의 너비 설정
-                  height: 400, // FlogCard의 높이 설정
+                  width: 260,
+                  height: 400,
                   decoration: BoxDecoration(
                     image: DecorationImage(image: NetworkImage(flogData['downloadUrl_back']),
                       fit: BoxFit.cover,
@@ -102,10 +137,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
-                // 후면 사진 표시 (동그란 모양)
                 Positioned(
-                  top:16, // 상단 위치
-                  right: 16, // 오른쪽 위치
+                  top:16,
+                  right: 16,
                   child: Container(
                     width: 78,
                     height: 120,
@@ -123,12 +157,157 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 ),
               ],
             ),
+                SizedBox(height:10),
+                Divider(),
+                SizedBox(height:10),
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Floging')
+                      .doc(flogingId)
+                      .collection('Comment')
+                      .orderBy('date', descending: true)
+                      .snapshots(),
+                  builder: (context, commentSnapshot) {
+                    if (commentSnapshot.hasError) {
+                      return Text('Error: ${commentSnapshot.error}');
+                    }
+                    if (commentSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    final commentDocuments = commentSnapshot.data!.docs;
+
+                    if (commentDocuments.isEmpty) {
+                      return Text(
+                        '아직 댓글이 없습니다. 댓글을 달아보세요!',
+                        style: GoogleFonts.nanumGothic(
+                          textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Container(
+                      height: 200,
+                      child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: commentDocuments.map((commentDoc) {
+                          final commentData = commentDoc.data() as Map<String, dynamic>;
+                          final commentId = commentData['commentId'];
+                          final text = commentData['text'];
+                          final date = commentData['date'];
+                          final uid = commentData['uid'];
+
+                          return Column(
+                            children: [
+                              CommentCard(
+                                date: date,
+                                commentId: commentId,
+                                text: text,
+                                uid: uid,
+                              ),
+                              SizedBox(width: 10),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  },
+                ),
               ]
             ),
             ),
             ),
+
+          bottomNavigationBar: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: FirebaseFirestore.instance
+                    .collection("User")
+                    .doc(currentUser.email)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    if (snapshot.data == null || !snapshot.data!.exists) {
+                      return const Text(
+                          '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                    }
+                    // 이제 snapshot.data을 안전하게 사용할 수 있음
+                    Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                    return SafeArea(
+                      child: Container(
+                        color: Colors.white,
+                        height: kToolbarHeight,
+                        margin:
+                        EdgeInsets.only(bottom: MediaQuery
+                            .of(context)
+                            .viewInsets
+                            .bottom),
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[300],
+                              ),
+                              child: Center(
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    "assets/profile/profile_${userData['profile']}.png",
+                                    width: 40,
+                                    height: 40,
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 8),
+                                child: TextField(
+                                  controller: _commentTextController,
+                                  decoration: InputDecoration(
+                                    hintText: '${userData['nickname']}로 댓글 달기',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                await fireStoreMethods.postComment(
+                                  widget.flogingId,
+                                  _commentTextController.text,
+                                  currentUser.uid,
+                                );
+                                clearTextFieldAndHideKeyboard();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                child: Image.asset(
+                                  'button/send_green.png',
+                                  width: 25,
+                                  height: 25,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }
+                ),
         );
-      },
+        },
     );
   }
 }
