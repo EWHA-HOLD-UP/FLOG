@@ -283,8 +283,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     }
 
                     return Container(
-                      height: 200,
-                      child: ListView(
+                      child: Expanded(
+                        child: ListView(
                         scrollDirection: Axis.vertical,
                         children: commentDocuments.map((commentDoc) {
                           final commentData = commentDoc.data() as Map<String, dynamic>;
@@ -305,6 +305,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                             ],
                           );
                         }).toList(),
+                      ),
                       ),
                     );
                   },
