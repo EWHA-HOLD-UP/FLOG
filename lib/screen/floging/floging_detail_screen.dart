@@ -45,11 +45,89 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
     print(currentUserFlogCode);
   }
 
+  Future<void> _showDeleteConfirmationDialog() async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'FLOGing 삭제',
+            textAlign: TextAlign.left,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  '이 FLOGing을 삭제하시겠습니까?',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.nanumGothic(
+                    textStyle: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('삭제'),
+              onPressed: () async {
+                try {
+                  // Firebase에서 Floging 삭제
+                  await FirebaseFirestore.instance
+                      .collection('Floging')
+                      .doc(widget.flogingId)
+                      .delete();
+
+                  Navigator.of(context).pop(); // 현재 다이얼로그 닫기
+
+                  // 다이얼로그를 닫은 후 FlogingDetailScreen를 닫고 FlogingScreen을 엽니다.
+                  Navigator.of(context).pop(); // FlogingDetailScreen 닫기
+
+                } catch (e) {
+                  Navigator.of(context).pop(); // 현재 다이얼로그 닫기
+
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('오류 발생'),
+                        content: Text('삭제 중에 오류가 발생했습니다.'),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   // 텍스트 필드 클리어 및 키보드 숨김 함수
   void clearTextFieldAndHideKeyboard() {
     _commentTextController.clear();
     SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +196,21 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 Navigator.pop(context);
               },
             ),
+            actions: [
+              Visibility(
+                visible: (currentUser.email == flogData['uid']), // 삭제 권한이 있는 경우에만 버튼 표시
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    // "삭제" 팝업 다이얼로그를 표시
+                    _showDeleteConfirmationDialog();
+                  },
+                ),
+              ),
+            ],
           ),
             body: SafeArea(
               child: Center(
