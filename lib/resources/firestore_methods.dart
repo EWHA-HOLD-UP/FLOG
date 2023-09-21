@@ -51,6 +51,7 @@ class FireStoreMethods {
           'text': text,
           'commentId': commentId,
           'date': DateTime.now(),
+          'flogingId': flogingId,
         });
         res = 'success';
       } else {

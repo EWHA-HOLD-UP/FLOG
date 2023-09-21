@@ -11,16 +11,94 @@ class CommentCard extends StatelessWidget {
   final String commentId;
   final String text;
   final String uid;
+  final String flogingId;
 
   CommentCard({
     required this.date,
     required this.commentId,
     required this.text,
     required this.uid,
+    required this.flogingId,
   });
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
+
+  // 댓글 삭제 함수
+  Future<void> _showDeleteCommentConfirmationDialog(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '댓글 삭제',
+            textAlign: TextAlign.left,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  '이 댓글을 삭제하시겠습니까?',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.nanumGothic(
+                    textStyle: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('삭제'),
+              onPressed: () async {
+                try {
+                  // Firebase에서 댓글 삭제
+                  await FirebaseFirestore.instance
+                      .collection('Floging')
+                      .doc(flogingId)
+                      .collection('Comment')
+                      .doc(commentId)
+                      .delete();
+
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  Navigator.of(context).pop();
+
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('오류 발생'),
+                        content: Text('댓글 삭제 중에 오류가 발생했습니다.'),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +187,18 @@ class CommentCard extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+            Visibility(
+              visible: (currentUser.uid == uid), // 자신이 쓴 댓글만 삭제할 수 있도록 하는 조건
+              child: IconButton(
+                onPressed: () {
+                  _showDeleteCommentConfirmationDialog(context);
+                },
+                icon: Icon(
+                  Icons.delete_rounded,
+                  size: 16,
+                ),
+              )
             ),
           ],
         ),

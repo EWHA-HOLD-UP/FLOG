@@ -300,6 +300,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                                 commentId: commentId,
                                 text: text,
                                 uid: uid,
+                                flogingId: flogingId,
                               ),
                               SizedBox(width: 10),
                             ],
