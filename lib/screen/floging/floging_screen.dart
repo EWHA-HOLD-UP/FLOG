@@ -160,9 +160,63 @@ class FlogingScreenState extends State<FlogingScreen> {
                           return bDate.compareTo(aDate); // 내림차순으로 정렬
                         });
 
-                        if (flogDocuments.isEmpty) {
-                          // 만약 Flog Card가 없다면 빈 박스와 메시지를 표시
-                          return Column(
+                        return Container(
+                          height: 200,
+                          child: flogDocuments.any((flogDoc) {
+                            final flogData = flogDoc.data() as Map<String, dynamic>;
+                            final date = flogData['date'] as Timestamp;
+                            final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
+                            // 오늘 날짜에 해당하는 FlogCard가 있는지 확인
+                            return flogDate.year == year && flogDate.month == month && flogDate.day == day;
+                          })
+                              ? ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: flogDocuments
+                                .where((flogDoc) {
+                              final flogData = flogDoc.data() as Map<String, dynamic>;
+                              final date = flogData['date'] as Timestamp;
+                              final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
+                              // 오늘 날짜에 해당하는 FlogCard만 표시
+                              return flogDate.year == year && flogDate.month == month && flogDate.day == day;
+                            })
+                                .map((flogDoc) {
+                              final flogData = flogDoc.data() as Map<String, dynamic>;
+                              final flogingId = flogData['flogingId'];
+                              final flogCode = flogData['flogCode'];
+                              final date = flogData['date'];
+                              final frontImageURL = flogData['downloadUrl_front'];
+                              final backImageURL = flogData['downloadUrl_back'];
+                              final uid = flogData['uid'];
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FlogingDetailScreen(
+                                        flogingId: flogingId,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    FlogCard(
+                                      date: date,
+                                      frontImageURL: frontImageURL,
+                                      backImageURL: backImageURL,
+                                      flogCode: flogCode,
+                                      flogingId: flogingId,
+                                      uid: uid,
+                                    ),
+                                    SizedBox(width: 10),
+                                  ],
+                                ),
+                              );
+                            })
+                                .toList(),
+                          )
+                              : Column(
                             children: [
                               Container(
                                 height: 200,
@@ -196,49 +250,6 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 ),
                               )
                             ],
-                          );
-                        }
-
-                        return Container(
-                          height: 200,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: flogDocuments.map((flogDoc) {
-                              final flogData = flogDoc.data() as Map<String, dynamic>;
-                              final flogingId = flogData['flogingId'];
-                              final flogCode = flogData['flogCode'];
-                              final date = flogData['date'];
-                              final frontImageURL = flogData['downloadUrl_front'];
-                              final backImageURL = flogData['downloadUrl_back'];
-                              final uid = flogData['uid'];
-
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FlogingDetailScreen(
-                                        flogingId: flogingId,
-                                      ),
-                                    ),
-                                  );
-                                },
-
-                                child: Row(
-                                  children: [
-                                    FlogCard(
-                                      date: date,
-                                      frontImageURL: frontImageURL,
-                                      backImageURL: backImageURL,
-                                      flogCode: flogCode,
-                                      flogingId: flogingId,
-                                      uid: uid,
-                                    ),
-                                    SizedBox(width: 10),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
                           ),
                         );
                       },
