@@ -128,7 +128,8 @@ class FirebaseAuthProvider with ChangeNotifier {
           frog: 0,
           memNumber: 1,
           qpuzzleUrl: "",
-      unlock: [false, false, false, false, false, false]);
+          unlock: [false, false, false, false, false, false],
+          selectedIndex: -1);
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
     }
   }

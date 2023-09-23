@@ -22,7 +22,8 @@ class QpuzzleScreen extends StatefulWidget {
 class _QpuzzleScreenState extends State<QpuzzleScreen> {
   XFile? image; //불러온 이미지 저장할 변수
   List<bool> unlockStates = [];//6개의 조각에 대한 잠금 상태를 나타내는 리스트
-  int selectedCellIndex = -1; //선택된 셀의 인덱스 : 초기값은 -1
+  late int selectedCellIndex; //선택된 셀의 인덱스 : 초기값은 -1
+
   bool isQuestionSheetShowed = false; //질문창을 이미 조회했는지(조각을 선택했는지)
   bool isAnswered = false; //답변 했는지
   //💚나중에 다른 사용자들의 답변 여부도 파이어베이스에서 불러와야함
@@ -100,6 +101,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
           // unlockList의 각 요소를 bool로 변환하여 unlockStates에 추가합니다.
           unlockStates.clear(); // 기존 데이터 지우기
           unlockStates.addAll(unlockList.map((dynamic value) => value as bool));
+          selectedCellIndex = groupDocuments[0]['selectedIndex'];
+
         }
 
             return Scaffold(
@@ -164,6 +167,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 }
                                                 setState(() {
                                                   selectedCellIndex = row * 2 + col;
+                                                  FirebaseFirestore.instance
+                                                      .collection('Group')
+                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                      .get()
+                                                      .then((querySnapshot) {
+                                                    if (querySnapshot.docs.isNotEmpty) {
+                                                      final docRef = querySnapshot.docs[0].reference;
+                                                      // Firestore 업데이트를 통해 selectedIndex 업데이트
+                                                      docRef.update({'selectedIndex': selectedCellIndex});
+                                                    }
+                                                  });
+
                                                 });
                                                 // 0 1
                                                 // 2 3
@@ -506,7 +521,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     unlockStates[selectedCellIndex] =
                                         true; //답변한 조각을 unlock 상태로 변경
                                     DocumentReference groupRef = FirebaseFirestore.instance.collection('Group').doc(currentUserFlogCode);
-
                                     // 'unlockStates' 필드를 업데이트
                                     groupRef.update({'unlock': unlockStates})
                                         .then((_) {
