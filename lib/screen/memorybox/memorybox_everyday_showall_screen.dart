@@ -229,7 +229,8 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
           final containerNumber = index - firstDayOfWeek + 2;
           final day = containerNumber.toString().padLeft(2, '0');
           final formattedMonth = month.toString().padLeft(2, '0');
-          final formattedDate = '$year.$formattedMonth.$day';
+          final formattedYear = year%100;
+          final formattedDate = '$formattedYear.$formattedMonth.$day';
 
           if ((year == currentYear && month == currentMonth && containerNumber > today) ||
               (year == currentYear && month > currentMonth) || (year > currentYear)) {
