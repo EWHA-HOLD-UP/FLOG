@@ -92,8 +92,7 @@ class FireStoreMethods {
           puzzleNo: puzzleNo,
           isComplete: false,
           pictureUrl: photoUrl,
-          currentPiece: 0,
-          unlock: [false, false, false, false, false, false]);
+      );
 
       _firestore.collection('Qpuzzle').doc(puzzleId).set(qpuzzle.toJson());
       final CollectionReference groupRef = _firestore.collection('Group');

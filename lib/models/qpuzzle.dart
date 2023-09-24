@@ -9,8 +9,6 @@ class Qpuzzle {
   final int puzzleNo;
   final bool isComplete;
   final String pictureUrl;
-  final int currentPiece;
-  final List unlock;
 
   Qpuzzle(
       {required this.puzzleId,
@@ -19,8 +17,7 @@ class Qpuzzle {
       required this.puzzleNo,
       required this.isComplete,
       required this.pictureUrl,
-      required this.currentPiece,
-      required this.unlock});
+      });
 
   static Qpuzzle fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -32,9 +29,7 @@ class Qpuzzle {
       flogCode: snapshot["flogCode"],
       isComplete: snapshot["isComplete"],
       pictureUrl: snapshot["pictureUrl"],
-      currentPiece: snapshot["currentPiece"],
-      unlock: snapshot["unlock"],
-    );
+     );
   }
 
   Map<String, dynamic> toJson() => {
@@ -44,7 +39,5 @@ class Qpuzzle {
         "flogCode": flogCode,
         "isComplete": isComplete,
         "pictureUrl": pictureUrl,
-        "currentPiece": currentPiece,
-        "unlock": unlock,
       };
 }
