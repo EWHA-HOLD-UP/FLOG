@@ -91,6 +91,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
           return Center(child: CircularProgressIndicator());
         }
         final groupDocuments = groupSnapshot.data!.docs;
+
         //qpuzzleUrl 가져오는 함수
         String? qpuzzleUrl = groupDocuments.isNotEmpty
             ? groupDocuments[0]['qpuzzleUrl'] // qpuzzleUrl 필드가 있는지 확인
@@ -101,9 +102,28 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
           // unlockList의 각 요소를 bool로 변환하여 unlockStates에 추가합니다.
           unlockStates.clear(); // 기존 데이터 지우기
           unlockStates.addAll(unlockList.map((dynamic value) => value as bool));
-          selectedCellIndex = groupDocuments[0]['selectedIndex'];
-
+          selectedCellIndex = groupDocuments[0]['selectedIndex']; //selectedIndex 파이어베이스에서 가져오기
         }
+
+        if (unlockStates.every((unlockState) => unlockState == true)) {
+          // Firestore 업데이트를 통해 qpuzzleUrl을 ""로 설정하고 unlock 초기화
+          FirebaseFirestore.instance
+              .collection('Group')
+              .where('flogCode', isEqualTo: currentUserFlogCode)
+              .get()
+              .then((querySnapshot) {
+            if (querySnapshot.docs.isNotEmpty) {
+              final docRef = querySnapshot.docs[0].reference;
+              docRef.update({
+                'qpuzzleUrl': "", // qpuzzleUrl 초기화
+                'unlock': List.generate(6, (_) => false), // unlock 초기화 (6개 조각)
+                'selectedIndex': -1, // 선택한 조각 인덱스 초기화
+              });
+            }
+          });
+        }
+
+
 
             return Scaffold(
               extendBodyBehindAppBar: true,
@@ -155,18 +175,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         for (int col = 0; col < 2; col++) //2열
                                           GestureDetector(
                                             onTap: () {
-                                              if (!unlockStates[row * 2 + col] &&
-                                                  isQuestionSheetShowed == false ||
-                                                  selectedCellIndex == row * 2 + col) {
+                                              if (!unlockStates[row * 2 + col] && //아직 안 풀린 조각이면서
+                                                  isQuestionSheetShowed == false || //질문창 보지 않았거나 (아직 조각 선택조차 안 한 상태)
+                                                  selectedCellIndex == row * 2 + col) {  //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 선택중인 상태, 질문창 봤을수 있음)
                                                 //한 번 어떤 퍼즐의 QuestionSheet 봤으면 대답 누르고 확인 누르기 전에 다른 조각 열람 불가
                                                 //그러나 선택했던 조각이라면 QuestionSheet 봤어도 다시 클릭 가능
-                                                if (selectedCellIndex != row * 2 + col) {
+                                                if (selectedCellIndex != row * 2 + col) { //만약 조각 선택조차 안 한 상태이면
                                                   //만약 새로운 조각 클릭 시,
-                                                  isAnswered =
-                                                  false; //해당 조각의 질문은 아직 작성되지 않았으므로 다시 false로 초기화
+                                                  isAnswered = false; //해당 조각의 질문은 아직 작성되지 않았으므로 다시 false로 초기화
                                                 }
                                                 setState(() {
-                                                  selectedCellIndex = row * 2 + col;
+                                                  selectedCellIndex = row * 2 + col; //그리고 선택한 조각의 인덱스로 selectedCellIndex 변경
+                                                  //파이어베이스에 올려주기
                                                   FirebaseFirestore.instance
                                                       .collection('Group')
                                                       .where('flogCode', isEqualTo: currentUserFlogCode)
@@ -178,7 +198,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       docRef.update({'selectedIndex': selectedCellIndex});
                                                     }
                                                   });
-
                                                 });
                                                 // 0 1
                                                 // 2 3
@@ -333,6 +352,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
   //질문창 나타나게 하는 함수
   void showQuestionSheet(context) async {
+
     String? userEmail = currentUser.email; // 이메일 가져오기
     // 'User' 컬렉션에서 사용자 문서를 가져오기
     QuerySnapshot userQuerySnapshot = await firestore
@@ -348,8 +368,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     int familymem = groupDocumentSnapshot['memNumber'];
     print('가족 인원 수: $familymem');
 
+
     isQuestionSheetShowed = true; //질문창이 나타나면 해당 변수 boolean값 true로 변경
-    if (isAnswered == true) {
+    if (isAnswered == true) { //답변 완료 시,
       isQuestionSheetShowed = false;
     } //다음 조각을 위해 false로 초기화
 
