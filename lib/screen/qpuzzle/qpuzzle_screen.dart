@@ -70,6 +70,17 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     }
   }
 
+  //답변 문서 파이어베이스에 생성
+  void postAnswer(String flogCode, int puzzleNo, int questionNo) async {
+    try {
+      // upload to storage and db
+      String res = await FireStoreMethods()
+          .uploadAnswer(flogCode, puzzleNo, questionNo);
+    } catch (err) {
+      print(err);
+    }
+  }
+
   //안내메시지 - 추후 코드 수정 필요
   Map<int, String> status = {
     0: "아직 답변을 작성하지 않았어요.",
@@ -250,6 +261,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         });
                                                       }
                                                     });
+                                                    postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
                                                   });
                                                   // 0 1
                                                   // 2 3
@@ -575,6 +587,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             );
           });
     }
+
+
     //답변창 나타나게 하는 함수
     void showAnswerSheet(BuildContext context) {
       showModalBottomSheet(
