@@ -261,13 +261,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         });
                                                       }
                                                     });
-                                                    postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
                                                   });
                                                   // 0 1
                                                   // 2 3
                                                   // 4 5
                                                   //형태로 조각 인덱싱하고, 해당 조각 클릭시 인덱스를 저장
-
                                                   showQuestionSheet(context); //질문창 나타나기
                                                 }
                                               },
@@ -406,6 +404,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       if (userDocument.exists) {
         String flogCode = userDocument.get('flogCode');
         postImage(flogCode, puzzleno);
+        postAnswer(currentUserFlogCode, puzzleno, 0);
+        postAnswer(currentUserFlogCode, puzzleno, 1);
+        postAnswer(currentUserFlogCode, puzzleno, 2);
+        postAnswer(currentUserFlogCode, puzzleno, 3);
+        postAnswer(currentUserFlogCode, puzzleno, 4);
+        postAnswer(currentUserFlogCode, puzzleno, 5);
+
       }
     }
 
