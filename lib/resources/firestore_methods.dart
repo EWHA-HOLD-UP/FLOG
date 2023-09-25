@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/models/qpuzzle.dart';
+import 'package:flog/widgets/checkTodayFlog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flog/resources/storage_methods.dart';
@@ -28,6 +29,7 @@ class FireStoreMethods {
           flogingId: flogingId);
       _firestore.collection('Floging').doc(flogingId).set(floging.toJson());
       res = "success";
+      checkTodayFlog();
     } catch (err) {
       res = err.toString();
     }

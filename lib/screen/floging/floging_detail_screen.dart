@@ -5,6 +5,8 @@ import 'package:flog/resources/firestore_methods.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:flog/widgets/comment_card.dart';
+import 'package:flog/widgets/checkTodayFlog.dart';
+
 
 
 class FlogingDetailScreen extends StatefulWidget {
@@ -93,7 +95,12 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   await FirebaseFirestore.instance
                       .collection('Floging')
                       .doc(widget.flogingId)
-                      .delete();
+                      .delete()
+                      .then((_) {
+                    // Floging 삭제 작업이 완료된 후에 checkTodayFlog 함수 호출
+                    checkTodayFlog();
+                  });
+
 
                   Navigator.of(context).pop(); // 현재 다이얼로그 닫기
 
