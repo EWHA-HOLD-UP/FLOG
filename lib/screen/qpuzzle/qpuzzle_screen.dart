@@ -89,7 +89,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     2: "답변 작성하기", //'나'인 경우
   };
   //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [0, 1, 2, 1];
+  List<int> memberStatus = [2, 1];
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +181,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   });
 
                   final data = latestDocument[0].data() as Map<String, dynamic>;
-                  puzzleno = data['puzzleNo'] + 1;
+                  puzzleno = data['puzzleNo']+1;
                 }
 
 
@@ -246,6 +246,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   }
                                                   setState(() {
                                                     selectedCellIndex = row * 2 + col; //그리고 선택한 조각의 인덱스로 selectedCellIndex 변경
+
                                                     //파이어베이스에 올려주기
                                                     FirebaseFirestore.instance
                                                         .collection('Group')
@@ -504,6 +505,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                               if (memberStatus[rowIndex] == 2 &&
                                   isAnswered == false) {
                                 //'나'의 박스: '답변 작성하기' 부분을 클릭하면
+                                myanswer = "";
                                 showAnswerSheet(context); //답변창 나타남
                               }
                             },
@@ -647,17 +649,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     //return CircularProgressIndicator();
                                   }
 
-                                  final answerDocuments = answerSnapshot.data!.docs;
-                                  if (answerDocuments.isNotEmpty) {
-                                    // Existing answer document found, update it
-                                    final existingAnswerDocument = answerDocuments.first;
-                                    Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
-                                    existingAnswers[userData['email']] = _answerTextController.text;
-
-                                    existingAnswerDocument.reference.update({
-                                      'answers': existingAnswers,
-                                    });
-                                  }
                                   return ListView(
                                     children: [
                                       Column(
@@ -690,8 +681,28 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   Navigator.pop(context); //질문창 닫기
                                                   showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
                                                   print(myanswer); //💥 내 답변 잘 저장되는지 확인용
-                                                  postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
+                                                  //postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
                                                   //💚나중에 파이어베이스에 넣었다가 다른 구성원 답변들과 함께 리스트에 저장하여 불러오기
+                                                  CollectionReference answerCollection = FirebaseFirestore.instance.collection('Answer');
+                                                  Query query = answerCollection
+                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                      .where('puzzleNo', isEqualTo: (puzzleno - 1))
+                                                      .where('questionNo', isEqualTo: selectedCellIndex);
+                                                  print('######p: $puzzleno /// i: $selectedCellIndex');
+                                                  query.get().then((querySnapshot) {
+                                                   final existingAnswerDocument = querySnapshot.docs.first;
+                                                   Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
+                                                   existingAnswers[userData['email']] = myanswer;
+                                                   //업데이트된 데이터로 문서를 업데이트합니다.
+                                                   existingAnswerDocument.reference.update({
+                                                     'answers': existingAnswers,
+                                                   }).then((_) {
+                                                     print('Answer이 Firebase Firestore에 업데이트되었습니다.');
+                                                   }).catchError((error) {
+                                                     print('Answer 업데이트 중 오류 발생: $error');
+                                                   });
+                                                  });
+
                                                 },
                                                 child: Image.asset(
                                                   //전송 버튼
@@ -771,7 +782,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           Padding(
                                             padding: const EdgeInsets.symmetric(horizontal: 20),
                                             child: TextField( //답변 입력창
-                                              controller: _answerTextController,
                                               style: const TextStyle(color: Colors.black),
                                               maxLines: null,
                                               keyboardType: TextInputType.multiline,
@@ -779,17 +789,17 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   hintText: '답변 쓰기...', //힌트 문구
                                                   hintStyle: TextStyle(color: Colors.grey),
                                                   border: OutlineInputBorder(
-                                                      borderSide: BorderSide.none)),
+                                                      borderSide: BorderSide.none
+                                                  )
+                                              ),
                                               onChanged: (text) {
                                                 setState(() {
                                                   myanswer = text; //입력한 내용을 myanswer 변수에 저장
                                                   //💚💚💚 파이어베이스로 넘기기
-
                                                 });
                                               },
                                             ),
                                           ),
-
 
                                         ],
                                       )
