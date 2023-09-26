@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // Answer 모델
 class Answer {
   final String answerId; // 식별을 위한 해당 답변의 ID
-  final DateTime date;
   final String flogCode;
   final int puzzleNo;
   final int questionNo;
@@ -13,7 +12,6 @@ class Answer {
 
   Answer(
       {required this.answerId,
-        required this.date,
         required this.flogCode,
         required this.puzzleNo,
         required this.questionNo,
@@ -26,7 +24,6 @@ class Answer {
 
     return Answer(
       answerId: snapshot["answerId"],
-      date: snapshot["date"],
       flogCode: snapshot["flogCode"],
       puzzleNo: snapshot["puzzleNo"],
       questionNo: snapshot["questionNo"],
@@ -37,7 +34,6 @@ class Answer {
 
   Map<String, dynamic> toJson() => {
     "answerId": answerId,
-    "date": date,
     "flogCode": flogCode,
     "puzzleNo": puzzleNo,
     "questionNo": questionNo,

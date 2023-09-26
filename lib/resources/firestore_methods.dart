@@ -116,7 +116,6 @@ class FireStoreMethods {
       String answerId = const Uuid().v1(); // creates unique id based on time
       Answer answer = Answer(
         answerId: answerId,
-        date: DateTime.now(),
         flogCode: flogCode,
         puzzleNo: puzzleNo,
         questionNo: questionNo,
