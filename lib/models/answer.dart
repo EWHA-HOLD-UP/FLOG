@@ -9,6 +9,7 @@ class Answer {
   final int puzzleNo;
   final int questionNo;
   final bool isEveryoneComplete;
+  final Map answers;
 
   Answer(
       {required this.answerId,
@@ -17,6 +18,7 @@ class Answer {
         required this.puzzleNo,
         required this.questionNo,
         required this.isEveryoneComplete,
+        required this.answers
       });
 
   static Answer fromSnap(DocumentSnapshot snap) {
@@ -29,6 +31,7 @@ class Answer {
       puzzleNo: snapshot["puzzleNo"],
       questionNo: snapshot["questionNo"],
       isEveryoneComplete: snapshot["isEveryoneComplete"],
+      answers: snapshot["answers"]
     );
   }
 
@@ -39,5 +42,6 @@ class Answer {
     "puzzleNo": puzzleNo,
     "questionNo": questionNo,
     "isEveryoneComplete": isEveryoneComplete,
+    "answers": answers
   };
 }

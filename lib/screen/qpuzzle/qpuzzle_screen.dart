@@ -37,6 +37,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
 
+  final _answerTextController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -88,7 +89,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     2: "답변 작성하기", //'나'인 경우
   };
   //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [0, 1, 1, 2];
+  List<int> memberStatus = [0, 1, 2, 1];
 
   @override
   Widget build(BuildContext context) {
@@ -563,22 +564,23 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     ],
                                   ),
                                   const SizedBox(width: 30),
-                                  Text(
-                                    isAnswered == false
-                                        ? '${status[memberStatus[rowIndex]]}' //아직 내가 답변 안 했으면 구성원 상태별 안내메시지 띄우기
-                                        : '사용자 $rowIndex의 답변',
+                                  if(isAnswered == false)
+                                    Text(
+                                      '${status[memberStatus[rowIndex]]}', //아직 내가 답변 안 했으면 구성원 상태별 안내메시지 띄우기
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.white,
+                                      )
+                                    )
+                                      else Text(
+                                      '사용자 $rowIndex의 답변',
                                         //내가 답변했으면 구성원들의 답변 띄우기 💚 나중에 파이어베이스에서 받아오기
                                         //myanswer도 안 넣은 이유는 나중에 리스트형태로 answer[사용자 index]이런식으로 받아오기 위함
-                                    style: isAnswered == false
-                                    ? const TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.white,
-                                    )
-                                    : const TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.white,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
                                 ],
                               )
                             ),
@@ -629,146 +631,180 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                             } //이제 snapshot.data을 안전하게 사용할 수 있음
                             Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
 
-                            return ListView(
-                              children: [
-                                Column(
-                                  children: [
-                                    const SizedBox(height: 15),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(right: 20, top: 10),
-                                        child: InkWell(
-                                          //💥 나중에 아무것도 안 쓰면 전송 버튼 못 누르도록 수정 필요
-                                          onTap: () {
-                                            setState(() {
-                                              isAnswered = true; //전송버튼 누르면 답변한 것으로
-                                              unlockStates[selectedCellIndex] = true; //답변한 조각을 unlock 상태로 변경
-                                              DocumentReference groupRef = FirebaseFirestore.instance
-                                                  .collection('Group')
-                                                  .doc(currentUserFlogCode);
-                                              groupRef.update({
-                                                'unlock': unlockStates
-                                              }) //'unlockStates' 필드를 업데이트
-                                                  .then((_) {
-                                                    print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
-                                                  })
-                                                  .catchError((error) {
-                                                    print('Unlock 상태 업데이트 중 오류 발생: $error');
+                            return StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Answer')
+                                    .where('flogCode', isEqualTo: currentUserFlogCode)
+                                    .where('puzzleNo', isEqualTo: puzzleno)
+                                    .where('questionNo', isEqualTo: selectedCellIndex)
+                                    .snapshots(),
+                                builder: (context, answerSnapshot) {
+                                  if (answerSnapshot.hasError) {
+                                    return Text('Error: ${answerSnapshot.error}');
+                                  }
+
+                                  if (answerSnapshot.connectionState == ConnectionState.waiting) {
+                                    //return CircularProgressIndicator();
+                                  }
+
+                                  final answerDocuments = answerSnapshot.data!.docs;
+                                  if (answerDocuments.isNotEmpty) {
+                                    // Existing answer document found, update it
+                                    final existingAnswerDocument = answerDocuments.first;
+                                    Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
+                                    existingAnswers[userData['email']] = _answerTextController.text;
+
+                                    existingAnswerDocument.reference.update({
+                                      'answers': existingAnswers,
+                                    });
+                                  }
+                                  return ListView(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          const SizedBox(height: 15),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 20, top: 10),
+                                              child: InkWell(
+                                                //💥 나중에 아무것도 안 쓰면 전송 버튼 못 누르도록 수정 필요
+                                                onTap: () {
+                                                  setState(() {
+                                                    isAnswered = true; //전송버튼 누르면 답변한 것으로
+                                                    unlockStates[selectedCellIndex] = true; //답변한 조각을 unlock 상태로 변경
+                                                    DocumentReference groupRef = FirebaseFirestore.instance
+                                                        .collection('Group')
+                                                        .doc(currentUserFlogCode);
+                                                    groupRef.update({
+                                                      'unlock': unlockStates
+                                                    }) //'unlockStates' 필드를 업데이트
+                                                        .then((_) {
+                                                      print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                    })
+                                                        .catchError((error) {
+                                                      print('Unlock 상태 업데이트 중 오류 발생: $error');
+                                                    });
                                                   });
-                                            });
-                                            Navigator.pop(context); //답변창 닫기
-                                            Navigator.pop(context); //질문창 닫기
-                                            showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
-                                            print(myanswer); //💥 내 답변 잘 저장되는지 확인용
-                                            //💚나중에 파이어베이스에 넣었다가 다른 구성원 답변들과 함께 리스트에 저장하여 불러오기
-                                          },
-                                          child: Image.asset(
-                                            //전송 버튼
-                                            "button/send_white.png",
-                                            width: 30,
-                                            height: 30,
-                                            color: Color(0xFF609966),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Image.asset(
-                                        "assets/flog_logo.png",
-                                        width: 70,
-                                        height: 70,
-                                        alignment: Alignment.centerLeft,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Center(
-                                      child: Padding(
-                                        padding:
-                                        const EdgeInsets.symmetric(horizontal: 20),
-                                        child: Text(
-                                          //💚 DB에서 인덱스 활용하여 질문 따오기
-                                          'Q$selectedCellIndex. 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $selectedCellIndex번 질문 따오기',
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                          softWrap: true, //자동 줄바꿈
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 25),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15),
-                                      child: Row(
-                                          children: [
-                                            Hero(
-                                              tag: "profile",
-                                              child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 60,
-                                                      height: 60,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle, //원 모양 프로필 사진
-                                                        color: Colors.grey[300], //배경색
-                                                      ),
-                                                      child: Center(
-                                                        child: ClipOval(
-                                                          child: Image.asset(
-                                                            "assets/profile/profile_${userData['profile']}.png",
-                                                            width: 50,
-                                                            height: 50,
-                                                            alignment: Alignment.center,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ]
+                                                  Navigator.pop(context); //답변창 닫기
+                                                  Navigator.pop(context); //질문창 닫기
+                                                  showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
+                                                  print(myanswer); //💥 내 답변 잘 저장되는지 확인용
+                                                  postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
+                                                  //💚나중에 파이어베이스에 넣었다가 다른 구성원 답변들과 함께 리스트에 저장하여 불러오기
+                                                },
+                                                child: Image.asset(
+                                                  //전송 버튼
+                                                  "button/send_white.png",
+                                                  width: 30,
+                                                  height: 30,
+                                                  color: Color(0xFF609966),
+                                                ),
                                               ),
                                             ),
-                                            const SizedBox(width: 20),
-                                            Text(
-                                              userData['nickname'],
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold),
+                                          ),
+                                          Center(
+                                            child: Image.asset(
+                                              "assets/flog_logo.png",
+                                              width: 70,
+                                              height: 70,
+                                              alignment: Alignment.centerLeft,
                                             ),
-                                          ]
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                      child: TextField( //답변 입력창
-                                        style: const TextStyle(color: Colors.black),
-                                        maxLines: null,
-                                        keyboardType: TextInputType.multiline,
-                                        decoration: const InputDecoration(
-                                            hintText: '답변 쓰기...', //힌트 문구
-                                            hintStyle: TextStyle(color: Colors.grey),
-                                            border: OutlineInputBorder(
-                                                borderSide: BorderSide.none)),
-                                        onChanged: (text) {
-                                          setState(() {
-                                            myanswer = text; //입력한 내용을 myanswer 변수에 저장
-                                            //💚💚💚 파이어베이스로 넘기기
-                                          });
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            );
+                                          ),
+                                          const SizedBox(height: 20),
+                                          Center(
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets.symmetric(horizontal: 20),
+                                              child: Text(
+                                                //💚 DB에서 인덱스 활용하여 질문 따오기
+                                                'Q$selectedCellIndex. 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $selectedCellIndex번 질문 따오기',
+                                                style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold),
+                                                softWrap: true, //자동 줄바꿈
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 25),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 15),
+                                            child: Row(
+                                                children: [
+                                                  Hero(
+                                                    tag: "profile",
+                                                    child: Stack(
+                                                        children: [
+                                                          Container(
+                                                            width: 60,
+                                                            height: 60,
+                                                            decoration: BoxDecoration(
+                                                              shape: BoxShape.circle, //원 모양 프로필 사진
+                                                              color: Colors.grey[300], //배경색
+                                                            ),
+                                                            child: Center(
+                                                              child: ClipOval(
+                                                                child: Image.asset(
+                                                                  "assets/profile/profile_${userData['profile']}.png",
+                                                                  width: 50,
+                                                                  height: 50,
+                                                                  alignment: Alignment.center,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ]
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 20),
+                                                  Text(
+                                                    userData['nickname'],
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                ]
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            child: TextField( //답변 입력창
+                                              controller: _answerTextController,
+                                              style: const TextStyle(color: Colors.black),
+                                              maxLines: null,
+                                              keyboardType: TextInputType.multiline,
+                                              decoration: const InputDecoration(
+                                                  hintText: '답변 쓰기...', //힌트 문구
+                                                  hintStyle: TextStyle(color: Colors.grey),
+                                                  border: OutlineInputBorder(
+                                                      borderSide: BorderSide.none)),
+                                              onChanged: (text) {
+                                                setState(() {
+                                                  myanswer = text; //입력한 내용을 myanswer 변수에 저장
+                                                  //💚💚💚 파이어베이스로 넘기기
+
+                                                });
+                                              },
+                                            ),
+                                          ),
+
+
+                                        ],
+                                      )
+                                    ],
+                                  );
+                                });
                           }
                         })
                   )
               ),
             );
           }
-          );
+      );
     }
 }
+
 
 

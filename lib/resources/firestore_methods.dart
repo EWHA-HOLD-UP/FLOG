@@ -111,6 +111,7 @@ class FireStoreMethods {
 
   Future<String> uploadAnswer(String flogCode, int puzzleNo, int questionNo) async {
     String res = "Some error occurred";
+    Map<String, String> answersMap = {};
     try {
       String answerId = const Uuid().v1(); // creates unique id based on time
       Answer answer = Answer(
@@ -120,7 +121,7 @@ class FireStoreMethods {
         puzzleNo: puzzleNo,
         questionNo: questionNo,
         isEveryoneComplete: false,
-      );
+        answers: answersMap);
 
       _firestore.collection('Answer').doc(answerId).set(answer.toJson());
       res = "success";
