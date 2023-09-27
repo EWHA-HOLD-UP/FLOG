@@ -21,12 +21,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   late int selectedCellIndex; //선택된 셀의 인덱스 : 초기값은 -1
   late int tempCellIndex;
   int puzzleno = 1;
-
-  int familyMem = 1; //가족 수
   bool isQuestionSheetShowed = false; //질문창을 이미 조회했는지(조각을 선택했는지)
   bool isAnswered = false; //답변 했는지
   //💚나중에 다른 사용자들의 답변 여부도 파이어베이스에서 불러와야함
 
+  int familyMem = 1; //가족 수
   String myanswer = ''; //내 답변 저장할 변수
 
   // Firestore 인스턴스 생성
@@ -50,15 +49,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
-
     }
-    //print(currentUserFlogCode);
   }
 
   //Qpuzzle 사진 파이어베이스에 업로드
   void postImage(String flogCode, int puzzleNo) async {
     try {
-      // upload to storage and db
       Uint8List img = await image?.readAsBytes() as Uint8List;
       String res =
           await FireStoreMethods().uploadQpuzzle(img, flogCode, puzzleNo);
@@ -67,10 +63,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     }
   }
 
-  //답변 문서 파이어베이스에 생성
+  //Answer 문서 파이어베이스에 생성
   void postAnswer(String flogCode, int puzzleNo, int questionNo) async {
     try {
-      // upload to storage and db
       String res = await FireStoreMethods()
           .uploadAnswer(flogCode, puzzleNo, questionNo);
     } catch (err) {
@@ -108,17 +103,19 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
               ? groupDocuments[0]['qpuzzleUrl'] // qpuzzleUrl 필드가 있는지 확인
               : null;
           if (qpuzzleUrl == "") qpuzzleUrl = null;
+
+          //qpuzzle 들어왔을 때
           if (groupDocuments.isNotEmpty) {
-            final unlockList = groupDocuments[0]['unlock'] as List<dynamic>;
-            // unlockList의 각 요소를 bool로 변환하여 unlockStates에 추가합니다.
-            unlockStates.clear(); // 기존 데이터 지우기
+            final unlockList = groupDocuments[0]['unlock'] as List<dynamic>; //unlockList의 각 요소를 bool로 변환하여 unlockStates에 추가
+            unlockStates.clear(); //기존 데이터 지우기
             unlockStates.addAll(
                 unlockList.map((dynamic value) => value as bool));
             selectedCellIndex = groupDocuments[0]['selectedIndex']; //selectedIndex 파이어베이스에서 가져오기
           }
 
+          //qpuzzle 완성했을 때
           if (unlockStates.every((unlockState) => unlockState == true)) {
-            // Firestore 업데이트를 통해 qpuzzleUrl을 ""로 설정하고 unlock 초기화
+            //qpuzzleUrl을 ""로 설정하고 unlock 초기화
             FirebaseFirestore.instance
                 .collection('Group')
                 .where('flogCode', isEqualTo: currentUserFlogCode)
@@ -127,12 +124,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
               if (querySnapshot.docs.isNotEmpty) {
                 final docRef = querySnapshot.docs[0].reference;
                 docRef.update({
-                  'qpuzzleUrl': "",
-                  // qpuzzleUrl 초기화
-                  'unlock': List.generate(6, (_) => false),
-                  // unlock 초기화 (6개 조각)
-                  'selectedIndex': -1,
-                  // 선택한 조각 인덱스 초기화
+                  'qpuzzleUrl': "", //qpuzzleUrl 초기화
+                  'unlock': List.generate(6, (_) => false), //unlock 초기화 (6개 조각)
+                  'selectedIndex': -1, //선택한 조각 인덱스 초기화
                 });
               }
             });
@@ -145,11 +139,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
               if (querySnapshot.docs.isNotEmpty) {
                 final docRef = querySnapshot.docs.first.reference;
                 docRef.update({
-                  'isComplete': true
+                  'isComplete': true //Qpuzzle 컬렉션에서 isComplete 필드 반영
                 });
               }
             });
           }
+
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('Qpuzzle')
@@ -162,24 +157,23 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                 return Center(child: CircularProgressIndicator());
               }
 
-                final latestPuzzleDocument = puzzleSnapshot.data!.docs;
-                final latestDocument = latestPuzzleDocument
-                    .where((doc) {
-                      final data = doc.data() as Map<String, dynamic>;
-                      return data['flogCode'] == currentUserFlogCode;
-                    }) .toList();
+              final latestPuzzleDocument = puzzleSnapshot.data!.docs; //마지막 큐퍼즐
+              final latestDocument = latestPuzzleDocument
+                  .where((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    return data['flogCode'] == currentUserFlogCode;
+                  }) .toList();
 
-                if(latestDocument.isNotEmpty) {
-                  latestDocument.sort((a, b) {
-                    final aData = a.data() as Map<String, dynamic>;
-                    final bData = b.data() as Map<String, dynamic>;
-                    return bData['puzzleNo'].compareTo(aData['puzzleNo']);
-                  });
+              if(latestDocument.isNotEmpty) {
+                latestDocument.sort((a, b) {
+                  final aData = a.data() as Map<String, dynamic>;
+                  final bData = b.data() as Map<String, dynamic>;
+                  return bData['puzzleNo'].compareTo(aData['puzzleNo']);
+                });
 
-                  final data = latestDocument[0].data() as Map<String, dynamic>;
-                  puzzleno = data['puzzleNo']+1;
-                }
-
+                final data = latestDocument[0].data() as Map<String, dynamic>;
+                puzzleno = data['puzzleNo'] + 1; //우리 가족의 마지막 큐퍼즐의 번호 찾아서 + 1해서 이 큐퍼즐의 puzzleNo 만들기
+              }
 
               return Scaffold(
                 extendBodyBehindAppBar: true,
@@ -235,11 +229,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   tempCellIndex = row * 2 + col;
                                                   showModalBottomSheet(
                                                       context: context,
-                                                      backgroundColor: Colors.white,
-                                                      //질문창 배경색
+                                                      backgroundColor: Colors.white, //질문창 배경색
                                                       isScrollControlled: true,
-                                                      shape: const RoundedRectangleBorder(
-                                                        //위쪽 둥근 모서리
+                                                      shape: const RoundedRectangleBorder( //위쪽 둥근 모서리
                                                         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
                                                       ),
                                                       builder: (BuildContext context) {
@@ -254,7 +246,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                 if (userSnapshot.hasError) {
                                                                   return Text('Error: ${userSnapshot.error}');
                                                                 }
-
                                                                 if (userSnapshot.connectionState == ConnectionState.waiting) {
                                                                   return CircularProgressIndicator();
                                                                 }
@@ -371,8 +362,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           ),
                                                         );
                                                       });
-                                                  print('!!!!!!!!!!!!selected: $selectedCellIndex / row*2...: ${row*2+col} / isquestionsheet: $isQuestionSheetShowed / isAnsw: $isAnswered');
-                                                } //풀린 조각도 답변 조회 가능하도록 ~
+                                                  //print('!!!!!!!!!!!!selected: $selectedCellIndex / row*2...: ${row*2+col} / isquestionsheet: $isQuestionSheetShowed / isAnsw: $isAnswered');
+                                                } //풀린 조각도 답변 조회 가능하도록 구현
                                                 else if ((unlockStates[row * 2 + col] == false && //아직 안 풀린 조각이면서
                                                     isQuestionSheetShowed == false) || //질문창 보지 않았거나 (아직 조각 선택조차 안 한 상태)
                                                     selectedCellIndex == row * 2 + col) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 선택중인 상태, 질문창 봤을수 있음)
@@ -381,6 +372,19 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
                                                   setState(() {
                                                     selectedCellIndex = row * 2 + col; //그리고 선택한 조각의 인덱스로 selectedCellIndex 변경
+                                                    isAnswered = false;
+                                                    DocumentReference userRef = FirebaseFirestore.instance
+                                                        .collection('User')
+                                                        .doc(currentUser.email);
+                                                    userRef.update({
+                                                      'isAnswered': false
+                                                    }) //isAnswered 필드 업데이트
+                                                        .then((_) {
+                                                      print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                    })
+                                                        .catchError((error) {
+                                                      print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                    });
 
                                                     //파이어베이스에 올려주기
                                                     FirebaseFirestore.instance
@@ -393,11 +397,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                 .docs[0].reference;
 
                                                             // Firestore 업데이트를 통해 selectedIndex 업데이트
-                                                        docRef.update({
-                                                          'selectedIndex': selectedCellIndex
+                                                            docRef.update({
+                                                              'selectedIndex': selectedCellIndex
+                                                            });
+                                                          }
                                                         });
-                                                      }
-                                                    });
                                                   });
                                                   // 0 1
                                                   // 2 3
@@ -541,6 +545,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       if (userDocument.exists) {
         String flogCode = userDocument.get('flogCode');
         postImage(flogCode, puzzleno);
+        //조각별로 Answer 문서 생성
         postAnswer(currentUserFlogCode, puzzleno, 0);
         postAnswer(currentUserFlogCode, puzzleno, 1);
         postAnswer(currentUserFlogCode, puzzleno, 2);
@@ -569,8 +574,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       print('가족 인원 수: $familymem');
       */
 
-
-
       showModalBottomSheet(
           context: context,
           backgroundColor: Colors.white,
@@ -592,7 +595,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   if (userSnapshot.hasError) {
                     return Text('Error: ${userSnapshot.error}');
                   }
-
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   }
@@ -728,9 +730,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
               ),
             );
           });
-     isQuestionSheetShowed = true; //질문창이 나타나면 해당 변수 boolean값 true로 변경
-
-
+      isQuestionSheetShowed = true; //질문창이 나타나면 해당 변수 boolean값 true로 변경
     }
 
 
@@ -780,7 +780,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   if (answerSnapshot.hasError) {
                                     return Text('Error: ${answerSnapshot.error}');
                                   }
-
                                   if (answerSnapshot.connectionState == ConnectionState.waiting) {
                                     //return CircularProgressIndicator();
                                   }
@@ -806,7 +805,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         .doc(currentUserFlogCode);
                                                     groupRef.update({
                                                       'unlock': unlockStates
-                                                    }) //'unlockStates' 필드를 업데이트
+                                                    }) //unlockStates 필드 업데이트
                                                         .then((_) {
                                                       print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                     })
@@ -814,22 +813,23 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       print('Unlock 상태 업데이트 중 오류 발생: $error');
                                                     });
                                                   });
+
                                                   Navigator.pop(context); //답변창 닫기
                                                   Navigator.pop(context); //질문창 닫기
                                                   showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
-                                                  print(myanswer); //💥 내 답변 잘 저장되는지 확인용
-                                                  //postAnswer(currentUserFlogCode, puzzleno, selectedCellIndex);
-                                                  //💚나중에 파이어베이스에 넣었다가 다른 구성원 답변들과 함께 리스트에 저장하여 불러오기
+
+                                                  //답변 파이어베이스에 업로드
                                                   CollectionReference answerCollection = FirebaseFirestore.instance.collection('Answer');
                                                   Query query = answerCollection
                                                       .where('flogCode', isEqualTo: currentUserFlogCode)
                                                       .where('puzzleNo', isEqualTo: (puzzleno - 1))
                                                       .where('questionNo', isEqualTo: selectedCellIndex);
-                                                  print('######p: $puzzleno /// i: $selectedCellIndex');
+
                                                   query.get().then((querySnapshot) {
                                                    final existingAnswerDocument = querySnapshot.docs.first;
                                                    Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
                                                    existingAnswers[userData['email']] = myanswer;
+
                                                    //업데이트된 데이터로 문서를 업데이트합니다.
                                                    existingAnswerDocument.reference.update({
                                                      'answers': existingAnswers,
@@ -838,23 +838,23 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                    }).catchError((error) {
                                                      print('Answer 업데이트 중 오류 발생: $error');
                                                    });
-
-                                                   userData['isAnswered'] = true;
-                                                   DocumentReference userRef = FirebaseFirestore.instance
-                                                       .collection('User')
-                                                       .doc(currentUserFlogCode);
-                                                   userRef.update({
-                                                     'isAnswered': true
-                                                   }) //'unlockStates' 필드를 업데이트
-                                                       .then((_) {
-                                                     print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
-                                                   })
-                                                       .catchError((error) {
-                                                     print('isAnswered 상태 업데이트 중 오류 발생: $error');
-                                                   });
                                                   });
+
+                                                  //userData['isAnswered'] = true;
+                                                  DocumentReference userRef = FirebaseFirestore.instance
+                                                      .collection('User')
+                                                      .doc(currentUser.email);
+                                                  userRef.update({
+                                                    'isAnswered': true
+                                                  }) //isAnswered 필드 업데이트
+                                                      .then((_) {
+                                                        print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      })
+                                                      .catchError((error) {
+                                                        print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                      });
                                                   isQuestionSheetShowed = false;
-                                                },
+                                                  },
                                                 child: Image.asset(
                                                   //전송 버튼
                                                   "button/send_white.png",
@@ -925,7 +925,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     style: TextStyle(
                                                         fontSize: 15,
                                                         color: Colors.black,
-                                                        fontWeight: FontWeight.bold),
+                                                        fontWeight: FontWeight.bold
+                                                    ),
                                                   ),
                                                 ]
                                             ),
@@ -950,7 +951,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               },
                                             ),
                                           ),
-
                                         ],
                                       )
                                     ],
@@ -965,6 +965,3 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       );
     }
 }
-
-
-
