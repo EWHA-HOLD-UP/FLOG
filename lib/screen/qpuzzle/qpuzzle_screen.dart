@@ -371,17 +371,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           ),
                                                         );
                                                       });
+                                                  print('!!!!!!!!!!!!selected: $selectedCellIndex / row*2...: ${row*2+col} / isquestionsheet: $isQuestionSheetShowed / isAnsw: $isAnswered');
                                                 } //풀린 조각도 답변 조회 가능하도록 ~
-
                                                 else if ((unlockStates[row * 2 + col] == false && //아직 안 풀린 조각이면서
                                                     isQuestionSheetShowed == false) || //질문창 보지 않았거나 (아직 조각 선택조차 안 한 상태)
                                                     selectedCellIndex == row * 2 + col) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 선택중인 상태, 질문창 봤을수 있음)
                                                   //한 번 어떤 퍼즐의 QuestionSheet 봤으면 대답 누르고 확인 누르기 전에 다른 조각 열람 불가
                                                   //그러나 선택했던 조각이라면 QuestionSheet 봤어도 다시 클릭 가능
-                                                  if (selectedCellIndex != row * 2 + col) { //만약 조각 선택조차 안 한 상태이면
-                                                    //만약 새로운 조각 클릭 시,
-                                                    isAnswered = false; //해당 조각의 질문은 아직 작성되지 않았으므로 다시 false로 초기화
-                                                  }
+
                                                   setState(() {
                                                     selectedCellIndex = row * 2 + col; //그리고 선택한 조각의 인덱스로 selectedCellIndex 변경
 
@@ -855,8 +852,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                        .catchError((error) {
                                                      print('isAnswered 상태 업데이트 중 오류 발생: $error');
                                                    });
-
                                                   });
+                                                  isQuestionSheetShowed = false;
                                                 },
                                                 child: Image.asset(
                                                   //전송 버튼
