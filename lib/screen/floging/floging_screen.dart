@@ -62,6 +62,23 @@ class FlogingScreenState extends State<FlogingScreen> {
         }
 
         final userDocuments = userSnapshot.data!.docs;
+        // currentUser를 가장 먼저 배열
+        userDocuments.sort((a, b) {
+          final aData = a.data() as Map<String, dynamic>;
+          final bData = b.data() as Map<String, dynamic>;
+          final aEmail = aData['email'] as String;
+          final bEmail = bData['email'] as String;
+
+          if (aEmail == currentUser.email) {
+            return -1; // a를 먼저 배치
+          } else if (bEmail == currentUser.email) {
+            return 1; // b를 먼저 배치
+          } else {
+            // 다른 사용자들의 정렬 순서는 상관없으므로 동등하게 처리
+            return 0;
+          }
+        });
+
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
