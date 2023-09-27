@@ -16,15 +16,16 @@ class FlogingScreenState extends State<FlogingScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+  String currentUserNickname = "";
 
   @override
   void initState() {
     super.initState();
-    getUserFlogCode();
+    getUserData();
   }
 
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
-  Future<void> getUserFlogCode() async {
+  Future<void> getUserData() async {
     final userDoc = await FirebaseFirestore.instance
         .collection('User')
         .doc(currentUser.email)
@@ -33,9 +34,11 @@ class FlogingScreenState extends State<FlogingScreen> {
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
+        currentUserNickname = userDoc.data()!['nickname'];
       });
     }
     print(currentUserFlogCode);
+    print(currentUserNickname);
   }
 
   @override
@@ -106,51 +109,191 @@ class FlogingScreenState extends State<FlogingScreen> {
                 final userData = userDocuments[index].data() as Map<String, dynamic>;
                 final userProfile = userData['profile'];
                 final userNickname = userData['nickname'];
+                final isCurrentUser = userData['email'] == currentUser.email;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Hero(
-                            tag: "profile",
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey[200],
-                                  ),
-                                  child: Center(
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        "assets/profile/profile_${userProfile}.png",
-                                        width: 50,
-                                        height: 50,
-                                        alignment: Alignment.center,
-                                      ),
+                      child: ListTile(
+                            leading: Hero(
+                              tag: "profile",
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey[200],
+                                ),
+                                child: Center(
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      "assets/profile/profile_${userProfile}.png",
+                                      width: 50,
+                                      height: 50,
+                                      alignment: Alignment.center,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            userNickname,
-                            style: GoogleFonts.nanumGothic(
-                              textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff609966),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                            title: Text(
+                                    userNickname,
+                                    style: GoogleFonts.nanumGothic(
+                                        textStyle: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff609966),
+                                        ),
+                                    ),
+                            ),
+                            trailing: !isCurrentUser
+                                ? GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('💌$currentUserNickname 🔜 ${userNickname}', textAlign: TextAlign.center),
+                                      actions: <Widget>[
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [TextButton(
+                                            child: Column(
+                                              children: [
+                                                Text('🤨',
+                                                  style: GoogleFonts.nanumGothic(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 8),
+                                                Text('뭐해?',
+                                                  style: GoogleFonts.nanumGothic(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),),
+                                              ],
+                                            ),
+                                            onPressed: () {
+                                              // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                              // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
+                                              Navigator.of(context).pop(); // 팝업 창 닫기
+                                            },
+                                          ),
+                                            SizedBox(width: 16),
+                                            TextButton(
+                                              child: Column(
+                                                children: [
+                                                  Text('🥰',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text('사랑해',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                // 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                // 이곳에 다른 미안함 표현 관련 코드를 추가하세요.
+                                                Navigator.of(context).pop(); // 팝업 창 닫기
+                                              },
+                                            ),
+                                            SizedBox(width: 16), // 버튼 사이의 간격 조절
+                                            TextButton(
+                                              child: Column(
+                                                children: [
+                                                  Text('🥹',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text('고마워',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
+                                                Navigator.of(context).pop(); // 팝업 창 닫기
+                                              },
+                                            ),
+                                            SizedBox(width: 16),
+                                            TextButton(
+                                              child: Column(
+                                                children: [
+                                                  Text('😢',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text('미안해',
+                                                    style: GoogleFonts.nanumGothic(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                // 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                // 이곳에 미안함 표현 관련 코드를 추가하세요.
+                                                Navigator.of(context).pop(); // 팝업 창 닫기
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                                    child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF609966),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        '개굴 To. ${userNickname}',
+                                        style: GoogleFonts.nanumGothic(
+                                          textStyle: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                            )
+                                : SizedBox(), // 현재 사용자면 아무것도 표시하지 않음
+                        ),
                     ),
                     SizedBox(height: 20),
                     StreamBuilder<QuerySnapshot>(
