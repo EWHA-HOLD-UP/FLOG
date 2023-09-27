@@ -44,7 +44,9 @@ class FirebaseAuthProvider with ChangeNotifier {
             flogCode: "null",
             profile: "0",
             isAnswered: false,
-            isUpload: false);
+            isUpload: false,
+            isQuestionSheetShowed: false,
+            ongoing: false);
 
         // 데이터베이스에 저장
         await _firestore

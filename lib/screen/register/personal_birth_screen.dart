@@ -129,7 +129,9 @@ class _BirthScreenState extends State<BirthScreen> {
                                   profile: 'null',
                                   flogCode: 'null',
                                   isUpload: false,
-                                  isAnswered: false);
+                                  isAnswered: false,
+                                  isQuestionSheetShowed: false,
+                                  ongoing: false);
 
                               userRef.doc().set(user.toJson());
                               print('d');

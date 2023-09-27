@@ -20,8 +20,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   List<bool> unlockStates = [];//6개의 조각에 대한 잠금 상태를 나타내는 리스트
   late int selectedCellIndex; //선택된 셀의 인덱스 : 초기값은 -1
   late int tempCellIndex;
+  late bool ongoing; //진행중(=나는 답변 완료했으나 가족 모두 답변 완료하지는 x) -> 답변 완료 후 나는 답변하는 화면이 아닌 가족들의 답변 여부 볼 수 있어야 하므로 필요
   int puzzleno = 1;
-  bool isQuestionSheetShowed = false; //질문창을 이미 조회했는지(조각을 선택했는지)
+  late bool isQuestionSheetShowed; //질문창을 이미 조회했는지(조각을 선택했는지)
   bool isAnswered = false; //답변 했는지
   //💚나중에 다른 사용자들의 답변 여부도 파이어베이스에서 불러와야함
 
@@ -37,9 +38,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   void initState() {
     super.initState();
     getUserFlogCode();
+    getQsheetShowed();
+    getOngoing();
   }
 
-  // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  //현재 로그인한 사용자의 flogCode를 Firebase에서 가져오는 함수
   Future<void> getUserFlogCode() async {
     final userDoc = await FirebaseFirestore.instance
         .collection('User')
@@ -48,6 +51,33 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
+      });
+    }
+  }
+
+  //isQuestionSheetShowed 불리언 값을 Firebase에서 가져오는 함수
+  Future<void> getQsheetShowed() async{
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+    if (userDoc.exists) {
+      setState(() {
+        isQuestionSheetShowed = userDoc.data()!['isQuestionSheetShowed'];
+
+      });
+    }
+  }
+
+  //ongoing 불리언 값을 Firebase에서 가져오는 함수
+  Future<void> getOngoing() async{
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+    if (userDoc.exists) {
+      setState(() {
+        ongoing = userDoc.data()!['ongoing'];
       });
     }
   }
@@ -80,10 +110,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     2: "답변 작성하기", //'나'인 경우
   };
   //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [1, 1, 1, 2];
+  List<int> memberStatus = [1, 1, 2];
 
   @override
   Widget build(BuildContext context) {
+    print('isqshowed: $isQuestionSheetShowed');
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Group')
@@ -224,9 +255,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         children: [
                                           for (int col = 0; col < 2; col++) //2열
                                             GestureDetector(
-                                              onTap: () {
-                                                if(unlockStates[row * 2 + col] == true) { //이미 풀린 조각 질문답변 조회
-                                                  tempCellIndex = row * 2 + col;
+                                              onTap: () async {
+                                                if(unlockStates[row * 2 + col] == true
+                                                    || (unlockStates[row * 2 + col] == false && ongoing == true && selectedCellIndex == row * 2 + col) ) {
+                                                  //이미 풀린 조각 및 나는 답변 완료한 조각의 질문 답변 조회
+                                                  isAnswered = true; //나는 답변 완료
+                                                  tempCellIndex = row * 2 + col; //문제 번호 표시를 위한 임시 조각 번호 대입
                                                   showModalBottomSheet(
                                                       context: context,
                                                       backgroundColor: Colors.white, //질문창 배경색
@@ -342,15 +376,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                     ],
                                                                                   ),
                                                                                   const SizedBox(width: 30),
-                                                                                  Text(
-                                                                                      '사용자 $rowIndex의 답변',
-                                                                                      //내가 답변했으면 구성원들의 답변 띄우기 💚 나중에 파이어베이스에서 받아오기
-                                                                                      //myanswer도 안 넣은 이유는 나중에 리스트형태로 answer[사용자 index]이런식으로 받아오기 위함
-                                                                                      style: const TextStyle(
-                                                                                        fontSize: 13,
-                                                                                        color: Colors.white,
-                                                                                      ),
+                                                                                  Text( //수정 필요
+                                                                                    '사용자 $rowIndex의 답변',
+                                                                                    style: const TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      color: Colors.white,
                                                                                     ),
+                                                                                  ),
                                                                                 ],
                                                                               )
                                                                         );
@@ -362,17 +394,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           ),
                                                         );
                                                       });
-                                                  //print('!!!!!!!!!!!!selected: $selectedCellIndex / row*2...: ${row*2+col} / isquestionsheet: $isQuestionSheetShowed / isAnsw: $isAnswered');
-                                                } //풀린 조각도 답변 조회 가능하도록 구현
-                                                else if ((unlockStates[row * 2 + col] == false && //아직 안 풀린 조각이면서
-                                                    isQuestionSheetShowed == false) || //질문창 보지 않았거나 (아직 조각 선택조차 안 한 상태)
-                                                    selectedCellIndex == row * 2 + col) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 선택중인 상태, 질문창 봤을수 있음)
-                                                  //한 번 어떤 퍼즐의 QuestionSheet 봤으면 대답 누르고 확인 누르기 전에 다른 조각 열람 불가
-                                                  //그러나 선택했던 조각이라면 QuestionSheet 봤어도 다시 클릭 가능
+                                                   }
+                                                else if ((unlockStates[row * 2 + col] == false && isQuestionSheetShowed == false && ongoing == false)
+                                                    //아직 안 풀린 조각이면서 질문창 보지도 x 그리고 나는 답변도 아직 x (아직 조각 선택조차 안 한 상태)
+                                                    || selectedCellIndex == row * 2 + col && ongoing == false) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 이전에 이미 선택중인 상태, 질문창 봤을수 있음)
+
+                                                  // 초기화
+                                                  isQuestionSheetShowed = false;
+                                                  isAnswered = false;
 
                                                   setState(() {
                                                     selectedCellIndex = row * 2 + col; //그리고 선택한 조각의 인덱스로 selectedCellIndex 변경
-                                                    isAnswered = false;
+                                                    //isAnswered 변수 false로 초기화
                                                     DocumentReference userRef = FirebaseFirestore.instance
                                                         .collection('User')
                                                         .doc(currentUser.email);
@@ -380,13 +413,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       'isAnswered': false
                                                     }) //isAnswered 필드 업데이트
                                                         .then((_) {
-                                                      print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      print('!!isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                     })
                                                         .catchError((error) {
                                                       print('isAnswered 상태 업데이트 중 오류 발생: $error');
                                                     });
 
-                                                    //파이어베이스에 올려주기
+                                                    //selectedCellIndex(선택한 조각) 변수 파이어베이스에 업데이트
                                                     FirebaseFirestore.instance
                                                         .collection('Group')
                                                         .where('flogCode', isEqualTo: currentUserFlogCode)
@@ -395,8 +428,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           if (querySnapshot.docs.isNotEmpty) {
                                                             final docRef = querySnapshot
                                                                 .docs[0].reference;
-
-                                                            // Firestore 업데이트를 통해 selectedIndex 업데이트
                                                             docRef.update({
                                                               'selectedIndex': selectedCellIndex
                                                             });
@@ -407,7 +438,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   // 2 3
                                                   // 4 5
                                                   //형태로 조각 인덱싱하고, 해당 조각 클릭시 인덱스를 저장
-                                                  showQuestionSheet(context); //질문창 나타나기
+
+                                                  showQuestionSheet(context); //클릭한 조각에 대한 질문탭 나타나기
                                                 }
                                               },
                                               child: Container(
@@ -446,8 +478,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   alignment: Alignment.center,
                                                   children: [
                                                     //현재 진행 중인 조각이면 - 선택된 조각이 아직 unlock되지 않았고 선택한 조각이면
-                                                    if (selectedCellIndex == row * 2 + col &&
-                                                        unlockStates[row * 2 + col] == false)
+                                                    if (selectedCellIndex == row * 2 + col && unlockStates[row * 2 + col] == false)
                                                       Stack(
                                                         children: [
                                                           Container(
@@ -494,8 +525,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                               ),
                             ],
                           )
-                        else
-                          if(qpuzzleUrl == null) // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
+                        else if(qpuzzleUrl == null) // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
                             Container(
                               width: 330,
                               height: 495,
@@ -556,24 +586,24 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       }
     }
 
-    //질문창 나타나게 하는 함수
+    //질문탭 나타나게 하는 함수
     void showQuestionSheet(context) async {
-      /*String? userEmail = currentUser.email; // 이메일 가져오기
-      // 'User' 컬렉션에서 사용자 문서를 가져오기
-      QuerySnapshot userQuerySnapshot = await firestore
+      isQuestionSheetShowed = true; //질문탭이 나타나면 isQuestionSheetShowed 변수 boolean값 true로 변경
+      //파이어베이스에 isQuestionSheetShowed 변수 업데이트
+      DocumentReference userRef = FirebaseFirestore.instance
           .collection('User')
-          .where('email', isEqualTo: userEmail)
-          .get();
-      String userFlogCode = userQuerySnapshot.docs[0]['flogCode'];
-      // 'Group' 컬렉션에서 그룹 문서의 레퍼런스 가져오기
-      DocumentReference currentDocumentRef =
-      firestore.collection('Group').doc(userFlogCode);
-      // 그룹 문서를 가져와서 데이터를 읽음
-      DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
-      int familymem = groupDocumentSnapshot['memNumber'];
-      print('가족 인원 수: $familymem');
-      */
+          .doc(currentUser.email);
+      userRef.update({
+        'isQuestionSheetShowed': true
+      })
+          .then((_) {
+            print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+          })
+          .catchError((error) {
+            print('isQ 상태 업데이트 중 오류 발생: $error');
+          });
 
+      //탭 띄우기
       showModalBottomSheet(
           context: context,
           backgroundColor: Colors.white,
@@ -600,6 +630,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   }
 
                   final userDocuments = userSnapshot.data!.docs;
+
                   return ListView(
                     children: [
                       const SizedBox(height: 25),
@@ -639,8 +670,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                               if (memberStatus[rowIndex] == 2 &&
                                   isAnswered == false) {
                                 //'나'의 박스: '답변 작성하기' 부분을 클릭하면
-                                myanswer = "";
-                                showAnswerSheet(context); //답변창 나타남
+                                myanswer = ""; //myanswer 변수 초기화
+                                showAnswerSheet(context); //답변 작성 탭 나타남
                               }
                             },
                             child: Container(
@@ -700,7 +731,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     ],
                                   ),
                                   const SizedBox(width: 30),
-                                  if(isAnswered == false)
+                                  if(isAnswered == false) //아직 답변 x
                                     Text(
                                       '${status[memberStatus[rowIndex]]}', //아직 내가 답변 안 했으면 구성원 상태별 안내메시지 띄우기
                                       style: const TextStyle(
@@ -708,11 +739,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         color: Colors.white,
                                       )
                                     )
-                                  else if(isAnswered == true)
+                                  else if(isAnswered == true) //답변 완료
                                     Text(
                                       '사용자 $rowIndex의 답변',
                                         //내가 답변했으면 구성원들의 답변 띄우기 💚 나중에 파이어베이스에서 받아오기
-                                        //myanswer도 안 넣은 이유는 나중에 리스트형태로 answer[사용자 index]이런식으로 받아오기 위함
                                       style: const TextStyle(
                                         fontSize: 13,
                                         color: Colors.white,
@@ -730,11 +760,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
               ),
             );
           });
-      isQuestionSheetShowed = true; //질문창이 나타나면 해당 변수 boolean값 true로 변경
     }
 
 
-    //답변창 나타나게 하는 함수
+    //답변 탭 나타나게 하는 함수
     void showAnswerSheet(BuildContext context) {
       showModalBottomSheet(
           context: context,
@@ -795,68 +824,151 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               padding: const EdgeInsets.only(right: 20, top: 10),
                                               child: InkWell(
                                                 //💥 나중에 아무것도 안 쓰면 전송 버튼 못 누르도록 수정 필요
-                                                onTap: () {
+                                                onTap: () async {
                                                   setState(() {
-                                                    isAnswered = true; //전송버튼 누르면 답변한 것으로
-                                                    unlockStates[selectedCellIndex] = true; //답변한 조각을 unlock 상태로 변경
-                                                    isQuestionSheetShowed = false;
-                                                    DocumentReference groupRef = FirebaseFirestore.instance
-                                                        .collection('Group')
-                                                        .doc(currentUserFlogCode);
-                                                    groupRef.update({
-                                                      'unlock': unlockStates
-                                                    }) //unlockStates 필드 업데이트
-                                                        .then((_) {
-                                                      print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                    isAnswered = true; //전송 버튼 누르면 답변한 것
+                                                    ongoing = true; //나는 답변 완료했으므로 ongoing = true
+
+                                                    //파이어베이스에 ongoing 변수 업데이트
+                                                    DocumentReference userRef = FirebaseFirestore.instance
+                                                        .collection('User')
+                                                        .doc(currentUser.email);
+                                                    userRef.update({
+                                                      'ongoing': true
                                                     })
+                                                        .then((_) {
+                                                          print('!!ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        })
                                                         .catchError((error) {
-                                                      print('Unlock 상태 업데이트 중 오류 발생: $error');
-                                                    });
+                                                          print('ongoing 상태 업데이트 중 오류 발생: $error');
+                                                        });
                                                   });
 
-                                                  Navigator.pop(context); //답변창 닫기
+                                                  //파이어베이스에 isAnswered 변수 업데이트
+                                                  DocumentReference userRef = FirebaseFirestore.instance
+                                                        .collection('User')
+                                                        .doc(currentUser.email);
+                                                    userRef.update({
+                                                      'isAnswered': true
+                                                    })
+                                                        .then((_) {
+                                                          print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        })
+                                                        .catchError((error) {
+                                                          print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                        });
+
+                                                    //내 답변 파이어베이스에 업로드
+                                                    CollectionReference answerCollection = FirebaseFirestore.instance.collection('Answer');
+                                                    Query query = answerCollection
+                                                        .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                        .where('puzzleNo', isEqualTo: (puzzleno - 1))
+                                                        .where('questionNo', isEqualTo: selectedCellIndex);
+
+                                                    query.get().then((querySnapshot) {
+                                                      final existingAnswerDocument = querySnapshot.docs.first;
+                                                      Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
+                                                      existingAnswers[userData['email']] = myanswer;
+
+                                                      existingAnswerDocument.reference.update({
+                                                        'answers': existingAnswers,
+                                                      }).then((_) {
+                                                        print('Answer이 Firebase Firestore에 업데이트되었습니다.');
+                                                      }).catchError((error) {
+                                                        print('Answer 업데이트 중 오류 발생: $error');
+                                                      });
+                                                    });
+
+                                                    //전체 가족 답변 여부 체크해서 result 변수에 담기 (전체 가족 답변 완료 시, true 저장)
+                                                    final result = await checkFamilystate();
+
+                                                    if(result == true){ //전체 가족 답변 완료
+                                                      setState(() {
+                                                        unlockStates[selectedCellIndex] = true; //해당 조각을 unlock 상태로 변경 (잠금 해제)
+                                                        isQuestionSheetShowed = false; //초기화
+
+                                                        //파이어베이스에 isQuestionSheetShowed 변수 업데이트
+                                                        DocumentReference userRef = FirebaseFirestore.instance
+                                                            .collection('User')
+                                                            .doc(currentUser.email);
+                                                        userRef.update({
+                                                          'isQuestionSheetShowed': false
+                                                        }) //isAnswered 필드 업데이트
+                                                            .then((_) {
+                                                              print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                            })
+                                                            .catchError((error) {
+                                                              print('isQ 상태 업데이트 중 오류 발생: $error');
+                                                            });
+                                                      });
+
+                                                      //파이어베이스에 unlock 필드 업데이트
+                                                      DocumentReference groupRef = FirebaseFirestore.instance
+                                                          .collection('Group')
+                                                          .doc(currentUserFlogCode);
+                                                      groupRef.update({
+                                                        'unlock': unlockStates
+                                                      })
+                                                          .then((_) {
+                                                            print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                          })
+                                                          .catchError((error) {
+                                                            print('Unlock 상태 업데이트 중 오류 발생: $error');
+                                                          });
+
+                                                      //이제 새로운 조각을 풀어야하기 때문에 나 뿐만 아니라 모든 가족 구성원의 isAnswered 변수 초기화
+                                                      final userRefs = firestore.collection('User').where('flogCode', isEqualTo: currentUserFlogCode);
+                                                      QuerySnapshot userSnapshots = await userRefs.get();
+
+                                                      for (final userSnapshot in userSnapshots.docs) {
+                                                        final userDocRef = firestore.doc('User/${userSnapshot.id}');
+                                                        await userDocRef.update({'isAnswered': isAnswered});
+                                                      }
+
+                                                      //ongoing 변수 초기화
+                                                      ongoing = false;
+
+                                                      //파이어베이스에 ongoing 변수 초기화 ->사실 밑에서 전체 문서를 돌리며 해서 안 해도 될 것 같긴 한데 불안해서 남김
+                                                      DocumentReference userRef = FirebaseFirestore.instance
+                                                          .collection('User')
+                                                          .doc(currentUser.email);
+                                                      userRef.update({
+                                                        'ongoing': false
+                                                      }) //isAnswered 필드 업데이트
+                                                          .then((_) {
+                                                        print('!!ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      })
+                                                          .catchError((error) {
+                                                        print('ongoing 상태 업데이트 중 오류 발생: $error');
+                                                      });
+
+                                                      //나 뿐만 아니라 모든 가족 구성원의 ongoing, isAnswered 변수 초기화
+                                                      for (final userSnapshot in userSnapshots.docs) {
+                                                        final userDocRef = firestore.doc('User/${userSnapshot.id}');
+                                                        await userDocRef.update({'ongoing': false});
+                                                        await userDocRef.update({'isAnswered': false});
+                                                      }
+                                                    }
+
+                                                    //여기서부터는 전체 가족이 답변 하지 않았더라도 수행됨
+                                                    Navigator.pop(context); //답변창 닫기
                                                   Navigator.pop(context); //질문창 닫기
                                                   showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
+                                                  isQuestionSheetShowed = false; //초기화
 
-                                                  //답변 파이어베이스에 업로드
-                                                  CollectionReference answerCollection = FirebaseFirestore.instance.collection('Answer');
-                                                  Query query = answerCollection
-                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
-                                                      .where('puzzleNo', isEqualTo: (puzzleno - 1))
-                                                      .where('questionNo', isEqualTo: selectedCellIndex);
-
-                                                  query.get().then((querySnapshot) {
-                                                   final existingAnswerDocument = querySnapshot.docs.first;
-                                                   Map<String, dynamic> existingAnswers = existingAnswerDocument['answers'];
-                                                   existingAnswers[userData['email']] = myanswer;
-
-                                                   //업데이트된 데이터로 문서를 업데이트합니다.
-                                                   existingAnswerDocument.reference.update({
-                                                     'answers': existingAnswers,
-                                                   }).then((_) {
-                                                     print('Answer이 Firebase Firestore에 업데이트되었습니다.');
-                                                   }).catchError((error) {
-                                                     print('Answer 업데이트 중 오류 발생: $error');
-                                                   });
-                                                  });
-
-                                                  //userData['isAnswered'] = true;
-                                                  DocumentReference userRef = FirebaseFirestore.instance
-                                                      .collection('User')
-                                                      .doc(currentUser.email);
+                                                  //파이어베이스 초기화
                                                   userRef.update({
-                                                    'isAnswered': true
-                                                  }) //isAnswered 필드 업데이트
+                                                    'isQuestionSheetShowed': false
+                                                  })
                                                       .then((_) {
-                                                        print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                       })
                                                       .catchError((error) {
-                                                        print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                        print('isQ 상태 업데이트 중 오류 발생: $error');
                                                       });
-                                                  isQuestionSheetShowed = false;
                                                   },
-                                                child: Image.asset(
-                                                  //전송 버튼
+
+                                                child: Image.asset( //전송 버튼
                                                   "button/send_white.png",
                                                   width: 30,
                                                   height: 30,
@@ -964,4 +1076,29 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
           }
       );
     }
+
+  //전체 가족 답변 여부 체크
+    Future<bool> checkFamilystate() async {
+    DocumentReference currentDocumentRef = firestore.collection('Group').doc(currentUserFlogCode);
+    DocumentSnapshot groupDocumentSnapshot = await currentDocumentRef.get();
+    familyMem = groupDocumentSnapshot['memNumber']; //가족 수
+
+    final userRefs = firestore.collection('User').where('flogCode', isEqualTo: currentUserFlogCode);
+    QuerySnapshot userSnapshots = await userRefs.get();
+
+    bool allAnswered = true; 
+
+    //멤버 수 만큼 for문 돌리면서 isAnswered가 false이면 최종적으로 false 리턴
+    for (final userSnapshot in userSnapshots.docs) {
+      final isAnswered = userSnapshot['isAnswered'];
+      print('******$isAnswered');
+      if (isAnswered != true) {
+        // 하나라도 업로드되지 않은 사용자가 있으면 false로 설정하고 루프 종료
+        allAnswered = false;
+        break;
+      }
+    }
+    print('allanswered = $allAnswered');
+    return allAnswered;
+  }
 }

@@ -10,7 +10,9 @@ class User {
   final String profile;
   final String flogCode; // 소속된 가족 코드
   final bool isUpload; // 플로깅 업로드 여부 확인
-  final bool isAnswered; // 큐퍼즐 답변 여부 확인
+  final bool isAnswered;
+  final bool isQuestionSheetShowed; // 큐퍼즐 답변 여부 확인
+  final bool ongoing;
 
   User({
     required this.uid,
@@ -21,6 +23,8 @@ class User {
     required this.flogCode,
     this.isUpload = false, //기본값은 false, 업로드하면 true로 값 변경
     required this.isAnswered,
+    required this.isQuestionSheetShowed,
+    required this.ongoing,
   });
 
   static User fromSnap(DocumentSnapshot snap) {
@@ -34,7 +38,9 @@ class User {
         birth: snapshot["birth"],
         flogCode: snapshot["flogCode"],
         isUpload: snapshot["isUpload"],
-        isAnswered: snapshot["isAnswered"]);
+        isAnswered: snapshot["isAnswered"],
+        isQuestionSheetShowed: snapshot["isQuestionSheetShowed"],
+        ongoing: snapshot["ongoing"]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +52,8 @@ class User {
         'flogCode': flogCode,
         'isUpload': isUpload,
         'isAnswered': isAnswered,
+        'isQuestionSheetShowed': isQuestionSheetShowed,
+        'ongoing': ongoing
       };
 }
 
