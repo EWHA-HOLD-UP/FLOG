@@ -22,18 +22,20 @@ class FlogingDetailScreen extends StatefulWidget {
 class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
-  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
   FireStoreMethods fireStoreMethods = FireStoreMethods();
   final _commentTextController = TextEditingController();
+  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+  String currentUserNickname = "";
+  bool currentUserUploaded = false;
 
   @override
   void initState() {
     super.initState();
-    getUserFlogCode();
+    getUserData();
   }
 
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
-  Future<void> getUserFlogCode() async {
+  Future<void> getUserData() async {
     final userDoc = await FirebaseFirestore.instance
         .collection('User')
         .doc(currentUser.email)
@@ -42,11 +44,14 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
+        currentUserNickname = userDoc.data()!['nickname'];
+        currentUserUploaded = userDoc.data()!['isUpload'];
       });
     }
     print(currentUserFlogCode);
+    print(currentUserNickname);
+    print(currentUserUploaded);
   }
-
   Future<void> _showDeleteConfirmationDialog() async {
     await showDialog<void>(
       context: context,
@@ -99,6 +104,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       .then((_) {
                     // Floging 삭제 작업이 완료된 후에 checkTodayFlog 함수 호출
                     checkTodayFlog();
+                    getUserData();
                   });
 
 
