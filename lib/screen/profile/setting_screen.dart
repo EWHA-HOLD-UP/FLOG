@@ -61,7 +61,8 @@ class SettingScreen extends StatelessWidget {
                 print('알림설정');
 
                 LocalNotification.showNotification(
-                    channelId: "channel_id_1",
+                    userToken:
+                        "dP_i9sr7QwarKSt_gImO_j:APA91bFs7ZWa_KJ3NXIwH-q3CgX7oajJk3T05bW3FdTvIojGvPK3pjp0ZHt60vg3MnUGusZaie8OvJ6I6QqR-9o2YqaGVG966H6d9WNwMTzGq5g5Q4taO03niDzO47csiGGiIsYFJQNc",
                     context: context,
                     title: '!!FLOG TIME입니다!!',
                     message: '가족들은 무엇을 하고 있을까요? 지금 당장 상태를 알리고 확인하세요!');

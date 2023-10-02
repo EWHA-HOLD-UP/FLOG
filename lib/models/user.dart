@@ -56,7 +56,7 @@ class User {
         'isUpload': isUpload,
         'isAnswered': isAnswered,
         'isQuestionSheetShowed': isQuestionSheetShowed,
-        'ongoing': ongoing
+        'ongoing': ongoing,
         'token': token,
       };
 }
@@ -96,7 +96,7 @@ class Group {
         memNumber: snapshot["memNumber"],
         qpuzzleUrl: snapshot["qpuzzleUrl"],
         unlock: snapshot["unlock"],
-      selectedIndex: snapshot["selectedIndex"]);
+        selectedIndex: snapshot["selectedIndex"]);
   }
 
   Map<String, dynamic> toJson() => {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flutter/material.dart';
@@ -102,14 +103,14 @@ class LocalNotification {
   }
 
   static Future<void> showNotification({
-    required String channelId,
+    required String userToken,
     required String title,
     required String message,
     required BuildContext context,
   }) async {
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      channelId,
+      userToken, // 특정 디바이스의 토큰을 채널 ID로 사용
       'channel name',
       channelDescription: 'channel description',
       importance: Importance.max,
@@ -127,8 +128,30 @@ class LocalNotification {
       title,
       message,
       platformChannelSpecifics,
-      payload: channelId, // 채널 ID를 payload로 전달
+      payload: userToken, // 사용자 토큰을 payload로 전달
     );
     print('알림 전송');
+  }
+
+  void sendCommentNotification(String recipientToken) async {
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+    // 알림 페이로드를 구성합니다.
+    final notification = {
+      'body': '누군가 댓글을 남겼습니다.',
+      'title': '댓글 알림',
+    };
+
+    final message = {
+      'notification': notification,
+      'token': recipientToken, // 받는 사용자의 FCM 토큰
+    };
+
+    try {
+      await _firebaseMessaging.sendMessage();
+      print('댓글 알림이 성공적으로 보내졌습니다.');
+    } catch (e) {
+      print('댓글 알림을 보내는 중 오류가 발생했습니다: $e');
+    }
   }
 }

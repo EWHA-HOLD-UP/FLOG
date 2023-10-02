@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flog/widgets/ImageSticker/sticker_picker.dart';
 import 'package:flutter/material.dart';
@@ -288,6 +289,12 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   await groupCollection.doc(flogCode).update({'frog': frog});
                 }
               }
+
+              LocalNotification.showNotification(
+                  userToken: userDocument.get('token'),
+                  context: context,
+                  title: '[FLOGing]',
+                  message: 'FLOGing 상태를 업로드했습니다 !');
 
               if (!mounted) return;
               Navigator.pop(context);
