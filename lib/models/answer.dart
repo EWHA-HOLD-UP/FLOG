@@ -7,7 +7,6 @@ class Answer {
   final String flogCode;
   final int puzzleNo;
   final int questionNo;
-  final bool isEveryoneComplete;
   final Map answers;
 
   Answer(
@@ -15,7 +14,6 @@ class Answer {
         required this.flogCode,
         required this.puzzleNo,
         required this.questionNo,
-        required this.isEveryoneComplete,
         required this.answers
       });
 
@@ -27,7 +25,6 @@ class Answer {
       flogCode: snapshot["flogCode"],
       puzzleNo: snapshot["puzzleNo"],
       questionNo: snapshot["questionNo"],
-      isEveryoneComplete: snapshot["isEveryoneComplete"],
       answers: snapshot["answers"]
     );
   }
@@ -37,7 +34,6 @@ class Answer {
     "flogCode": flogCode,
     "puzzleNo": puzzleNo,
     "questionNo": questionNo,
-    "isEveryoneComplete": isEveryoneComplete,
     "answers": answers
   };
 }
