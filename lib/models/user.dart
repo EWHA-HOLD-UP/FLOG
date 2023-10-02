@@ -10,7 +10,9 @@ class User {
   final String profile;
   final String flogCode; // 소속된 가족 코드
   final bool isUpload; // 플로깅 업로드 여부 확인
-  final bool isAnswered; // 큐퍼즐 답변 여부 확인
+  final bool isAnswered;
+  final bool isQuestionSheetShowed; // 큐퍼즐 답변 여부 확인
+  final bool ongoing;
   final String token; //디바이스토큰
 
   User({
@@ -22,6 +24,8 @@ class User {
     required this.flogCode,
     this.isUpload = false, //기본값은 false, 업로드하면 true로 값 변경
     required this.isAnswered,
+    required this.isQuestionSheetShowed,
+    required this.ongoing,
     required this.token,
   });
 
@@ -37,6 +41,8 @@ class User {
         flogCode: snapshot["flogCode"],
         isUpload: snapshot["isUpload"],
         isAnswered: snapshot["isAnswered"],
+        isQuestionSheetShowed: snapshot["isQuestionSheetShowed"],
+        ongoing: snapshot["ongoing"],
         token: snapshot["token"]);
   }
 
@@ -49,6 +55,8 @@ class User {
         'flogCode': flogCode,
         'isUpload': isUpload,
         'isAnswered': isAnswered,
+        'isQuestionSheetShowed': isQuestionSheetShowed,
+        'ongoing': ongoing
         'token': token,
       };
 }
@@ -60,6 +68,7 @@ class Group {
   late final int memNumber; //그룹 멤버수
   final String qpuzzleUrl; // 현재 진행중인 큐퍼즐사진
   final List<bool> unlock; // 현재 진행중인 큐퍼즐의 잠금해제여부
+  final int selectedIndex;
 
   Group(
       {required this.flogCode,
@@ -67,7 +76,8 @@ class Group {
       required this.frog,
       required this.memNumber,
       required this.qpuzzleUrl,
-      required this.unlock});
+      required this.unlock,
+      required this.selectedIndex});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -85,7 +95,8 @@ class Group {
         frog: snapshot["frog"],
         memNumber: snapshot["memNumber"],
         qpuzzleUrl: snapshot["qpuzzleUrl"],
-        unlock: snapshot["unlock"]);
+        unlock: snapshot["unlock"],
+      selectedIndex: snapshot["selectedIndex"]);
   }
 
   Map<String, dynamic> toJson() => {

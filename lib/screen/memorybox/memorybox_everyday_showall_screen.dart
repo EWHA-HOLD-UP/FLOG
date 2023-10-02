@@ -11,15 +11,14 @@ class MemoryBoxEverydayShowAllScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell( //close 아이콘 버튼
-          onTap: () {
-            Navigator.pop(context);
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black, // 뒤로가기 버튼 아이콘 색상
+          ), // 이미지 경로 지정
+          onPressed: () {
+            Navigator.pop(context); // 뒤로가기 기능 추가
           },
-          child: Image.asset(
-              "button/back_arrow.png",
-              width: 20,
-              height: 20
-          ),
         ),
         backgroundColor: Colors.white,
         title: Row(
@@ -229,7 +228,8 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
           final containerNumber = index - firstDayOfWeek + 2;
           final day = containerNumber.toString().padLeft(2, '0');
           final formattedMonth = month.toString().padLeft(2, '0');
-          final formattedDate = '$year.$formattedMonth.$day';
+          final formattedYear = year%100;
+          final formattedDate = '$formattedYear.$formattedMonth.$day';
 
           if ((year == currentYear && month == currentMonth && containerNumber > today) ||
               (year == currentYear && month > currentMonth) || (year > currentYear)) {

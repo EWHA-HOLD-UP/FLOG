@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/models/qpuzzle.dart';
+import 'package:flog/widgets/checkTodayFlog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flog/resources/storage_methods.dart';
+import '../models/answer.dart';
 import '../models/floging.dart';
 
 class FireStoreMethods {
@@ -28,6 +30,7 @@ class FireStoreMethods {
           flogingId: flogingId);
       _firestore.collection('Floging').doc(flogingId).set(floging.toJson());
       res = "success";
+      checkTodayFlog();
     } catch (err) {
       res = err.toString();
     }
@@ -92,12 +95,34 @@ class FireStoreMethods {
           puzzleNo: puzzleNo,
           isComplete: false,
           pictureUrl: photoUrl,
-          currentPiece: 0,
-          unlock: [false, false, false, false, false, false]);
+      );
 
       _firestore.collection('Qpuzzle').doc(puzzleId).set(qpuzzle.toJson());
       final CollectionReference groupRef = _firestore.collection('Group');
       await groupRef.doc(flogCode).update({'qpuzzleUrl': photoUrl});
+      res = "success";
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  // Answer 데이터베이스에 저장하기
+
+  Future<String> uploadAnswer(String flogCode, int puzzleNo, int questionNo) async {
+    String res = "Some error occurred";
+    Map<String, String> answersMap = {};
+    try {
+      String answerId = const Uuid().v1(); // creates unique id based on time
+      Answer answer = Answer(
+        answerId: answerId,
+        flogCode: flogCode,
+        puzzleNo: puzzleNo,
+        questionNo: questionNo,
+        isEveryoneComplete: false,
+        answers: answersMap);
+
+      _firestore.collection('Answer').doc(answerId).set(answer.toJson());
       res = "success";
     } catch (err) {
       res = err.toString();
