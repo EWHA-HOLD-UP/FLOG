@@ -8,6 +8,7 @@ import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/models/model_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  var MessageString = "";
+
+  void getMyDevicdeToken() async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = await FirebaseMessaging.instance.getToken();
+    print("내 디바이스 토큰: $token");
+    final CollectionReference userRef = _firestore.collection('User');
+    await userRef.doc(prefs.getString('email')).update({'token': token});
+  }
+
   Future<bool> checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final authClient =
@@ -87,7 +99,25 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    LocalNotification.initialize();
+    getMyDevicdeToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+
+      if (notification != null) {
+        FlutterLocalNotificationsPlugin().show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            const NotificationDetails(
+                android: AndroidNotificationDetails(
+                    'high_importance_channel', 'high_importance_notification',
+                    importance: Importance.max)));
+        setState(() {
+          MessageString = message.notification!.body!;
+          print("Foreground 메시지 수신: $MessageString");
+        });
+      }
+    });
     Future.delayed(
         const Duration(seconds: 3), LocalNotification.requestPermission());
     super.initState();

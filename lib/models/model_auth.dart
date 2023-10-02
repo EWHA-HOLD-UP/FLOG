@@ -44,7 +44,8 @@ class FirebaseAuthProvider with ChangeNotifier {
             flogCode: "null",
             profile: "0",
             isAnswered: false,
-            isUpload: false);
+            isUpload: false,
+            token: '');
 
         // 데이터베이스에 저장
         await _firestore
@@ -128,7 +129,7 @@ class FirebaseAuthProvider with ChangeNotifier {
           frog: 0,
           memNumber: 1,
           qpuzzleUrl: "",
-      unlock: [false, false, false, false, false, false]);
+          unlock: [false, false, false, false, false, false]);
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
     }
   }

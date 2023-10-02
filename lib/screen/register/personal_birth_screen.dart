@@ -121,18 +121,7 @@ class _BirthScreenState extends State<BirthScreen> {
                               CollectionReference userRef =
                                   db.collection("Users");
                               print('d');
-                              flog_User.User user = flog_User.User(
-                                  uid: 'flog_User.getCurrentUserUID()',
-                                  email: '',
-                                  nickname: enteredNickname,
-                                  birth: enteredBirthMonth + enteredBirthDay,
-                                  profile: 'null',
-                                  flogCode: 'null',
-                                  isUpload: false,
-                                  isAnswered: false);
 
-                              userRef.doc().set(user.toJson());
-                              print('d');
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
