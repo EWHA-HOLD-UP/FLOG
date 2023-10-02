@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,18 +15,20 @@ class QpuzzleScreen extends StatefulWidget {
 }
 
 class _QpuzzleScreenState extends State<QpuzzleScreen> {
+  String appbarText = 'Qpuzzle';
   XFile? image; //불러온 이미지 저장할 변수
   List<bool> unlockStates = [];//6개의 조각에 대한 잠금 상태를 나타내는 리스트
   late int selectedCellIndex; //선택된 셀의 인덱스 : 초기값은 -1
-  late int tempCellIndex;
+  int tempCellIndex = -1;
   late bool ongoing; //진행중(=나는 답변 완료했으나 가족 모두 답변 완료하지는 x) -> 답변 완료 후 나는 답변하는 화면이 아닌 가족들의 답변 여부 볼 수 있어야 하므로 필요
-  int puzzleno = 1;
-  late bool isQuestionSheetShowed; //질문창을 이미 조회했는지(조각을 선택했는지)
+  int puzzleno = 0;
+  bool isQuestionSheetShowed = false; //질문창을 이미 조회했는지(조각을 선택했는지)
   bool isAnswered = false; //답변 했는지
-  //💚나중에 다른 사용자들의 답변 여부도 파이어베이스에서 불러와야함
-
+  bool isAnyFamilyMemberOngoing = false; // 초기값을 false로 설정
   int familyMem = 1; //가족 수
   String myanswer = ''; //내 답변 저장할 변수
+  TextEditingController answerController = TextEditingController();
+  bool isSendButtonEnabled = false;
 
   // Firestore 인스턴스 생성
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -40,7 +41,19 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     getUserFlogCode();
     getQsheetShowed();
     getOngoing();
+    answerController.addListener(_onAnswerTextChanged);
   }
+  void _onAnswerTextChanged() {
+    setState(() {
+      isSendButtonEnabled = answerController.text.isNotEmpty;
+    });
+  }
+  @override
+  void dispose() {
+    answerController.dispose();
+    super.dispose();
+  }
+
 
   //현재 로그인한 사용자의 flogCode를 Firebase에서 가져오는 함수
   Future<void> getUserFlogCode() async {
@@ -103,18 +116,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     }
   }
 
-  //안내메시지 - 추후 코드 수정 필요
-  Map<int, String> status = {
-    0: "아직 답변을 작성하지 않았어요.",
-    1: "답변을 작성한 후 확인하세요.",
-    2: "답변 작성하기", //'나'인 경우
-  };
-  //구성원들의 상태를 저장 - 현재 임의로 지정
-  List<int> memberStatus = [1, 1, 2];
 
   @override
   Widget build(BuildContext context) {
-    print('isqshowed: $isQuestionSheetShowed');
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Group')
@@ -125,7 +129,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             return Text('Error: ${groupSnapshot.error}');
           }
           if (groupSnapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           final groupDocuments = groupSnapshot.data!.docs;
 
@@ -142,38 +146,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             unlockStates.addAll(
                 unlockList.map((dynamic value) => value as bool));
             selectedCellIndex = groupDocuments[0]['selectedIndex']; //selectedIndex 파이어베이스에서 가져오기
-          }
-
-          //qpuzzle 완성했을 때
-          if (unlockStates.every((unlockState) => unlockState == true)) {
-            //qpuzzleUrl을 ""로 설정하고 unlock 초기화
-            FirebaseFirestore.instance
-                .collection('Group')
-                .where('flogCode', isEqualTo: currentUserFlogCode)
-                .get()
-                .then((querySnapshot) {
-              if (querySnapshot.docs.isNotEmpty) {
-                final docRef = querySnapshot.docs[0].reference;
-                docRef.update({
-                  'qpuzzleUrl': "", //qpuzzleUrl 초기화
-                  'unlock': List.generate(6, (_) => false), //unlock 초기화 (6개 조각)
-                  'selectedIndex': -1, //선택한 조각 인덱스 초기화
-                });
-              }
-            });
-            FirebaseFirestore.instance
-                .collection('Qpuzzle')
-                .where('flogCode', isEqualTo: currentUserFlogCode)
-                .orderBy('puzzleNo', descending: true)
-                .snapshots()
-                .listen((querySnapshot) {
-              if (querySnapshot.docs.isNotEmpty) {
-                final docRef = querySnapshot.docs.first.reference;
-                docRef.update({
-                  'isComplete': true //Qpuzzle 컬렉션에서 isComplete 필드 반영
-                });
-              }
-            });
           }
 
           return StreamBuilder<QuerySnapshot>(
@@ -203,7 +175,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                 });
 
                 final data = latestDocument[0].data() as Map<String, dynamic>;
-                puzzleno = data['puzzleNo'] + 1; //우리 가족의 마지막 큐퍼즐의 번호 찾아서 + 1해서 이 큐퍼즐의 puzzleNo 만들기
+                puzzleno = data['puzzleNo']; //우리 가족의 마지막 큐퍼즐의 번호 가져오기
+                if(qpuzzleUrl != null) appbarText = '$puzzleno번째 Qpuzzle';
               }
 
               return Scaffold(
@@ -214,7 +187,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   elevation: 0.0,
                   centerTitle: true,
                   title: Text(
-                    'Qpuzzle',
+                    appbarText,
                     style: GoogleFonts.balooBhaijaan2(
                       textStyle: TextStyle(
                         fontSize: 30,
@@ -256,10 +229,23 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           for (int col = 0; col < 2; col++) //2열
                                             GestureDetector(
                                               onTap: () async {
+                                                final userSnapshot = await FirebaseFirestore.instance
+                                                    .collection('User')
+                                                    .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                    .get();
+
+
+                                                for (final userDoc in userSnapshot.docs) {
+                                                  final isongoing = userDoc.data()['ongoing'] as bool;
+                                                  if (isongoing == true) {
+                                                    isAnyFamilyMemberOngoing = true;
+                                                    break;
+                                                  }
+                                                }
                                                 if(unlockStates[row * 2 + col] == true
                                                     || (unlockStates[row * 2 + col] == false && ongoing == true && selectedCellIndex == row * 2 + col) ) {
                                                   //이미 풀린 조각 및 나는 답변 완료한 조각의 질문 답변 조회
-                                                  isAnswered = true; //나는 답변 완료
+                                                  //isAnswered = true; //나는 답변 완료
                                                   tempCellIndex = row * 2 + col; //문제 번호 표시를 위한 임시 조각 번호 대입
                                                   showModalBottomSheet(
                                                       context: context,
@@ -285,6 +271,20 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                 }
 
                                                                 final userDocuments = userSnapshot.data!.docs;
+                                                                userDocuments.sort((a, b) {
+                                                                  final aData = a.data() as Map<String, dynamic>;
+                                                                  final bData = b.data() as Map<String, dynamic>;
+                                                                  final aEmail = aData['email'] as String;
+                                                                  final bEmail = bData['email'] as String;
+
+                                                                  if (aEmail == currentUser.email) {
+                                                                    return -1; // a를 먼저 배치
+                                                                  } else if (bEmail == currentUser.email) {
+                                                                    return 1; // b를 먼저 배치
+                                                                  } else {
+                                                                    return aEmail.compareTo(bEmail); //나머지 알파벳순 정렬
+                                                                  }
+                                                                });
                                                                 return ListView(
                                                                   children: [
                                                                     const SizedBox(height: 25),
@@ -302,7 +302,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                         padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
                                                                         child: Text(
                                                                           //💚 DB에서 인덱스 활용하여 질문 따오기
-                                                                          'Q$tempCellIndex. 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $tempCellIndex번 질문 따오기',
+                                                                          'Q$tempCellIndex. 이거임시창 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $tempCellIndex번 질문 따오기',
                                                                           style: const TextStyle(
                                                                               fontSize: 20, fontWeight: FontWeight.bold),
                                                                           softWrap: true, //자동 줄바꿈
@@ -319,72 +319,103 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                         final userData = userDocuments[rowIndex].data() as Map<String, dynamic>;
                                                                         final userProfile = userData['profile'];
                                                                         final userNickname = userData['nickname'];
-                                                                        return Container(
-                                                                            //구성원 각각의 답변 상태 or 답변이 나타나는 상자
-                                                                              width: double.infinity,
-                                                                              height: 110,
-                                                                              //높이 설정
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                color: const Color.fromRGBO(0, 0, 0, 0.5),
-                                                                              ),
-                                                                              margin: const EdgeInsets.symmetric(
-                                                                                  vertical: 10, horizontal: 20),
-                                                                              child: Row(
-                                                                                children: [
-                                                                                  const SizedBox(width: 15),
-                                                                                  Column(
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                        //각 사용자에 대한 답변을 불러오기
+                                                                        final answerCollection = FirebaseFirestore.instance.collection('Answer');
+                                                                        final query = answerCollection
+                                                                            .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                                            .where('puzzleNo', isEqualTo: puzzleno)
+                                                                            .where('questionNo', isEqualTo: tempCellIndex);
+
+                                                                        return StreamBuilder<QuerySnapshot>(
+                                                                            stream: query.snapshots(),
+                                                                            builder: (context, answerSnapshot){
+                                                                              if (answerSnapshot.hasError) {
+                                                                                return Text('Error: ${answerSnapshot.error}');
+                                                                              }
+                                                                              if (answerSnapshot.connectionState == ConnectionState.waiting) {
+                                                                                return CircularProgressIndicator();
+                                                                              }
+                                                                              final answerDocuments = answerSnapshot.data!.docs;
+                                                                              String userAnswer = "아직 답변을 작성하지 않았어요.";
+
+                                                                              for (final answerDoc in answerDocuments) {
+                                                                                final answers = answerDoc['answers'] as Map<String, dynamic>;
+                                                                                final userAnswerText = answers[userData['email']];
+                                                                                if(userAnswerText != null) {
+                                                                                  userAnswer = userAnswerText;
+                                                                                  break;
+                                                                                }
+                                                                              }
+                                                                              return Container(
+                                                                                //구성원 각각의 답변 상태 or 답변이 나타나는 상자
+                                                                                  width: 350,
+                                                                                  height: 110,
+                                                                                  decoration: BoxDecoration(
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                    color: const Color.fromRGBO(0, 0, 0, 0.5),
+                                                                                  ),
+                                                                                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                                                  child: Row(
                                                                                     children: [
-                                                                                      const SizedBox(height: 10),
-                                                                                      Hero(
-                                                                                        tag: "profile",
-                                                                                        child: Stack(
-                                                                                          children: [
-                                                                                            Container(
-                                                                                              width: 60,
-                                                                                              height: 60,
-                                                                                              decoration: BoxDecoration(
-                                                                                                shape: BoxShape.circle,
-                                                                                                color: Colors.grey[200],
-                                                                                              ),
-                                                                                              child: Center(
-                                                                                                child: ClipOval(
-                                                                                                  child: Image.asset(
-                                                                                                    "assets/profile/profile_${userProfile}.png",
-                                                                                                    width: 50,
-                                                                                                    height: 50,
-                                                                                                    alignment: Alignment.center,
+                                                                                      const SizedBox(width: 15),
+                                                                                      Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        children: [
+                                                                                          const SizedBox(height: 10),
+                                                                                          Hero(
+                                                                                            tag: "profile",
+                                                                                            child: Stack(
+                                                                                              children: [
+                                                                                                Container(
+                                                                                                  width: 60,
+                                                                                                  height: 60,
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    shape: BoxShape.circle,
+                                                                                                    color: Colors.grey[200],
+                                                                                                  ),
+                                                                                                  child: Center(
+                                                                                                    child: ClipOval(
+                                                                                                      child: Image.asset(
+                                                                                                        "assets/profile/profile_${userProfile}.png",
+                                                                                                        width: 50,
+                                                                                                        height: 50,
+                                                                                                        alignment: Alignment.center,
+                                                                                                      ),
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Text(
+                                                                                            userNickname,
+                                                                                            style: GoogleFonts.nanumGothic(
+                                                                                              textStyle: TextStyle(
+                                                                                                fontSize: 15,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                                color: Colors.white,
                                                                                               ),
                                                                                             ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 10),
-                                                                                      Text(
-                                                                                        userNickname,
-                                                                                        style: GoogleFonts.nanumGothic(
-                                                                                          textStyle: TextStyle(
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                            color: Colors.white,
                                                                                           ),
-                                                                                        ),
+                                                                                        ],
                                                                                       ),
+                                                                                      const SizedBox(width: 15),
+                                                                                      Expanded(
+                                                                                          child: Text(
+                                                                                            userAnswer,
+                                                                                            style: const TextStyle(
+                                                                                              fontSize: 13,
+                                                                                              color: Colors.white,
+                                                                                            ),
+                                                                                            softWrap: true, //자동 줄바꿈
+                                                                                          )
+                                                                                      ),
+                                                                                      const SizedBox(width: 15)
                                                                                     ],
-                                                                                  ),
-                                                                                  const SizedBox(width: 30),
-                                                                                  Text( //수정 필요
-                                                                                    '사용자 $rowIndex의 답변',
-                                                                                    style: const TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      color: Colors.white,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              )
+                                                                                  )
+                                                                              );
+                                                                            }
                                                                         );
                                                                       },
                                                                     ),
@@ -395,7 +426,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         );
                                                       });
                                                    }
-                                                else if ((unlockStates[row * 2 + col] == false && isQuestionSheetShowed == false && ongoing == false)
+                                                else if ((unlockStates[row * 2 + col] == false && isQuestionSheetShowed == false && isAnyFamilyMemberOngoing == false && isAnswered == false)
                                                     //아직 안 풀린 조각이면서 질문창 보지도 x 그리고 나는 답변도 아직 x (아직 조각 선택조차 안 한 상태)
                                                     || selectedCellIndex == row * 2 + col && ongoing == false) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 이전에 이미 선택중인 상태, 질문창 봤을수 있음)
 
@@ -413,7 +444,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       'isAnswered': false
                                                     }) //isAnswered 필드 업데이트
                                                         .then((_) {
-                                                      print('!!isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                     })
                                                         .catchError((error) {
                                                       print('isAnswered 상태 업데이트 중 오류 발생: $error');
@@ -574,14 +605,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
       await usersCollection.doc(currentUser.email).get();
       if (userDocument.exists) {
         String flogCode = userDocument.get('flogCode');
-        postImage(flogCode, puzzleno);
+        postImage(flogCode, puzzleno + 1);
         //조각별로 Answer 문서 생성
-        postAnswer(currentUserFlogCode, puzzleno, 0);
-        postAnswer(currentUserFlogCode, puzzleno, 1);
-        postAnswer(currentUserFlogCode, puzzleno, 2);
-        postAnswer(currentUserFlogCode, puzzleno, 3);
-        postAnswer(currentUserFlogCode, puzzleno, 4);
-        postAnswer(currentUserFlogCode, puzzleno, 5);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 0);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 1);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 2);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 3);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 4);
+        postAnswer(currentUserFlogCode, puzzleno + 1, 5);
 
       }
     }
@@ -597,10 +628,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
         'isQuestionSheetShowed': true
       })
           .then((_) {
-            print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+            print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
           })
           .catchError((error) {
-            print('isQ 상태 업데이트 중 오류 발생: $error');
+            print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
           });
 
       //탭 띄우기
@@ -630,6 +661,20 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   }
 
                   final userDocuments = userSnapshot.data!.docs;
+                  userDocuments.sort((a, b) {
+                    final aData = a.data() as Map<String, dynamic>;
+                    final bData = b.data() as Map<String, dynamic>;
+                    final aEmail = aData['email'] as String;
+                    final bEmail = bData['email'] as String;
+
+                    if (aEmail == currentUser.email) {
+                      return -1; // a를 먼저 배치
+                    } else if (bEmail == currentUser.email) {
+                      return 1; // b를 먼저 배치
+                    } else {
+                      return aEmail.compareTo(bEmail); //나머지 알파벳순 정렬
+                    }
+                  });
 
                   return ListView(
                     children: [
@@ -665,93 +710,115 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           final userData = userDocuments[rowIndex].data() as Map<String, dynamic>;
                           final userProfile = userData['profile'];
                           final userNickname = userData['nickname'];
-                          return GestureDetector(
-                            onTap: () {
-                              if (memberStatus[rowIndex] == 2 &&
-                                  isAnswered == false) {
-                                //'나'의 박스: '답변 작성하기' 부분을 클릭하면
-                                myanswer = ""; //myanswer 변수 초기화
-                                showAnswerSheet(context); //답변 작성 탭 나타남
-                              }
-                            },
-                            child: Container(
-                              //구성원 각각의 답변 상태 or 답변이 나타나는 상자
-                              width: double.infinity,
-                              height: 110,
-                              //높이 설정
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color.fromRGBO(0, 0, 0, 0.5),
-                              ),
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: Row(
-                                children: [
-                                  const SizedBox(width: 15),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 10),
-                                      Hero(
-                                        tag: "profile",
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.grey[200],
+                          //각 사용자에 대한 답변을 불러오기
+                          final answerCollection = FirebaseFirestore.instance.collection('Answer');
+                          final query = answerCollection
+                              .where('flogCode', isEqualTo: currentUserFlogCode)
+                              .where('puzzleNo', isEqualTo: puzzleno)
+                              .where('questionNo', isEqualTo: tempCellIndex);
+
+                          return StreamBuilder <QuerySnapshot> (
+                              stream: query.snapshots(),
+                              builder: (context, answerSnapshot){
+                                if(answerSnapshot.hasError){
+                                  return Text('Error: ${answerSnapshot.error}');
+                                }
+                                if (answerSnapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                }
+                                final answerDocuments = answerSnapshot.data!.docs;
+                                String userAnswer = "답변을 작성한 후 확인하세요"; // 변수를 이 부분에서 선언하고 초기화
+                                if(isAnswered == true) {
+                                  for (final answerDoc in answerDocuments) {
+                                    final answers = answerDoc['answers'] as Map<String, dynamic>;
+                                    final userAnswerText = answers[userData['email']];
+                                    if(userAnswerText != null) {
+                                      userAnswer = userAnswerText;
+                                      break;
+                                    }
+                                  }
+                                }
+                                if (userData['email'] == currentUser.email && isAnswered == false)
+                                  userAnswer = "클릭하여 답변 작성하기";
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (userData['email'] == currentUser.email && isAnswered == false) {
+                                      //'나'의 박스: '답변 작성하기' 부분을 클릭하면
+                                      myanswer = ""; //myanswer 변수 초기화
+                                      showAnswerSheet(context); //답변 작성 탭 나타남
+                                    }
+                                  },
+                                  child: Container(
+                                    //구성원 각각의 답변 상태 or 답변이 나타나는 상자
+                                      width: double.infinity,
+                                      height: 110,
+                                      //높이 설정
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color.fromRGBO(0, 0, 0, 0.5),
+                                      ),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 20),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 15),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 10),
+                                              Hero(
+                                                tag: "profile",
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.grey[200],
+                                                      ),
+                                                      child: Center(
+                                                        child: ClipOval(
+                                                          child: Image.asset(
+                                                            "assets/profile/profile_${userProfile}.png",
+                                                            width: 50,
+                                                            height: 50,
+                                                            alignment: Alignment.center,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                              child: Center(
-                                                child: ClipOval(
-                                                  child: Image.asset(
-                                                    "assets/profile/profile_${userProfile}.png",
-                                                    width: 50,
-                                                    height: 50,
-                                                    alignment: Alignment.center,
+                                              SizedBox(height: 10),
+                                              Text(
+                                                userNickname,
+                                                style: GoogleFonts.nanumGothic(
+                                                  textStyle: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        userNickname,
-                                        style: GoogleFonts.nanumGothic(
-                                          textStyle: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            ],
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 30),
-                                  if(isAnswered == false) //아직 답변 x
-                                    Text(
-                                      '${status[memberStatus[rowIndex]]}', //아직 내가 답변 안 했으면 구성원 상태별 안내메시지 띄우기
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.white,
+                                          const SizedBox(width: 30),
+                                          Text(
+                                            isAnswered == false ? userAnswer : "답변을 작성한 후 확인하세요",
+                                            style: const TextStyle(
+                                              fontSize: 17,
+                                              color: Colors.white,
+                                            ),
+                                            softWrap: true, //자동 줄바꿈
+                                          ),
+                                        ],
                                       )
-                                    )
-                                  else if(isAnswered == true) //답변 완료
-                                    Text(
-                                      '사용자 $rowIndex의 답변',
-                                        //내가 답변했으면 구성원들의 답변 띄우기 💚 나중에 파이어베이스에서 받아오기
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                ],
-                              )
-                            ),
-                          );
+                                  ),
+                                );
+                              });
                         },
                       ),
                     ],
@@ -761,7 +828,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             );
           });
     }
-
 
     //답변 탭 나타나게 하는 함수
     void showAnswerSheet(BuildContext context) {
@@ -823,8 +889,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                             child: Padding(
                                               padding: const EdgeInsets.only(right: 20, top: 10),
                                               child: InkWell(
-                                                //💥 나중에 아무것도 안 쓰면 전송 버튼 못 누르도록 수정 필요
                                                 onTap: () async {
+                                                  if (isSendButtonEnabled) {
                                                   setState(() {
                                                     isAnswered = true; //전송 버튼 누르면 답변한 것
                                                     ongoing = true; //나는 답변 완료했으므로 ongoing = true
@@ -837,7 +903,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       'ongoing': true
                                                     })
                                                         .then((_) {
-                                                          print('!!ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                          print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                         })
                                                         .catchError((error) {
                                                           print('ongoing 상태 업데이트 중 오류 발생: $error');
@@ -862,7 +928,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     CollectionReference answerCollection = FirebaseFirestore.instance.collection('Answer');
                                                     Query query = answerCollection
                                                         .where('flogCode', isEqualTo: currentUserFlogCode)
-                                                        .where('puzzleNo', isEqualTo: (puzzleno - 1))
+                                                        .where('puzzleNo', isEqualTo: (puzzleno))
                                                         .where('questionNo', isEqualTo: selectedCellIndex);
 
                                                     query.get().then((querySnapshot) {
@@ -886,6 +952,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       setState(() {
                                                         unlockStates[selectedCellIndex] = true; //해당 조각을 unlock 상태로 변경 (잠금 해제)
                                                         isQuestionSheetShowed = false; //초기화
+                                                        isAnyFamilyMemberOngoing = false;
 
                                                         //파이어베이스에 isQuestionSheetShowed 변수 업데이트
                                                         DocumentReference userRef = FirebaseFirestore.instance
@@ -895,12 +962,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           'isQuestionSheetShowed': false
                                                         }) //isAnswered 필드 업데이트
                                                             .then((_) {
-                                                              print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                              print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                             })
                                                             .catchError((error) {
                                                               print('isQ 상태 업데이트 중 오류 발생: $error');
                                                             });
                                                       });
+
 
                                                       //파이어베이스에 unlock 필드 업데이트
                                                       DocumentReference groupRef = FirebaseFirestore.instance
@@ -936,24 +1004,120 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         'ongoing': false
                                                       }) //isAnswered 필드 업데이트
                                                           .then((_) {
-                                                        print('!!ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                       })
                                                           .catchError((error) {
                                                         print('ongoing 상태 업데이트 중 오류 발생: $error');
                                                       });
 
+                                                      isAnswered = false;
                                                       //나 뿐만 아니라 모든 가족 구성원의 ongoing, isAnswered 변수 초기화
                                                       for (final userSnapshot in userSnapshots.docs) {
                                                         final userDocRef = firestore.doc('User/${userSnapshot.id}');
                                                         await userDocRef.update({'ongoing': false});
                                                         await userDocRef.update({'isAnswered': false});
                                                       }
-                                                    }
 
+                                                      //qpuzzle 완성했을 때
+                                                      if (unlockStates.every((unlockState) => unlockState == true)) {
+                                                        //qpuzzleUrl을 ""로 설정하고 unlock 초기화
+
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+
+                                                        FirebaseFirestore.instance
+                                                            .collection('Group')
+                                                            .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                            .get()
+                                                            .then((querySnapshot) {
+                                                          if (querySnapshot.docs.isNotEmpty) {
+                                                            final docRef = querySnapshot.docs[0].reference;
+                                                            docRef.update({
+                                                              'qpuzzleUrl': "", //qpuzzleUrl 초기화
+                                                              'unlock': List.generate(6, (_) => false), //unlock 초기화 (6개 조각)
+                                                              'selectedIndex': -1, //선택한 조각 인덱스 초기화
+                                                            });
+                                                          }
+                                                        });
+                                                        FirebaseFirestore.instance
+                                                            .collection('Qpuzzle')
+                                                            .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                            .orderBy('puzzleNo', descending: true)
+                                                            .snapshots()
+                                                            .listen((querySnapshot) {
+                                                          if (querySnapshot.docs.isNotEmpty) {
+                                                            final docRef = querySnapshot.docs.first.reference;
+                                                            docRef.update({
+                                                              'isComplete': true //Qpuzzle 컬렉션에서 isComplete 필드 반영
+                                                            });
+                                                          }
+                                                        });
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return AlertDialog(
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+                                                              ),
+                                                              title: Text(
+                                                                '퍼즐 완성!',
+                                                                style: TextStyle(
+                                                                  color: Color(0xFF609966),
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                                textAlign: TextAlign.center,
+                                                              ),
+                                                              content: Text(
+                                                                '$puzzleno 번째 퍼즐이 완성되었습니다!\n메모리 박스에서 확인하세요.',
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                                textAlign: TextAlign.center,
+                                                              ),
+                                                              actions: <Widget>[
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                                                                  children: [
+                                                                    TextButton(
+                                                                      child: Text(
+                                                                        'OK',
+                                                                        style: GoogleFonts.balooBhaijaan2(
+                                                                          textStyle: TextStyle(
+                                                                            color: Colors.white,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+
+                                                                      style: ButtonStyle(
+                                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                          RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                                                          ),
+                                                                        ),
+                                                                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        //팝업 닫기
+                                                                        Navigator.of(context).pop();
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                        appbarText = "Qpuzzle";
+                                                        return;
+                                                      }
+                                                    }
                                                     //여기서부터는 전체 가족이 답변 하지 않았더라도 수행됨
-                                                    Navigator.pop(context); //답변창 닫기
+
+                                                  Navigator.pop(context); //답변창 닫기
                                                   Navigator.pop(context); //질문창 닫기
-                                                  showQuestionSheet(context); //질문창 띄우기 - 답변 새로고침 위함
+
                                                   isQuestionSheetShowed = false; //초기화
 
                                                   //파이어베이스 초기화
@@ -961,18 +1125,22 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     'isQuestionSheetShowed': false
                                                   })
                                                       .then((_) {
-                                                        print('!!isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                       })
                                                       .catchError((error) {
                                                         print('isQ 상태 업데이트 중 오류 발생: $error');
                                                       });
+                                                  }
+
                                                   },
 
                                                 child: Image.asset( //전송 버튼
                                                   "button/send_white.png",
                                                   width: 30,
                                                   height: 30,
-                                                  color: Color(0xFF609966),
+                                                  color: isSendButtonEnabled
+                                                      ? Color(0xFF609966)
+                                                      : Colors.grey,
                                                 ),
                                               ),
                                             ),
@@ -1046,11 +1214,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           Padding(
                                             padding: const EdgeInsets.symmetric(horizontal: 20),
                                             child: TextField( //답변 입력창
+                                              controller: answerController,
                                               style: const TextStyle(color: Colors.black),
                                               maxLines: null,
                                               keyboardType: TextInputType.multiline,
                                               decoration: const InputDecoration(
-                                                  hintText: '답변 쓰기...', //힌트 문구
+                                                  hintText: '클릭하여 답변 작성하기...', //힌트 문구
                                                   hintStyle: TextStyle(color: Colors.grey),
                                                   border: OutlineInputBorder(
                                                       borderSide: BorderSide.none
@@ -1086,19 +1255,17 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     final userRefs = firestore.collection('User').where('flogCode', isEqualTo: currentUserFlogCode);
     QuerySnapshot userSnapshots = await userRefs.get();
 
-    bool allAnswered = true; 
+    bool allAnswered = true;
 
     //멤버 수 만큼 for문 돌리면서 isAnswered가 false이면 최종적으로 false 리턴
     for (final userSnapshot in userSnapshots.docs) {
       final isAnswered = userSnapshot['isAnswered'];
-      print('******$isAnswered');
       if (isAnswered != true) {
         // 하나라도 업로드되지 않은 사용자가 있으면 false로 설정하고 루프 종료
         allAnswered = false;
         break;
       }
     }
-    print('allanswered = $allAnswered');
     return allAnswered;
   }
 }
