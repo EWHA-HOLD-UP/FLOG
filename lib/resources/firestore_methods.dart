@@ -119,7 +119,6 @@ class FireStoreMethods {
         flogCode: flogCode,
         puzzleNo: puzzleNo,
         questionNo: questionNo,
-        isEveryoneComplete: false,
         answers: answersMap);
 
       _firestore.collection('Answer').doc(answerId).set(answer.toJson());
