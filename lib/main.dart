@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/splash_screen.dart';
@@ -5,6 +6,7 @@ import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flog/screen/register/sms_login_home.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
@@ -13,6 +15,32 @@ import 'screen/register/login_screen.dart';
 import 'screen/register/register_screen.dart';
 import 'package:flog/notification/scheduling.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("백그라운드 메시지 처리.. ${message.notification!.body!}");
+}
+
+void initializeNotification() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(const AndroidNotificationChannel(
+          'high_importance_channel', 'high_importance_notification',
+          importance: Importance.max));
+
+  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
+    android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+  ));
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Firebase 초기화 코드
@@ -20,15 +48,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  initializeNotification();
   runApp(const MyApp());
-
-  Workmanager().initialize(callbackDispatcher);
-  Workmanager().registerPeriodicTask(
-    '1',
-    'simpleTask',
-    initialDelay: Duration(minutes: 1), // 초기 딜레이 설정
-    frequency: Duration(minutes: 1), // 주기 설정
-  );
 }
 
 class MyApp extends StatelessWidget {

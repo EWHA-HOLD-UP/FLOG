@@ -31,7 +31,7 @@ dependencies:
   firebase_core_platform_interface: ^4.8.0
   cloud_firestore: ^4.8.4
   firebase_storage: ^11.2.5
-  firebase_messaging: ^14.6.5
+  firebase_messaging: ^14.6.7 #FCM
   flutter_local_notifications: ^15.1.0+1
 
   shared_preferences: ^2.2.0

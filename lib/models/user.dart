@@ -13,6 +13,7 @@ class User {
   final bool isAnswered;
   final bool isQuestionSheetShowed; // 큐퍼즐 답변 여부 확인
   final bool ongoing;
+  final String token; //디바이스토큰
 
   User({
     required this.uid,
@@ -25,6 +26,7 @@ class User {
     required this.isAnswered,
     required this.isQuestionSheetShowed,
     required this.ongoing,
+    required this.token,
   });
 
   static User fromSnap(DocumentSnapshot snap) {
@@ -40,7 +42,8 @@ class User {
         isUpload: snapshot["isUpload"],
         isAnswered: snapshot["isAnswered"],
         isQuestionSheetShowed: snapshot["isQuestionSheetShowed"],
-        ongoing: snapshot["ongoing"]);
+        ongoing: snapshot["ongoing"],
+        token: snapshot["token"]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -54,6 +57,7 @@ class User {
         'isAnswered': isAnswered,
         'isQuestionSheetShowed': isQuestionSheetShowed,
         'ongoing': ongoing
+        'token': token,
       };
 }
 
@@ -73,8 +77,7 @@ class Group {
       required this.memNumber,
       required this.qpuzzleUrl,
       required this.unlock,
-      required this.selectedIndex
-      });
+      required this.selectedIndex});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -87,14 +90,13 @@ class Group {
     var snapshot = snap.data() as Map<String, dynamic>;
 
     return Group(
-      flogCode: snapshot["flogCode"],
-      members: snapshot["members"],
-      frog: snapshot["frog"],
-      memNumber: snapshot["memNumber"],
-      qpuzzleUrl: snapshot["qpuzzleUrl"],
-      unlock: snapshot["unlock"],
-      selectedIndex: snapshot["selectedIndex"]
-    );
+        flogCode: snapshot["flogCode"],
+        members: snapshot["members"],
+        frog: snapshot["frog"],
+        memNumber: snapshot["memNumber"],
+        qpuzzleUrl: snapshot["qpuzzleUrl"],
+        unlock: snapshot["unlock"],
+      selectedIndex: snapshot["selectedIndex"]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -103,6 +105,6 @@ class Group {
         'frog': frog,
         'memNumber': memNumber,
         'qpuzzleUrl': qpuzzleUrl,
-        'unlock' : unlock
+        'unlock': unlock
       };
 }
