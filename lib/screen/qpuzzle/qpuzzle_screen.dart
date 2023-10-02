@@ -95,6 +95,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     }
   }
 
+
   //Qpuzzle 사진 파이어베이스에 업로드
   void postImage(String flogCode, int puzzleNo) async {
     try {
@@ -285,6 +286,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                     return aEmail.compareTo(bEmail); //나머지 알파벳순 정렬
                                                                   }
                                                                 });
+
                                                                 return ListView(
                                                                   children: [
                                                                     const SizedBox(height: 25),
@@ -297,17 +299,43 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                       ),
                                                                     ),
                                                                     const SizedBox(height: 20),
-                                                                    Center(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
-                                                                        child: Text(
-                                                                          //💚 DB에서 인덱스 활용하여 질문 따오기
-                                                                          'Q$tempCellIndex. 이거임시창 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $tempCellIndex번 질문 따오기',
-                                                                          style: const TextStyle(
-                                                                              fontSize: 20, fontWeight: FontWeight.bold),
-                                                                          softWrap: true, //자동 줄바꿈
-                                                                        ),
-                                                                      ),
+                                                                    StreamBuilder<QuerySnapshot>(
+                                                                      stream: FirebaseFirestore.instance
+                                                                          .collection("Question")
+                                                                          .where('puzzleNo', isEqualTo: puzzleno)
+                                                                          .where('questionNo', isEqualTo: tempCellIndex)
+                                                                          .snapshots(),
+                                                                      builder: (context, snapshot) {
+                                                                        if (snapshot.hasError) {
+                                                                          return Text('Error: ${snapshot.error}');
+                                                                        }
+                                                                        if (!snapshot.hasData) {
+                                                                          return CircularProgressIndicator();
+                                                                        }
+
+                                                                        final questionData = snapshot.data!.docs.isNotEmpty
+                                                                            ? snapshot.data!.docs.first.data() as Map<String, dynamic>
+                                                                            : null;
+
+                                                                        if (questionData == null) {
+                                                                          return Text('Question not found');
+                                                                        }
+                                                                        final questionContent = questionData['questionContent']; // 질문 내용 가져오기
+                                                                        return Center(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                            child: Text(
+                                                                              'Q${tempCellIndex + 1}. $questionContent', // 질문 내용을 표시
+                                                                              style: const TextStyle(
+                                                                                fontSize: 22,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                              textAlign: TextAlign.center,
+                                                                              softWrap: true,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
                                                                     ),
                                                                     const SizedBox(height: 25),
                                                                     ListView.builder(
@@ -688,17 +716,41 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
-                          child: Text(
-                            //💚 DB에서 인덱스 활용하여 질문 따오기
-                            'Q$selectedCellIndex. 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $selectedCellIndex번 질문 따오기',
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                            softWrap: true, //자동 줄바꿈
-                          ),
-                        ),
+                      StreamBuilder <QuerySnapshot> (
+                        stream: FirebaseFirestore.instance
+                            .collection("Question")
+                            .where('puzzleNo', isEqualTo: puzzleno)
+                            .where('questionNo', isEqualTo: selectedCellIndex)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          if (!snapshot.hasData) {
+                            return CircularProgressIndicator();
+                          }
+
+                          final questionData = snapshot.data!.docs.isNotEmpty
+                              ? snapshot.data!.docs.first.data() as Map<String, dynamic>
+                              : null;
+                          if (questionData == null) {
+                            return Text('Question not found');
+                          }
+                          final questionContent = questionData['questionContent']; // 질문 내용 가져오기
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
+                              child: Text(
+                                'Q${selectedCellIndex + 1}. $questionContent',
+                                style: const TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.bold
+                                ),
+                                textAlign: TextAlign.center,
+                                softWrap: true, //자동 줄바꿈
+                              ),
+                            ),
+                          );
+                        }
                       ),
                       const SizedBox(height: 25),
                       ListView.builder(
@@ -892,6 +944,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 onTap: () async {
                                                   if (isSendButtonEnabled) {
                                                   setState(() {
+
                                                     isAnswered = true; //전송 버튼 누르면 답변한 것
                                                     ongoing = true; //나는 답변 완료했으므로 ongoing = true
 
@@ -950,10 +1003,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
                                                     if(result == true){ //전체 가족 답변 완료
                                                       setState(() {
+                                                        answerController.clear();
                                                         unlockStates[selectedCellIndex] = true; //해당 조각을 unlock 상태로 변경 (잠금 해제)
                                                         isQuestionSheetShowed = false; //초기화
                                                         isAnyFamilyMemberOngoing = false;
-
+                                                        myanswer = ""; //myanswer 변수 초기화
                                                         //파이어베이스에 isQuestionSheetShowed 변수 업데이트
                                                         DocumentReference userRef = FirebaseFirestore.instance
                                                             .collection('User')
@@ -1154,19 +1208,41 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                             ),
                                           ),
                                           const SizedBox(height: 20),
-                                          Center(
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets.symmetric(horizontal: 20),
-                                              child: Text(
-                                                //💚 DB에서 인덱스 활용하여 질문 따오기
-                                                'Q$selectedCellIndex. 가족들에게 어쩌구 저쩌구 어쩌구 저쩌구 줄바꿈 테스트! 데이터베이스에서 $selectedCellIndex번 질문 따오기',
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold),
-                                                softWrap: true, //자동 줄바꿈
-                                              ),
-                                            ),
+                                          StreamBuilder <QuerySnapshot> (
+                                              stream: FirebaseFirestore.instance
+                                                  .collection("Question")
+                                                  .where('puzzleNo', isEqualTo: puzzleno)
+                                                  .where('questionNo', isEqualTo: selectedCellIndex)
+                                                  .snapshots(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasError) {
+                                                  return Text('Error: ${snapshot.error}');
+                                                }
+                                                if (!snapshot.hasData) {
+                                                  return CircularProgressIndicator();
+                                                }
+
+                                                final questionData = snapshot.data!.docs.isNotEmpty
+                                                    ? snapshot.data!.docs.first.data() as Map<String, dynamic>
+                                                    : null;
+                                                if (questionData == null) {
+                                                  return Text('Question not found');
+                                                }
+                                                final questionContent = questionData['questionContent']; // 질문 내용 가져오기
+                                                return Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
+                                                    child: Text(
+                                                      'Q${selectedCellIndex + 1}. $questionContent',
+                                                      style: const TextStyle(
+                                                          fontSize: 22, fontWeight: FontWeight.bold
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                      softWrap: true, //자동 줄바꿈
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                           ),
                                           const SizedBox(height: 25),
                                           Padding(
