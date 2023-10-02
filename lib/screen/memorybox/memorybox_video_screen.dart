@@ -28,6 +28,15 @@ class MemoryBoxVideoState extends State<MemoryBoxVideoScreen> {
     return Scaffold(
       /*---상단 Memory Box 바---*/
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black, // 뒤로가기 버튼 아이콘 색상
+          ), // 이미지 경로 지정
+          onPressed: () {
+            Navigator.pop(context); // 뒤로가기 기능 추가
+          },
+        ),
         backgroundColor: Colors.white,
         title: Row(
           children: [
