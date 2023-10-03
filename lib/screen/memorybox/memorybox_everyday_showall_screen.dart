@@ -263,8 +263,8 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                   containerNumber.toString(),
                   style: GoogleFonts.inter(
                     textStyle: const TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
