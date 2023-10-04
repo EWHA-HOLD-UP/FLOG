@@ -13,7 +13,7 @@ class FireStoreMethods {
   // Floging 데이터베이스에 저장하기
 
   Future<String> uploadFloging(
-      Uint8List file, Uint8List file2, String uid, String flogCode) async {
+      Uint8List file, Uint8List file2, String uid, String flogCode, String caption) async {
     String res = "Some error occurred";
     try {
       String photoUrl =
@@ -27,7 +27,9 @@ class FireStoreMethods {
           downloadUrl_front: photoUrl,
           downloadUrl_back: photoUrl2,
           flogCode: flogCode,
-          flogingId: flogingId);
+          flogingId: flogingId,
+          caption: caption
+      );
       _firestore.collection('Floging').doc(flogingId).set(floging.toJson());
       res = "success";
       checkTodayFlog();

@@ -161,6 +161,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
         // flogDocuments에서 필요한 데이터 추출
         final flogData = flogDocuments.first.data() as Map<String, dynamic>;
 
+        final caption = flogData['caption'];
+
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -263,6 +265,26 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
+                Container(
+                  width: 350,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFD1E0CA),
+                      borderRadius: BorderRadius.circular(15)
+                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          caption,
+                          style: GoogleFonts.balooBhaijaan2(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
+                ),
                 Divider(),
                 SizedBox(height: 10),
                 StreamBuilder<QuerySnapshot>(

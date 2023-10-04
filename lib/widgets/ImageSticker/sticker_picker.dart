@@ -13,16 +13,20 @@ class StickerPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF609966).withOpacity(0.7),
-      height: 250,
-      width: 200,
+      decoration: BoxDecoration(
+        color: Color(0xFFD1E0CA), //배경색 설정
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      height: 110,
+      width: 380,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
             children: [
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) => Padding(
+                children: List.generate(5, (index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: GestureDetector(
                     onTap: () {
@@ -30,7 +34,7 @@ class StickerPicker extends StatelessWidget {
                     },
                     child: Image.asset(
                       'assets/emoticons/emoticon_${index + 1}.png',
-                      height: 55,
+                      height: 43,
                     ),
                   ),
                 )),
@@ -38,50 +42,20 @@ class StickerPicker extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) => Padding(
+                children: List.generate(5, (index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: GestureDetector(
                     onTap: () {
-                      onStickerTap(index + 4);
+                      onStickerTap(index + 6);
                     },
                     child: Image.asset(
-                      'assets/emoticons/emoticon_${index + 4}.png',
-                      height: 55,
+                      'assets/emoticons/emoticon_${index + 6}.png',
+                      height: 43,
                     ),
                   ),
                 )),
               ),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      onStickerTap(index + 7);
-                    },
-                    child: Image.asset(
-                      'assets/emoticons/emoticon_${index + 7}.png',
-                      height: 55,
-                    ),
-                  ),
-                )),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(1, (index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      onStickerTap(index + 10);
-                    },
-                    child: Image.asset(
-                      'assets/emoticons/emoticon_${index + 10}.png',
-                      height: 55,
-                    ),
-                  ),
-                )),
-              ),
             ]
         ),
       ),
