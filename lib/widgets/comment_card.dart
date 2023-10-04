@@ -31,9 +31,12 @@ class CommentCard extends StatelessWidget {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+          ),
           title: Text(
             '댓글 삭제',
-            textAlign: TextAlign.left,
+            textAlign: TextAlign.center,
             style: GoogleFonts.nanumGothic(
               textStyle: TextStyle(
                 fontSize: 20,
@@ -42,56 +45,87 @@ class CommentCard extends StatelessWidget {
               ),
             ),
           ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(
+          content: Text(
                   '이 댓글을 삭제하시겠습니까?',
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.nanumGothic(
                     textStyle: TextStyle(
                       fontSize: 15,
                       color: Colors.black,
                     ),
-                  ),
-                ),
-              ],
-            ),
+                 ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('삭제'),
-              onPressed: () async {
-                try {
-                  // Firebase에서 댓글 삭제
-                  await FirebaseFirestore.instance
-                      .collection('Floging')
-                      .doc(flogingId)
-                      .collection('Comment')
-                      .doc(commentId)
-                      .delete();
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  child: Text(
+                    '취소',
+                    style: GoogleFonts.nanumGothic(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    '삭제',
+                    style: GoogleFonts.nanumGothic(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                  ),
+                  onPressed: () async {
+                    try {
+                      // Firebase에서 댓글 삭제
+                      await FirebaseFirestore.instance
+                          .collection('Floging')
+                          .doc(flogingId)
+                          .collection('Comment')
+                          .doc(commentId)
+                          .delete();
 
-                  Navigator.of(context).pop();
-                } catch (e) {
-                  Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    } catch (e) {
+                      Navigator.of(context).pop();
 
-                  showDialog<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('오류 발생'),
-                        content: Text('댓글 삭제 중에 오류가 발생했습니다.'),
+                      showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('오류 발생'),
+                            content: Text('댓글 삭제 중에 오류가 발생했습니다.'),
+                          );
+                        },
                       );
-                    },
-                  );
-                }
-              },
+                    }
+                  },
+                ),
+              ],
             ),
           ],
         );

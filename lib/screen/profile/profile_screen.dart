@@ -321,122 +321,126 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // 데이터 처리
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center, // 전체적으로 센터 정렬
+                child: ListView(
                   children: [
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Hero(
-                        tag: "profile",
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle, //원 모양 프로필 사진
-                                color: Colors.grey[300], //배경색
-                              ),
-                              child: Center(
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    "assets/profile/profile_${userData['profile']}.png",
-                                    width: 100,
-                                    height: 100,
-                                    alignment: Alignment.center,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center, // 전체적으로 센터 정렬
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Hero(
+                            tag: "profile",
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle, //원 모양 프로필 사진
+                                    color: Colors.grey[300], //배경색
+                                  ),
+                                  child: Center(
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        "assets/profile/profile_${userData['profile']}.png",
+                                        width: 100,
+                                        height: 100,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: IconButton(
-                                icon: Image.asset(
-                                  'button/edit.png',
-                                  width: 30,
-                                  height: 30,
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'button/edit.png',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                    onPressed: () =>
+                                        editImage('profile', userData['profile']),
+                                  ),
                                 ),
-                                onPressed: () =>
-                                    editImage('profile', userData['profile']),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      child: Text(
-                        userData['nickname'],
-                        style: GoogleFonts.nanumGothic(
-                          textStyle: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff609966)
                           ),
                         ),
-                      ),
-                      onPressed: () =>
-                          editField('nickname', userData['nickname']),
-                    ),
-                    Text(userData['email'],
-                        style: const TextStyle(fontSize: 15)),
-                    const SizedBox(height: 30),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: const Text('가족코드 복사하기',
-                              style: TextStyle(fontSize: 17)),
-                          trailing: Row(
-                            mainAxisSize:
-                                MainAxisSize.min, // 아이콘과 텍스트를 최소 크기로 설정
-                            children: [
-                              Text(
-                                userData['flogCode'],
-                                style: const TextStyle(
-                                  fontSize: 15,
+                        const SizedBox(height: 10),
+                        TextButton(
+                          child: Text(
+                            userData['nickname'],
+                            style: GoogleFonts.nanumGothic(
+                              textStyle: TextStyle(
+                                  fontSize: 30,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                                  color: Color(0xff609966)
                               ),
-                              Icon(
+                            ),
+                          ),
+                          onPressed: () =>
+                              editField('nickname', userData['nickname']),
+                        ),
+                        Text(userData['email'],
+                            style: const TextStyle(fontSize: 15)),
+                        const SizedBox(height: 30),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: const Text('가족코드 복사하기',
+                                  style: TextStyle(fontSize: 17)),
+                              trailing: Row(
+                                mainAxisSize:
+                                MainAxisSize.min, // 아이콘과 텍스트를 최소 크기로 설정
+                                children: [
+                                  Text(
+                                    userData['flogCode'],
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 15, // 아이콘 크기 조절
+                                    color: Colors.black, // 아이콘 색상 설정
+                                  ),
+                                ],
+                              ), // 화살표 아이콘 예시
+                              onTap: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: userData['flogCode']));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        '${userData['nickname']}님의 가족 코드가 복사되었습니다! 가족들에게 공유해주세요.'),
+                                    duration: const Duration(seconds: 3),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(), // 분리선 추가
+                            ListTile(
+                              leading: const Text('문의하기',
+                                  style: TextStyle(fontSize: 17)),
+                              trailing: const Icon(
                                 Icons.arrow_forward_ios,
                                 size: 15, // 아이콘 크기 조절
                                 color: Colors.black, // 아이콘 색상 설정
-                              ),
-                            ],
-                          ), // 화살표 아이콘 예시
-                          onTap: () {
-                            Clipboard.setData(
-                                ClipboardData(text: userData['flogCode']));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    '${userData['nickname']}님의 가족 코드가 복사되었습니다! 가족들에게 공유해주세요.'),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(), // 분리선 추가
-                        ListTile(
-                          leading: const Text('문의하기',
-                              style: TextStyle(fontSize: 17)),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15, // 아이콘 크기 조절
-                            color: Colors.black, // 아이콘 색상 설정
-                          ), // 화살표 아이콘 예시
-                          onTap: () {
-                            _sendEmail(userData['nickname'], userData['email']);
-                          },
+                              ), // 화살표 아이콘 예시
+                              onTap: () {
+                                _sendEmail(userData['nickname'], userData['email']);
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
-                ),
+                )
               );
             }
           }),

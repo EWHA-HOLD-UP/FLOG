@@ -215,17 +215,22 @@ class ShootingEditState extends State<ShootingEditScreen> {
                     ),
                     title: Text(
                       '메인 화면으로 돌아가시겠습니까?',
-                      style: TextStyle(
-                        color: Color(0xFF609966),
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.nanumGothic(
+                        textStyle: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xFF609966),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       textAlign: TextAlign.center,
                     ),
                     content: Text(
-                      '메인으로 돌아가면 방금 찍은 사진들은 복구할 수 없어요!\n신중히 고민하신 후에 \'확인\'을 눌러주세요.',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12
+                      '메인으로 돌아가면\n방금 찍은 사진들은 복구할 수 없어요!\n',
+                      style: GoogleFonts.nanumGothic(
+                        textStyle: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -233,31 +238,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              '확인',
-                              style: GoogleFonts.balooBhaijaan2(
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
-                                ),
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
-                            ),
-                          ),
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -272,12 +252,37 @@ class ShootingEditState extends State<ShootingEditScreen> {
                             ),
                             child: Text(
                               '취소',
-                              style: GoogleFonts.balooBhaijaan2(
+                              style: GoogleFonts.nanumGothic(
                                 textStyle: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              '확인',
+                              style: GoogleFonts.nanumGothic(
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
                             ),
                           ),
                         ],
@@ -448,10 +453,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
         children: [
           Image.asset("button/send_white.png", height: 20, width: 20),
           const SizedBox(width: 20),
-          const Text(
+          Text(
             '상태 전송',
-            style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),

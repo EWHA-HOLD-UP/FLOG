@@ -154,17 +154,20 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                   ),
                                   title: Text(
                                     '메인 화면으로 돌아가시겠습니까?',
-                                    style: TextStyle(
-                                      color: Color(0xFF609966),
-                                      fontWeight: FontWeight.bold,
+                                    style: GoogleFonts.nanumGothic(
+                                      textStyle: TextStyle(
+                                        fontSize: 18,
+                                        color: Color(0xFF609966),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
                                   content: Text(
-                                    '메인으로 돌아가면 방금 찍은 사진은 복구할 수 없어요!\n신중히 고민하신 후에 \'확인\'을 눌러주세요.',
+                                    '메인으로 돌아가면\n방금 찍은 사진은 복구할 수 없어요!',
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 13
+                                      fontSize: 15
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -172,30 +175,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(
-                                            '확인',
-                                            style: GoogleFonts.balooBhaijaan2(
-                                              textStyle: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
-                                              ),
-                                            ),
-                                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
-                                          ),
-                                        ),
+
                                         TextButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -210,12 +190,36 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                           ),
                                           child: Text(
                                             '취소',
-                                            style: GoogleFonts.balooBhaijaan2(
+                                            style: GoogleFonts.nanumGothic(
                                               textStyle: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            '확인',
+                                            style: GoogleFonts.nanumGothic(
+                                              textStyle: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                              ),
+                                            ),
+                                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
                                           ),
                                         ),
                                       ],
