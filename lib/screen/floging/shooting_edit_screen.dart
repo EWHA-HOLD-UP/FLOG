@@ -45,6 +45,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
       Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
   TextEditingController _textEditingController = TextEditingController();
   String caption = '';
+  final currentUser = FirebaseAuth.instance.currentUser!;
 
   void postImage(String uid, String flogCode) async {
     try {
@@ -86,29 +87,69 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 showPicture(), //1️⃣사진을 보여주는 부분
                 const SizedBox(height: 10), //간격
                 /*---캡션을 보여주는 부분---*/
-               GestureDetector(
-                 child: Container(
-                   width: 350,
-                   decoration: BoxDecoration(
-                       color: Color(0xFFD1E0CA),
-                       borderRadius: BorderRadius.circular(15)
-                   ),
-                   child: Padding(
-                       padding: const EdgeInsets.all(8.0),
-                       child: Center(
-                         child: Text(
-                           caption,
-                           style: GoogleFonts.balooBhaijaan2(
-                             textStyle: TextStyle(
-                               fontSize: 15,
-                             ),
-                           ),
-                         ),
-                       )
-                   ),
-                 ),
-                 onTap: _showTextEditingDialog
-               ),
+            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: FirebaseFirestore.instance
+                    .collection("User")
+                    .doc(currentUser.email)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    if (snapshot.data == null || !snapshot.data!.exists) {
+                      return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                    }
+                  }
+                  Map<String, dynamic> userData =
+                  snapshot.data!.data() as Map<String, dynamic>;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFD1E0CA),
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            "assets/profile/profile_${userData['profile']}.png",
+                            width: 60,
+                            height: 60,
+                          ),
+                        ),
+                      ),
+
+                      GestureDetector(
+                          child: Container(
+                            width: 330,
+                            height: 45,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFD1E0CA),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                caption,
+                                style: GoogleFonts.nanumGothic(
+                                  textStyle: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          onTap: _showTextEditingDialog
+                      ),
+                    ],
+                  );
+                }
+            ),
                 /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
