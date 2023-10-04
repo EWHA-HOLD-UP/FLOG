@@ -1,4 +1,6 @@
 //Bottom Navigation Bar와 Tab Bar View 구현 위함
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
@@ -16,6 +18,7 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   int _currentIndex = 0;
+  final currentUser = FirebaseAuth.instance.currentUser!;
 
   final _pages = const [
     FlogingScreen(),
@@ -42,21 +45,72 @@ class _RootScreenState extends State<RootScreen> {
            },
          ),
           floatingActionButton: //Floating + 버튼 - shooting
-          SizedBox(
-            width: 60, // 원하는 너비
-            height: 60, // 원하는 높이
-            child: FloatingActionButton(
-              backgroundColor: const Color(0xFF609966),
-              onPressed: () { // 버튼 클릭 시 동작
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ShootingScreen(),
+          StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                .collection("User")
+                .doc(currentUser.email)
+                .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  if (snapshot.data == null || !snapshot.data!.exists) {
+                    return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                  }
+                }
+                Map<String, dynamic> userData =
+                snapshot.data!.data() as Map<String, dynamic>;
+                return SizedBox(
+                  width: 70, // 원하는 너비
+                  height: 70, // 원하는 높이
+                  child: FloatingActionButton(
+                    backgroundColor: const Color(0xFF609966),
+                    onPressed: () { // 버튼 클릭 시 동작
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ShootingScreen(),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          bottom: 12,
+                          left: 4,
+                          child: Image.asset(
+                            "assets/profile/profile_${userData['profile']}.png",
+                            width: 60,
+                            height: 60,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                "button/plus.png",
+                                width: 13,
+                                height: 13,
+                                color: Color(0xFF609966),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 );
-              },
-              child: const Icon(Icons.add),
-            ),
+              }
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         ),
