@@ -137,67 +137,174 @@ class ShootingEditState extends State<ShootingEditScreen> {
   /*-----------------------------위젯-----------------------------*/
   // 1️⃣사진을 보여주는 부분
   Widget showPicture() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: SizedBox(
-        width: 345,
-        height: 458,
-        child: RepaintBoundary(
-          //스티커 포함하여 현재 화면 캡처
-          key: globalKey,
-          child: Stack(
-            children: [
-              Visibility(
-                visible: !isFrontImageVisible, //전면 사진이 안 보이게
-                child: Image.file(
-                  File(widget.backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
-                  width: 360,
-                  height: 520,
-                ),
-              ),
-              ...backImageStickers.map(
-                //후면 카메라에 붙인 스티커 저장
-                    (sticker) => Center(
-                  child: ImageSticker(
-                    key: ObjectKey(sticker.id),
-                    onTransform: () {
-                      onTransform(sticker.id);
-                    },
-                    imgPath: sticker.imgPath,
-                    isSelected: selectedId == sticker.id,
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SizedBox(
+            width: 345,
+            height: 458,
+            child: RepaintBoundary(
+              //스티커 포함하여 현재 화면 캡처
+              key: globalKey,
+              child: Stack(
+                children: [
+                  Visibility(
+                    visible: !isFrontImageVisible, //전면 사진이 안 보이게
+                    child: Image.file(
+                      File(widget.backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
+                      width: 360,
+                      height: 520,
+                    ),
                   ),
-                ),
-              ),
-              Visibility(
-                visible: isFrontImageVisible, //전면 사진이 보이게
-                child: Transform(
-                  //좌우 반전
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(math.pi),
-                  child: Image.file(
-                    File(widget.frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
-                    width: 360,
-                    height: 520,
+                  ...backImageStickers.map(
+                    //후면 카메라에 붙인 스티커 저장
+                        (sticker) => Center(
+                      child: ImageSticker(
+                        key: ObjectKey(sticker.id),
+                        onTransform: () {
+                          onTransform(sticker.id);
+                        },
+                        imgPath: sticker.imgPath,
+                        isSelected: selectedId == sticker.id,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ...frontImageStickers.map(
-                //전면 카메라에 붙인 스티커 저장
-                    (sticker) => Center(
-                  child: ImageSticker(
-                    key: ObjectKey(sticker.id),
-                    onTransform: () {
-                      onTransform(sticker.id);
-                    },
-                    imgPath: sticker.imgPath,
-                    isSelected: selectedId == sticker.id,
+                  Visibility(
+                    visible: isFrontImageVisible, //전면 사진이 보이게
+                    child: Transform(
+                      //좌우 반전
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),
+                      child: Image.file(
+                        File(widget.frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
+                        width: 360,
+                        height: 520,
+                      ),
+                    ),
                   ),
-                ),
+                  ...frontImageStickers.map(
+                    //전면 카메라에 붙인 스티커 저장
+                        (sticker) => Center(
+                      child: ImageSticker(
+                        key: ObjectKey(sticker.id),
+                        onTransform: () {
+                          onTransform(sticker.id);
+                        },
+                        imgPath: sticker.imgPath,
+                        isSelected: selectedId == sticker.id,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: 10,
+          left: 10,
+          child: InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+                    ),
+                    title: Text(
+                      '메인 화면으로 돌아가시겠습니까?',
+                      style: TextStyle(
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    content: Text(
+                      '메인으로 돌아가면 방금 찍은 사진들은 복구할 수 없어요!\n신중히 고민하신 후에 \'확인\'을 눌러주세요.',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              '확인',
+                              style: GoogleFonts.balooBhaijaan2(
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                            ),
+                            child: Text(
+                              '취소',
+                              style: GoogleFonts.balooBhaijaan2(
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Image.asset(
+                  "button/close.png",
+                  width: 15,
+                  height: 15,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

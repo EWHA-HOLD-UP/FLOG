@@ -145,7 +145,85 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                         left: 10,
                         child: InkWell(
                           onTap: () {
-                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+                                  ),
+                                  title: Text(
+                                    '메인 화면으로 돌아가시겠습니까?',
+                                    style: TextStyle(
+                                      color: Color(0xFF609966),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  content: Text(
+                                    '메인으로 돌아가면 방금 찍은 사진은 복구할 수 없어요!\n신중히 고민하신 후에 \'확인\'을 눌러주세요.',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            '확인',
+                                            style: GoogleFonts.balooBhaijaan2(
+                                              textStyle: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                              ),
+                                            ),
+                                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                              ),
+                                            ),
+                                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                                          ),
+                                          child: Text(
+                                            '취소',
+                                            style: GoogleFonts.balooBhaijaan2(
+                                              textStyle: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           child: Container(
                             width: 30,
@@ -205,11 +283,21 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                             }
                           });
                         },
-                        child: Image.asset(
-                          "button/flash.png",
-                          width: 50,
-                          height: 50,
-                          color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "button/flash.png",
+                              width: 50,
+                              height: 50,
+                              color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                            ),
+                            Text(
+                              _isFlashOn ? "auto" : "off", // 텍스트 내용
+                              style: TextStyle(
+                                color: _isFlashOn ? Color(0xFF609966) : Colors.grey, // 텍스트 색상 변경
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
