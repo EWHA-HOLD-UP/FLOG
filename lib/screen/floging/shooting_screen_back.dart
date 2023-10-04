@@ -3,6 +3,8 @@ import 'package:flog/screen/floging/shooting_screen_front.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:google_fonts/google_fonts.dart';
+
 class ShootingScreen extends StatefulWidget {
   final String? backImagePath;
   const ShootingScreen({Key? key, this.backImagePath}) : super(key: key);
@@ -15,7 +17,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
   CameraController? _cameraController; //카메라 컨트롤러
   bool _isCameraReady = false;
   String? _tempBackImagePath; //임시 후면 사진 저장
-  String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
+  String guide = '지금 무엇을 하고 있는지 가족들에게 보여주세요!'; //ai가 생성한 가이드 문구
   bool _isCameraInitialized = false; //카메라 초기화되었는지
   bool _isProcessing = false; //사진 찍히고 있는지
   bool _isFlashOn = true; //플래시 켜져있는지
@@ -93,122 +95,142 @@ class _ShootingScreenState extends State<ShootingScreen> {
 
   @override
   void dispose() {
-      _cameraController?.dispose();
-      super.dispose();
+    _cameraController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope( //뒤로가기 막음
       onWillPop: () async => false,
-      child : Scaffold(
-        body: Center(
-          child : SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height:10), //간격
-                Row(
-                  children: [
-                    const SizedBox(width: 20), //간격
-                    InkWell( //close 아이콘 버튼
-                      onTap: () {
-                        Navigator.pop(context);
-                        },
-                      child: Image.asset(
-                          "button/close.png",
-                          width: 20,
-                          height: 20
-                      ),
-                    ),
-                    const SizedBox(width: 135), //간격
-                    Image.asset(
-                      "assets/flog_logo.png",
-                      width: 55,
-                      height: 55,
-                    ),
-                  ],
+      child : Expanded(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text(
+              'Floging',
+              style: GoogleFonts.balooBhaijaan2(
+                textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
                 ),
-                const Text(
-                  "FLOGing",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF609966), // #609966 색상 지정
+              ),
+            ),
+            elevation: 0.0, //그림자 없음
+            centerTitle: true,
+          ),
+          /*---화면---*/
+          backgroundColor: Colors.white, //화면 배경색
+          body: Center(
+            child : SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height:10), //간격
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20), //둥근 모서리
+                        child: SizedBox(
+                          width: 360,
+                          height: 520,
+                          child: _cameraController != null && _isCameraReady
+                              ? CameraPreview(_cameraController!)
+                              : Container(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                "button/close.png",
+                                width: 15,
+                                height: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height:10), //간격
-                SizedBox( //카메라 프리뷰 크기 조절
-                  width: 350,
-                  height: 470,
-                  child: _cameraController != null && _isCameraReady
-                      ? CameraPreview(_cameraController!)
-                      :Container(
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height:10), //간격
-                Text(guide), //ai 가이드 문구
-                const SizedBox(height:10), //간격
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell( //플래시 아이콘 버튼
-                      onTap: () {
-                        setState(() {
-                          _isFlashOn = !_isFlashOn; // 플래시 상태를 토글
-                          if (_isFlashOn) {
-                            _cameraController?.setFlashMode(FlashMode.auto);
-                          } else {
-                            _cameraController?.setFlashMode(FlashMode.off);
-                          }
-                        });
+                  const SizedBox(height:10), //간격
+                  Text(guide), //ai 가이드 문구
+                  const SizedBox(height:10), //간격
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 85), //간격
+                      InkWell( //후면 카메라 촬영 버튼
+                        onTap:
+                        _cameraController != null && _isCameraReady
+                            ? () {
+                          _takeBackPicture(context);
+                        }
+                            : null,
+                        child: _isProcessing
+                            ? const CircularProgressIndicator(
+                          color: Color(0xFF609966),
+                        ) // 사진 처리 중에는 로딩 스피너 표시
+                            : Image.asset(
+                          "button/shooting.png",
+                          width: 60,
+                          height: 60,
+                          color: _cameraController != null && _isCameraReady && _isCameraInitialized
+                              ? null
+                              : Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 35), //간격
+                      InkWell( //플래시 아이콘 버튼
+                        onTap: () {
+                          setState(() {
+                            _isFlashOn = !_isFlashOn; // 플래시 상태를 토글
+                            if (_isFlashOn) {
+                              _cameraController?.setFlashMode(FlashMode.auto);
+                            } else {
+                              _cameraController?.setFlashMode(FlashMode.off);
+                            }
+                          });
                         },
-                      child: Image.asset(
-                        "button/flash.png",
-                        width: 50,
-                        height: 50,
-                        color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "button/flash.png",
+                              width: 50,
+                              height: 50,
+                              color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                            ),
+                            Text(
+                              _isFlashOn ? "auto" : "off", // 텍스트 내용
+                              style: TextStyle(
+                                color: _isFlashOn ? Color(0xFF609966) : Colors.grey, // 텍스트 색상 변경
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 35), //간격
-                    InkWell( //후면 카메라 촬영 버튼
-                      onTap:
-                      _cameraController != null && _isCameraReady
-                          ? () {
-                        _takeBackPicture(context);
-                      }
-                      : null,
-                      child: _isProcessing
-                          ? const CircularProgressIndicator(
-                        color: Color(0xFF609966),
-                      ) // 사진 처리 중에는 로딩 스피너 표시
-                          : Image.asset(
-                        "button/shooting.png",
-                        width: 60,
-                        height: 60,
-                        color: _cameraController != null && _isCameraReady && _isCameraInitialized
-                            ? null
-                            : Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 35), //간격
-                    InkWell( //앞뒤 전환 아이콘 버튼
-                      onTap: () {
-                        //구현 or 삭제 필요
-                      },
-                      child: Image.asset(
-                          "button/flip.png",
-                          width: 40,
-                          height: 40
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      )
     );
   }
 }
