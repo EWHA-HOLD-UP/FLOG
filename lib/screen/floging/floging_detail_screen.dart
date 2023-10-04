@@ -197,6 +197,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
 
         final caption = flogData['caption'];
 
+
         return Scaffold(
           //extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -266,8 +267,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     Stack(
                       children: <Widget>[
                         Container(
-                          width: 260,
-                          height: 400,
+                          width: 345,
+                          height: 500,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: NetworkImage(flogData['downloadUrl_back']),
@@ -299,25 +300,68 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       ],
                     ),
                     SizedBox(height: 10),
-                    Container(
-                      width: 350,
-                      decoration: BoxDecoration(
-                          color: Color(0xFFD1E0CA),
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Text(
-                              caption,
-                              style: GoogleFonts.balooBhaijaan2(
-                                textStyle: TextStyle(
-                                  fontSize: 13,
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: FirebaseFirestore.instance
+                          .collection("User")
+                          .doc(currentUser.email)
+                          .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.data == null || !snapshot.data!.exists) {
+                              return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                            }
+                          }
+                          Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 30),
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFFD1E0CA),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/profile/profile_${userData['profile']}.png",
+                                    width: 40,
+                                    height: 40,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                      ),
+                              SizedBox(width: 10),
+                              Container(
+                                width: 290,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFD1E0CA),
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: Text(
+                                        caption,
+                                        style: GoogleFonts.nanumGothic(
+                                          textStyle: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        softWrap: true,
+                                      ),
+                                    )
+                                ),
+                              ),
+                            ],
+                          );
+                        }
                     ),
                     SizedBox(height: 5),
                     Divider(),
@@ -340,14 +384,19 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                         final commentDocuments = commentSnapshot.data!.docs;
 
                         if (commentDocuments.isEmpty) {
-                          return Text(
-                            '아직 댓글이 없습니다. 댓글을 달아보세요!',
-                            style: GoogleFonts.nanumGothic(
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                          return Column(
+                            children: [
+                              Text(
+                                '아직 댓글이 없습니다. 댓글을 달아보세요!',
+                                style: GoogleFonts.nanumGothic(
+                                  textStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 25)
+                            ],
                           );
                         }
                         return Column(

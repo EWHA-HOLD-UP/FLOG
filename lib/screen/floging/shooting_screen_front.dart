@@ -246,6 +246,45 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                           ),
                         ),
                       ),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: InkWell( //플래시 아이콘 버튼
+                          onTap: () {
+                            setState(() {
+                              _isFlashOn = !_isFlashOn; // 플래시 상태를 토글
+                              if (_isFlashOn) {
+                                _cameraController?.setFlashMode(FlashMode.auto);
+                              } else {
+                                _cameraController?.setFlashMode(FlashMode.off);
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(8)
+                            ),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  "button/flash.png",
+                                  width: 50,
+                                  height: 50,
+                                  color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                                ),
+                                Text(
+                                  _isFlashOn ? "Auto" : "off", // 텍스트 내용
+                                  style: TextStyle(
+                                    color: _isFlashOn ? Color(0xFF609966) : Colors.grey, // 텍스트 색상 변경
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height:10), //간격
@@ -254,7 +293,6 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 85),
                       InkWell( //전면 카메라 촬영 버튼
                         onTap:
                         _cameraController != null && _isCameraReady
@@ -268,40 +306,11 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                         ) // 사진 처리 중에는 로딩 스피너 표시
                             : Image.asset(
                           "button/shooting.png",
-                          width: 60,
-                          height: 60,
+                          width: 70,
+                          height: 70,
                           color: _cameraController != null && _isCameraReady && _isCameraInitialized
                               ? null
                               : Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 35), //간격
-                      InkWell( //플래시 아이콘 버튼
-                        onTap: () {
-                          setState(() {
-                            _isFlashOn = !_isFlashOn; // 플래시 상태를 토글
-                            if (_isFlashOn) {
-                              _cameraController?.setFlashMode(FlashMode.auto);
-                            } else {
-                              _cameraController?.setFlashMode(FlashMode.off);
-                            }
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "button/flash.png",
-                              width: 50,
-                              height: 50,
-                              color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
-                            ),
-                            Text(
-                              _isFlashOn ? "auto" : "off", // 텍스트 내용
-                              style: TextStyle(
-                                color: _isFlashOn ? Color(0xFF609966) : Colors.grey, // 텍스트 색상 변경
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ],

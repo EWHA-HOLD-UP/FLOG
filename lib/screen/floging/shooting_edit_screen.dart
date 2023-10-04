@@ -87,83 +87,87 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 showPicture(), //1️⃣사진을 보여주는 부분
                 const SizedBox(height: 10), //간격
                 /*---캡션을 보여주는 부분---*/
-            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection("User")
-                    .doc(currentUser.email)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    if (snapshot.data == null || !snapshot.data!.exists) {
-                      return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                    }
-                  }
-                  Map<String, dynamic> userData =
-                  snapshot.data!.data() as Map<String, dynamic>;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFFD1E0CA),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            "assets/profile/profile_${userData['profile']}.png",
-                            width: 60,
-                            height: 60,
-                          ),
-                        ),
-                      ),
-
-                      GestureDetector(
-                          child: Container(
-                            width: 330,
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFD1E0CA),
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                caption,
+                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: FirebaseFirestore.instance
+                        .collection("User")
+                        .doc(currentUser.email)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        //return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        if (snapshot.data == null || !snapshot.data!.exists) {
+                          return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                        }
+                      }
+                      Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 30),
+                          Column(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFFD1E0CA),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/profile/profile_${userData['profile']}.png",
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 3),
+                              Text(
+                                '한 마디',
                                 style: GoogleFonts.nanumGothic(
                                   textStyle: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold
                                   ),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                            ),
+                            ],
                           ),
-                          onTap: _showTextEditingDialog
-                      ),
-                    ],
-                  );
-                }
-            ),
-                /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    textButton(), //2️⃣텍스트 버튼
-                    const SizedBox(width: 50),
-                    flipButton(), //3️⃣사진 전환 버튼
-                    const SizedBox(width: 50),
-                    imageStickerButton(), //4️⃣이미지 스티커 버튼
-                    const SizedBox(width: 50),
-                    stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
-                  ],
+                          SizedBox(width: 10),
+                          GestureDetector(
+                              child: Container(
+                                width: 290,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFD1E0CA),
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    caption,
+                                    style: GoogleFonts.nanumGothic(
+                                      textStyle: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  ),
+                                ),
+                              ),
+                              onTap: _showTextEditingDialog
+                          ),
+                        ],
+                      );
+                    }
                 ),
-                const SizedBox(height: 10),
+
+                const SizedBox(height: 20),
 
                 /*---상태 전송 버튼---*/
                 sendingButton(), //6️⃣상태 전송 버튼
@@ -350,6 +354,27 @@ class ShootingEditState extends State<ShootingEditScreen> {
             ),
           ),
         ),
+        /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
+        Positioned(
+            bottom: 10,
+            left: 18,
+            child: Container(
+              width: 310,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  textButton(), //2️⃣텍스트 버튼
+                  flipButton(), //3️⃣사진 전환 버튼
+                  imageStickerButton(), //4️⃣이미지 스티커 버튼
+                  stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
+                ],
+              ),
+            )
+        )
       ],
     );
   }
@@ -360,7 +385,22 @@ class ShootingEditState extends State<ShootingEditScreen> {
       onTap: () {
         _showTextEditingDialog();
       },
-      child: Image.asset("button/text.png", width: 30, height: 30),
+      child: Column(
+        children: [
+          Image.asset("button/text.png", width: 30, height: 30),
+          Text(
+            '한 마디',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 10,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -380,7 +420,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
               .findRenderObject() as RenderRepaintBoundary;
           ui.Image image = await boundary.toImage();
           ByteData? byteData =
-              await image.toByteData(format: ui.ImageByteFormat.png);
+          await image.toByteData(format: ui.ImageByteFormat.png);
 
           if (byteData != null) {
             Uint8List pngBytes = byteData.buffer
@@ -392,17 +432,32 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
       child: isFrontImageVisible
           ? Image.asset(
-              //전면카메라일 때
-              "button/flip_disabled.png", // 비활성화된 버튼 이미지
-              width: 30,
-              height: 30,
-            )
-          : Image.asset(
-              //후면카메라일 때
-              "button/flip.png", // 활성화된 버튼 이미지
-              width: 30,
-              height: 30,
+        //전면카메라일 때
+        "button/flip.png",
+        color: Colors.grey,// 비활성화된 버튼 이미지
+        width: 30,
+        height: 30,
+      )
+          : Column(
+        children: [
+          Image.asset( //후면카메라일 때
+            "button/flip.png", // 활성화된 버튼 이미지
+            width: 30,
+            height: 30,
+          ),
+          Text(
+            '셀카 꾸미기',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 10,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -412,20 +467,52 @@ class ShootingEditState extends State<ShootingEditScreen> {
       onTap: () {
         _showStickerPicker(context); //클릭 시 이미지 스티커 목록을 보여줌
       },
-      child: Image.asset("button/sticker.png", width: 30, height: 30),
+      child: Column(
+        children: [
+          Image.asset("button/sticker.png", width: 30, height: 30),
+          Text(
+            '스티커',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 10,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   // 5️⃣ 스티커 뒤로가기 버튼
   Widget stickerUndoButton() {
-    return IconButton(
-      onPressed: () {
-        undoSticker(); //클릭 시 되돌리기
-      },
-      icon: const Icon(
-        Icons.undo, //추후에 undo 버튼 제작하여 변경?
-        color: Color(0xFF609966),
-      ),
+    return Stack(
+      children: [
+        IconButton(
+          onPressed: () {
+            undoSticker(); //클릭 시 되돌리기
+          },
+          icon: Icon(
+            Icons.undo, //추후에 undo 버튼 제작하여 변경?
+            color: Color(0xFF609966),
+          ),
+        ),
+        Positioned(
+          bottom: 5, left: 5,
+            child: Text(
+              '뒤로가기',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nanumGothic(
+                textStyle: TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF609966),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),)
+      ],
     );
   }
 
@@ -435,50 +522,50 @@ class ShootingEditState extends State<ShootingEditScreen> {
       //상태 전송 버튼을 누르면
       onPressed: isSendingButtonEnabled
           ? () async {
-              //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
-              RenderRepaintBoundary boundary = globalKey.currentContext!
-                  .findRenderObject() as RenderRepaintBoundary;
-              ui.Image image = await boundary.toImage();
-              ByteData? byteData =
-                  await image.toByteData(format: ui.ImageByteFormat.png);
+        //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
+        RenderRepaintBoundary boundary = globalKey.currentContext!
+            .findRenderObject() as RenderRepaintBoundary;
+        ui.Image image = await boundary.toImage();
+        ByteData? byteData =
+        await image.toByteData(format: ui.ImageByteFormat.png);
 
-              if (byteData != null) {
-                Uint8List pngBytes = byteData.buffer
-                    .asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
-                finalfrontImage =
-                    pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
-              }
+        if (byteData != null) {
+          Uint8List pngBytes = byteData.buffer
+              .asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
+          finalfrontImage =
+              pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+        }
 
-              final currentUser = FirebaseAuth.instance.currentUser!;
-              final usersCollection =
-                  FirebaseFirestore.instance.collection("User");
-              final groupCollection =
-                  FirebaseFirestore.instance.collection("Group");
-              DocumentSnapshot userDocument =
-                  await usersCollection.doc(currentUser.email).get();
-              if (userDocument.exists) {
-                String flogCode = userDocument.get('flogCode');
-                postImage(currentUser.email!, flogCode);
-                DocumentSnapshot groupDocument =
-                    await groupCollection.doc(flogCode).get();
-                if (groupDocument.exists) {
-                  int frog = groupDocument.get('frog');
-                  frog = frog + 1;
-                  await groupCollection.doc(flogCode).update({'frog': frog});
-                }
-              }
+        final currentUser = FirebaseAuth.instance.currentUser!;
+        final usersCollection =
+        FirebaseFirestore.instance.collection("User");
+        final groupCollection =
+        FirebaseFirestore.instance.collection("Group");
+        DocumentSnapshot userDocument =
+        await usersCollection.doc(currentUser.email).get();
+        if (userDocument.exists) {
+          String flogCode = userDocument.get('flogCode');
+          postImage(currentUser.email!, flogCode);
+          DocumentSnapshot groupDocument =
+          await groupCollection.doc(flogCode).get();
+          if (groupDocument.exists) {
+            int frog = groupDocument.get('frog');
+            frog = frog + 1;
+            await groupCollection.doc(flogCode).update({'frog': frog});
+          }
+        }
 
-              LocalNotification.showNotification(
-                  userToken: userDocument.get('token'),
-                  context: context,
-                  title: '[FLOGing]',
-                  message: 'FLOGing 상태를 업로드했습니다 !');
+        LocalNotification.showNotification(
+            userToken: userDocument.get('token'),
+            context: context,
+            title: '[FLOGing]',
+            message: 'FLOGing 상태를 업로드했습니다 !');
 
-              if (!mounted) return;
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }
+        if (!mounted) return;
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
           : null, //상태 전송 버튼이 활성화 되지 않았을 때 (=후면 사진이 나타나있을 때) 버튼을 눌러도 아무것도 x
 
       //상태 전송 버튼 디자인
@@ -487,7 +574,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
           ),
-          fixedSize: const Size(180, 55),
+          fixedSize: const Size(180, 65),
           backgroundColor: const Color(0xff609966)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -499,7 +586,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             style: GoogleFonts.nanumGothic(
               textStyle: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -694,3 +781,4 @@ class ShootingEditState extends State<ShootingEditScreen> {
     );
   }
 }
+
