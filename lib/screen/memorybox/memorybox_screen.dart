@@ -359,7 +359,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
 
   Widget ourValuableday() {
-    int solvedPuzzle = 8; //다 푼 퍼즐 수 (임의 설정) - 나중에 파이어베이스에서 불러오기
+
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -380,46 +380,72 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
             height: 250,
             width: 350,
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Color(0xffd6d6d6),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               children: [
                 const SizedBox(height: 10),
                 Expanded(
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(8.0), // 각 컨테이너 사이의 간격 설정
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 2.0 / 3.0, //가로:세로 2:3 비율
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 10.0, // 행 사이의 간격
-                    ),
-                    itemCount: solvedPuzzle, //전체 사진 수
-                    itemBuilder: (BuildContext context, int index) {
-                      int reversedIndex = solvedPuzzle -
-                          index; //역순으로 퍼즐 사진 인덱스 계산 : 가장 최근에 푼 것부터 보여주려고
-                      String imagePath =
-                          "assets/emoticons/emoticon_$reversedIndex.png"; //나중에 파이어베이스에서 받아오는 걸로 경로 수정
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Qpuzzle')
+                        .where('flogCode', isEqualTo: currentUserFlogCode)
+                        .where('isComplete', isEqualTo : true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
 
-                      //각 그리드 아이템에 표시할 위젯을 반환
-                      return Container(
-                        margin: const EdgeInsets.all(3.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.white, width: 1.5),
-                          color: const Color(0xFFCED3CE),
-                        ),
-                        child: Center(
-                          child: ClipRRect(
-                            child: Image.asset(
-                              imagePath,
-                              alignment: Alignment.center,
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+
+                      final docs = snapshot.data?.docs ?? [];
+
+                      if (docs.isEmpty) {
+                        return Center(
+                          child: Text(
+                            '어서 큐퍼즐을 완성해보세요!',
+                            style: GoogleFonts.nanumGothic(
+                              textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black38,
+                              ),
                             ),
+                            textAlign: TextAlign.left,
                           ),
+                        );
+                      }
+
+                      return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(8.0),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 2.0 / 3.0,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
                         ),
+                        itemCount: docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final imagePath = docs[index]['pictureUrl'];
+
+                          return Container(
+                            margin: const EdgeInsets.all(3.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.white, width: 2),
+                              color: Color(0x70ffffff),
+                              image: DecorationImage(
+                                image: NetworkImage(imagePath),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
@@ -429,11 +455,9 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     const SizedBox(width: 133),
                     OutlinedButton(
                       onPressed: () {
-                        // "전체 보기" 버튼 클릭 시 동작
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>
-                                MemoryBoxValuabledayShowAllScreen(),
+                            builder: (context) => MemoryBoxValuabledayShowAllScreen(),
                           ),
                         );
                       },
@@ -444,12 +468,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         ),
                       ),
                       child: const Text(
-                          '전체 보기',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          )),
+                        '전체 보기',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 80),
                     InkWell(
@@ -461,10 +486,10 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         );
                       },
                       child: Image.asset(
-                          //전송 버튼
-                          "button/book.png",
-                          width: 35,
-                          height: 35),
+                        "button/book.png",
+                        width: 35,
+                        height: 35,
+                      ),
                     ),
                   ],
                 ),
