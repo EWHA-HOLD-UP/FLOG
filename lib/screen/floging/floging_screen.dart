@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/widgets/flog_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flog/widgets/checkTodayFlog.dart';
-
+import 'dart:ui';
 
 class FlogingScreen extends StatefulWidget {
   const FlogingScreen({Key? key}) : super(key: key);
@@ -470,6 +470,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                             color: Color(0xffd9d9d9),
                                             borderRadius: BorderRadius.circular(
                                                 12.0),
+                                            border: Border.all(color: Color(0xff609966), width: 2.0,)
                                           ),
                                           child: Center(
                                             child: Column(
