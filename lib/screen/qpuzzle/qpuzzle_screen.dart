@@ -22,9 +22,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   int tempCellIndex = -1;
   late bool ongoing; //진행중(=나는 답변 완료했으나 가족 모두 답변 완료하지는 x) -> 답변 완료 후 나는 답변하는 화면이 아닌 가족들의 답변 여부 볼 수 있어야 하므로 필요
   int puzzleno = 0;
-  bool isQuestionSheetShowed = false; //질문창을 이미 조회했는지(조각을 선택했는지)
-  bool isAnswered = false; //답변 했는지
-  bool isAnyFamilyMemberOngoing = false; // 초기값을 false로 설정
+  late bool isQuestionSheetShowed; //질문창을 이미 조회했는지(조각을 선택했는지)
+  late bool isAnswered; //답변 했는지
+  late bool isAnyFamilyMemberOngoing;
+  late bool isAnyFamilyMemberShowedQsheet;
   int familyMem = 1; //가족 수
   String myanswer = ''; //내 답변 저장할 변수
   TextEditingController answerController = TextEditingController();
@@ -41,6 +42,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     getUserFlogCode();
     getQsheetShowed();
     getOngoing();
+    getisAnswered();
     answerController.addListener(_onAnswerTextChanged);
   }
   void _onAnswerTextChanged() {
@@ -77,6 +79,19 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     if (userDoc.exists) {
       setState(() {
         isQuestionSheetShowed = userDoc.data()!['isQuestionSheetShowed'];
+
+      });
+    }
+  }
+
+  Future<void> getisAnswered() async{
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+    if (userDoc.exists) {
+      setState(() {
+        isAnswered = userDoc.data()!['isAnswered'];
 
       });
     }
@@ -147,6 +162,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             unlockStates.addAll(
                 unlockList.map((dynamic value) => value as bool));
             selectedCellIndex = groupDocuments[0]['selectedIndex']; //selectedIndex 파이어베이스에서 가져오기
+            //isAnyFamilyMemberOngoing = groupDocuments[0]['isAnyFamilyMemberOngoing'];
           }
 
           return StreamBuilder<QuerySnapshot>(
@@ -230,19 +246,54 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           for (int col = 0; col < 2; col++) //2열
                                             GestureDetector(
                                               onTap: () async {
-                                                final userSnapshot = await FirebaseFirestore.instance
-                                                    .collection('User')
-                                                    .where('flogCode', isEqualTo: currentUserFlogCode)
-                                                    .get();
+                                                final userSnapshot = await FirebaseFirestore.instance.collection('User').doc(currentUser.email).get();
+                                                answerController.clear();
 
-
-                                                for (final userDoc in userSnapshot.docs) {
-                                                  final isongoing = userDoc.data()['ongoing'] as bool;
-                                                  if (isongoing == true) {
-                                                    isAnyFamilyMemberOngoing = true;
-                                                    break;
-                                                  }
+                                                print('11ongoing: $ongoing');
+                                                ongoing = userSnapshot['ongoing'] as bool;
+                                                print('ongoing: $ongoing');
+                                                isQuestionSheetShowed = userSnapshot['isQuestionSheetShowed'] as bool;
+                                                isAnswered = userSnapshot['isAnswered'] as bool;
+                                                if(ongoing == true) {
+                                                  isAnyFamilyMemberOngoing = true;
+                                                  //selectedCellIndex(선택한 조각) 변수 파이어베이스에 업데이트
+                                                  FirebaseFirestore.instance
+                                                      .collection('Group')
+                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                      .get()
+                                                      .then((querySnapshot) {
+                                                    if (querySnapshot.docs.isNotEmpty) {
+                                                      final docRef = querySnapshot
+                                                          .docs[0].reference;
+                                                      docRef.update({
+                                                        'isAnyFamilyMemberOngoing': isAnyFamilyMemberOngoing
+                                                      });
+                                                    }
+                                                  });
+                                                } else {
+                                                  isAnyFamilyMemberOngoing = groupDocuments[0]['isAnyFamilyMemberOngoing'];
+                                                  print('!!$isAnyFamilyMemberOngoing');
                                                 }
+                                                if(isQuestionSheetShowed == true){
+                                                  isAnyFamilyMemberShowedQsheet = true;
+                                                  FirebaseFirestore.instance
+                                                      .collection('Group')
+                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                      .get()
+                                                      .then((querySnapshot) {
+                                                    if (querySnapshot.docs.isNotEmpty) {
+                                                      final docRef = querySnapshot
+                                                          .docs[0].reference;
+                                                      docRef.update({
+                                                        'isAnyFamilyMemberShowedQsheet': isAnyFamilyMemberShowedQsheet
+                                                      });
+                                                    }
+                                                  });
+                                                } else {
+                                                  isAnyFamilyMemberShowedQsheet = groupDocuments[0]['isAnyFamilyMemberShowedQsheet'];
+                                                  print('!?!$isAnyFamilyMemberShowedQsheet');
+                                                }
+
                                                 if(unlockStates[row * 2 + col] == true
                                                     || (unlockStates[row * 2 + col] == false && ongoing == true && selectedCellIndex == row * 2 + col) ) {
                                                   //이미 풀린 조각 및 나는 답변 완료한 조각의 질문 답변 조회
@@ -454,12 +505,38 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         );
                                                       });
                                                    }
-                                                else if ((unlockStates[row * 2 + col] == false && isQuestionSheetShowed == false && isAnyFamilyMemberOngoing == false && isAnswered == false)
+                                                else if ((unlockStates[row * 2 + col] == false && isAnyFamilyMemberShowedQsheet == false && isAnyFamilyMemberOngoing == false && isAnswered == false)
                                                     //아직 안 풀린 조각이면서 질문창 보지도 x 그리고 나는 답변도 아직 x (아직 조각 선택조차 안 한 상태)
                                                     || selectedCellIndex == row * 2 + col && ongoing == false) { //현재 그 조각을 선택하고 있다면 (아직 답변x이지만 그 조각 이전에 이미 선택중인 상태, 질문창 봤을수 있음)
 
                                                   // 초기화
-                                                  isQuestionSheetShowed = false;
+                                                  isQuestionSheetShowed = true;
+                                                  DocumentReference userRef = FirebaseFirestore.instance
+                                                      .collection('User')
+                                                      .doc(currentUser.email);
+                                                  userRef.update({
+                                                    'isQuestionSheetShowed': isQuestionSheetShowed
+                                                  }) // 필드 업데이트
+                                                      .then((_) {
+                                                    print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                  })
+                                                      .catchError((error) {
+                                                    print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
+                                                  });
+                                                  isAnyFamilyMemberShowedQsheet = true;
+                                                  FirebaseFirestore.instance
+                                                      .collection('Group')
+                                                      .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                      .get()
+                                                      .then((querySnapshot) {
+                                                    if (querySnapshot.docs.isNotEmpty) {
+                                                      final docRef = querySnapshot
+                                                          .docs[0].reference;
+                                                      docRef.update({
+                                                        'isAnyFamilyMemberShowedQsheet': isAnyFamilyMemberShowedQsheet
+                                                      });
+                                                    }
+                                                  });
                                                   isAnswered = false;
 
                                                   setState(() {
@@ -1007,6 +1084,22 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         unlockStates[selectedCellIndex] = true; //해당 조각을 unlock 상태로 변경 (잠금 해제)
                                                         isQuestionSheetShowed = false; //초기화
                                                         isAnyFamilyMemberOngoing = false;
+                                                        isAnyFamilyMemberShowedQsheet = false;
+                                                        print('여기선 업뎃됨');
+                                                        FirebaseFirestore.instance
+                                                            .collection('Group')
+                                                            .where('flogCode', isEqualTo: currentUserFlogCode)
+                                                            .get()
+                                                            .then((querySnapshot) {
+                                                          if (querySnapshot.docs.isNotEmpty) {
+                                                            final docRef = querySnapshot
+                                                                .docs[0].reference;
+                                                            docRef.update({
+                                                              'isAnyFamilyMemberOngoing': false,
+                                                              'isAnyFamilyMemberShowedQsheet': false
+                                                            });
+                                                          }
+                                                        });
                                                         myanswer = ""; //myanswer 변수 초기화
                                                         //파이어베이스에 isQuestionSheetShowed 변수 업데이트
                                                         DocumentReference userRef = FirebaseFirestore.instance
@@ -1014,7 +1107,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             .doc(currentUser.email);
                                                         userRef.update({
                                                           'isQuestionSheetShowed': false
-                                                        }) //isAnswered 필드 업데이트
+                                                        }) // 필드 업데이트
                                                             .then((_) {
                                                               print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                             })
@@ -1063,6 +1156,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           .catchError((error) {
                                                         print('ongoing 상태 업데이트 중 오류 발생: $error');
                                                       });
+
 
                                                       isAnswered = false;
                                                       //나 뿐만 아니라 모든 가족 구성원의 ongoing, isAnswered 변수 초기화

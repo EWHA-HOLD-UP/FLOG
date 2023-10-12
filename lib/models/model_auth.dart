@@ -132,7 +132,9 @@ class FirebaseAuthProvider with ChangeNotifier {
           memNumber: 1,
           qpuzzleUrl: "",
           unlock: [false, false, false, false, false, false],
-          selectedIndex: -1);
+          selectedIndex: -1,
+          isAnyFamilyMemberOngoing: false,
+          isAnyFamilyMemberShowedQsheet: false);
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
     }
   }

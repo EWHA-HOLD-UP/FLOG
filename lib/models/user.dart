@@ -69,6 +69,8 @@ class Group {
   final String qpuzzleUrl; // 현재 진행중인 큐퍼즐사진
   final List<bool> unlock; // 현재 진행중인 큐퍼즐의 잠금해제여부
   final int selectedIndex;
+  final bool isAnyFamilyMemberOngoing;
+  final bool isAnyFamilyMemberShowedQsheet;
 
   Group(
       {required this.flogCode,
@@ -77,7 +79,9 @@ class Group {
       required this.memNumber,
       required this.qpuzzleUrl,
       required this.unlock,
-      required this.selectedIndex});
+      required this.selectedIndex,
+      required this.isAnyFamilyMemberOngoing,
+      required this.isAnyFamilyMemberShowedQsheet});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -96,7 +100,9 @@ class Group {
         memNumber: snapshot["memNumber"],
         qpuzzleUrl: snapshot["qpuzzleUrl"],
         unlock: snapshot["unlock"],
-        selectedIndex: snapshot["selectedIndex"]);
+        selectedIndex: snapshot["selectedIndex"],
+        isAnyFamilyMemberOngoing: snapshot["isAnyFamilyMemberOngoing"],
+        isAnyFamilyMemberShowedQsheet: snapshot["isAnyFamilyMemberShowedQsheet"]);
   }
 
   Map<String, dynamic> toJson() => {
