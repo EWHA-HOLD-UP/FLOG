@@ -303,7 +303,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection("User")
-                          .doc(currentUser.email)
+                          .doc(flogData['uid'])
                           .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
