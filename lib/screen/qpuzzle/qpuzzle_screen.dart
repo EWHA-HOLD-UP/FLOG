@@ -193,7 +193,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
                 final data = latestDocument[0].data() as Map<String, dynamic>;
                 puzzleno = data['puzzleNo']; //우리 가족의 마지막 큐퍼즐의 번호 가져오기
-                if(qpuzzleUrl != null) appbarText = '$puzzleno번째 Qpuzzle';
+                if(qpuzzleUrl != null) appbarText = 'Qpuzzle #$puzzleno';
               }
 
               return Scaffold(
