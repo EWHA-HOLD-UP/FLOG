@@ -40,6 +40,23 @@ class _MemoryBoxValuabledayShowAllScreenState
     print(currentUserFlogCode);
   }
 
+  Future<List<String>> getQuestions(int puzzleNumber) async {
+    final questions = <String>[];
+
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Question')
+        .where('puzzleNo', isEqualTo: puzzleNumber)
+        .orderBy('questionNo')
+        .get();
+
+    for (final doc in querySnapshot.docs) {
+      final questionContent = doc['questionContent'] as String;
+      questions.add(questionContent);
+    }
+
+    return questions;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,57 +128,106 @@ class _MemoryBoxValuabledayShowAllScreenState
                       );
                     }
 
-                    return GridView.builder(
-                      padding: const EdgeInsets.all(8.0),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 2.0 / 3.0,
-                        crossAxisSpacing: 10.0,
-                        mainAxisSpacing: 10.0,
-                      ),
-                      itemCount: docs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final imagePath = docs[index]['pictureUrl'];
-                        final puzzlenumber = docs[index]['puzzleNo'];
+                    return ListView(
+                      children: docs.map((doc) {
+                        final imagePath = doc['pictureUrl'];
+                        final puzzleNumber = doc['puzzleNo'];
 
-                        return Stack(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(3.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(color: Colors.white, width: 1.5),
-                                color: const Color(0xFFCED3CE),
-                                image: DecorationImage(
-                                  image: NetworkImage(imagePath),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 10,
-                              left: 10,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: Color(0x99ffffff),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  '#$puzzlenumber',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Colors.black,
+                        return FutureBuilder<List<String>>(
+                          future: getQuestions(puzzleNumber),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              // 데이터를 가져오는 중이면 로딩 표시 또는 다른 UI 표시 가능
+                              return CircularProgressIndicator();
+                            }
+                            if (snapshot.hasError) {
+                              // 에러가 발생하면 에러 메시지 표시 또는 다른 오류 처리
+                              print('Error: ${snapshot.error}');
+                              return Text('Error: ${snapshot.error}');
+
+                            }
+                            final questions = snapshot.data;
+
+                            if (questions != null) {
+                              // questions가 null이 아닌 경우에만 .map 호출
+                              return Row(
+                                children: [
+                                  Stack(
+                                    children:[
+                                      Container(
+                                        width: 200,
+                                        height: 300,
+                                        margin: const EdgeInsets.all(3.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          border: Border.all(color: Colors.white, width: 1.5),
+                                          color: const Color(0xFFCED3CE),
+                                          image: DecorationImage(
+                                            image: NetworkImage(imagePath),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 10,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: Color(0x99ffffff),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Text(
+                                            '#$puzzleNumber',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ]
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                                  SizedBox(width: 10), // 사진과 질문 사이 간격
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: questions.asMap().entries.map((entry) {
+                                        final questionNo = entry.key + 1; // questionNo는 0부터 시작하지 않고 1부터 시작한다고 가정
+                                        final question = entry.value;
+                                        return Column(
+                                          children: [
+                                            if (entry.key > 0) Divider(height: 1, thickness: 1, color: Color(0xff609966)), // 상단 구분선 (첫 번째 질문 이후부터 추가)
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 8.0), // 상단과 하단 간격 조절
+                                              child: Text(
+                                                '#$questionNo. $question',
+                                                style: GoogleFonts.nanumGothic(
+                                                  textStyle: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
 
+                                ],
+                              );
+                            } else {
+                              // questions가 null인 경우에 대한 대체 처리
+                              return CircularProgressIndicator(); // 예를 들어 로딩 중 표시
+                            }
+                          },
+                        );
+                      }).toList(),
+                    );
                   },
                 ),
               ),
