@@ -111,6 +111,9 @@ class Group {
         'frog': frog,
         'memNumber': memNumber,
         'qpuzzleUrl': qpuzzleUrl,
-        'unlock': unlock
+        'unlock': unlock,
+        'selectedIndex' : selectedIndex,
+        'isAnyFamilyMemberOngoing' : isAnyFamilyMemberOngoing,
+        'isAnyFamilyMemberShowedQsheet' : isAnyFamilyMemberShowedQsheet
       };
 }

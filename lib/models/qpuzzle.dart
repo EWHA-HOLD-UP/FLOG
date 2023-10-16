@@ -9,6 +9,8 @@ class Qpuzzle {
   final int puzzleNo;
   final bool isComplete;
   final String pictureUrl;
+  final String qpuzzleUploader;
+  final String qpuzzleTitle;
 
   Qpuzzle(
       {required this.puzzleId,
@@ -17,6 +19,8 @@ class Qpuzzle {
       required this.puzzleNo,
       required this.isComplete,
       required this.pictureUrl,
+      required this.qpuzzleTitle,
+      required this.qpuzzleUploader
       });
 
   static Qpuzzle fromSnap(DocumentSnapshot snap) {
@@ -29,6 +33,8 @@ class Qpuzzle {
       flogCode: snapshot["flogCode"],
       isComplete: snapshot["isComplete"],
       pictureUrl: snapshot["pictureUrl"],
+      qpuzzleTitle: snapshot["qpuzzleTitle"],
+      qpuzzleUploader: snapshot["qpuzzleUploader"]
      );
   }
 
@@ -39,5 +45,7 @@ class Qpuzzle {
         "flogCode": flogCode,
         "isComplete": isComplete,
         "pictureUrl": pictureUrl,
+        "qpuzzleTitle" : qpuzzleTitle,
+        "qpuzzleUploader" : qpuzzleUploader
       };
 }

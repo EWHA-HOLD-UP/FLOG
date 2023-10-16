@@ -19,8 +19,8 @@ class FireStoreMethods {
       String photoUrl =
           await StorageMethods().uploadImageToStorage('Floging', file, true);
       String photoUrl2 =
-          await StorageMethods().uploadImageToStorage('Floging', file2, true);
-      String flogingId = const Uuid().v1(); // creates unique id based on time
+          await StorageMethods().uploadImageToStorage('Floging', file2, true);String flogingId = const Uuid().v1(); // creates unique id based on time
+
       Floging floging = Floging(
           uid: uid,
           date: DateTime.now(),
@@ -84,7 +84,7 @@ class FireStoreMethods {
   // Q-puzzle 데이터베이스에 저장하기
 
   Future<String> uploadQpuzzle(
-      Uint8List file, String flogCode, int puzzleNo) async {
+      Uint8List file, String flogCode, int puzzleNo, String uid) async {
     String res = "Some error occurred";
     try {
       String photoUrl =
@@ -97,6 +97,8 @@ class FireStoreMethods {
           puzzleNo: puzzleNo,
           isComplete: false,
           pictureUrl: photoUrl,
+          qpuzzleUploader: uid,
+          qpuzzleTitle: ""
       );
 
       _firestore.collection('Qpuzzle').doc(puzzleId).set(qpuzzle.toJson());
