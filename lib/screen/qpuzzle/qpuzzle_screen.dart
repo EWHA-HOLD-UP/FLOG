@@ -237,80 +237,74 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(width: 30),
-                                      StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                                          stream: (qpuzzleUploader.isNotEmpty) ? FirebaseFirestore.instance
-                                              .collection("User")
-                                              .doc(qpuzzleUploader)
-                                              .snapshots() : null, // 빈 문자열인 경우 Stream을 null로 설정
-                                          builder: (context, snapshot) {
-                                            if (qpuzzleUploader.isEmpty) {
-                                              // qpuzzleUploader가 빈 문자열인 경우
-                                              return Container(
-                                                width: 50,
-                                                height: 50,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.grey[200],
-                                                ),
-                                              );
-                                            }
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-                                            } else if (snapshot.hasError) {
-                                              return Text('Error: ${snapshot.error}');
-                                            } else {
-                                              if (snapshot.data == null || !snapshot.data!.exists) {
-                                                return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                                              }
-                                            }
-                                            Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
-                                            return Container(
-                                              width: 50,
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xFFD1E0CA),
-                                              ),
-                                              child: Center(
-                                                child: Image.asset(
-                                                  "assets/profile/profile_${userData['profile']}.png",
-                                                  width: 40,
-                                                  height: 40,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                      ),
-                                      SizedBox(width: 10),
-                                      Container(
-                                        width: 290,
-                                        height: 55,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFFD1E0CA),
-                                            borderRadius: BorderRadius.circular(10)
-                                        ),
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Center(
-                                              child: Text(
-                                                qpuzzleTitle,
-                                                style: GoogleFonts.nanumGothic(
-                                                  textStyle: TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                softWrap: true,
-                                              ),
-                                            )
-                                        ),
-                                      ),
-                                    ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(width:20),
+                                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                                  stream: (qpuzzleUploader.isNotEmpty)
+                                      ? FirebaseFirestore.instance
+                                      .collection("User")
+                                      .doc(qpuzzleUploader)
+                                      .snapshots()
+                                      : null,
+                            builder: (context, snapshot) {
+                              if (qpuzzleUploader.isEmpty) {
+                                // qpuzzleUploader가 빈 문자열인 경우
+                                return Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey[200],
                                   ),
-                            SizedBox(height: 30),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.help_outline, // 물음표 아이콘
+                                      size: 30, // 아이콘의 크기 조정
+                                      color: Colors.black, // 아이콘의 색상 설정
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                if (snapshot.data == null || !snapshot.data!.exists) {
+                                  return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                                }
+                              }
+                              Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    "assets/profile/profile_${userData['profile']}.png",
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ],
+                              );
+                            }
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  ': $qpuzzleTitle',
+                                  style: GoogleFonts.nanumGothic(
+                                    textStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.start,
+                                  softWrap: true,
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 5),
                             if (qpuzzleUrl != null) //qpuzzleUrl이 있을 때 !! 이미지를 표시
                               Stack(
                                 children: [
@@ -805,7 +799,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   return Container(
                                       width: 330,
                                       decoration: BoxDecoration(
-                                          color: Color(0xFFD1E0CA),
+                                          color: Colors.transparent,
                                           borderRadius: BorderRadius.circular(10)
                                       ),
                                     child: Padding(
@@ -813,22 +807,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       child: Column(
                                         children: [
                                           Text(
-                                            '${selectedCellIndex + 1}번째 조각 진행 중!\n',
-                                            style: GoogleFonts.nanumGothic(
+                                            'Q${selectedCellIndex + 1}. $questionContent',
+                                            style: GoogleFonts.inter(
                                               textStyle: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 15,
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Text(
-                                            '$questionContent',
-                                            style: GoogleFonts.nanumGothic(
-                                              textStyle: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.black,
                                               ),
                                             ),
                                             textAlign: TextAlign.center,
