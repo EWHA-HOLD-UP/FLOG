@@ -94,9 +94,7 @@ class SettingScreen extends StatelessWidget {
                   await authClient.logout();
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                        content:
-                            Text('${authClient.user?.email!}님 로그아웃되었습니다')));
+                    ..showSnackBar(SnackBar(content: Text('로그아웃되었습니다')));
                   Navigator.of(context).pushNamed('/login');
                 }),
           ],
