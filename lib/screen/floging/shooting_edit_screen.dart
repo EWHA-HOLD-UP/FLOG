@@ -586,7 +586,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             style: GoogleFonts.nanumGothic(
               textStyle: TextStyle(
                 color: Colors.white,
-                fontSize: 25,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
