@@ -465,7 +465,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                     fontSize: 22,
                                                                                     fontWeight: FontWeight.bold,
                                                                                   ),
-                                                                                  textAlign: TextAlign.center,
+                                                                                  textAlign: TextAlign.left,
                                                                                   softWrap: true,
                                                                                 ),
                                                                               ),
@@ -515,7 +515,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                       height: 110,
                                                                                       decoration: BoxDecoration(
                                                                                         borderRadius: BorderRadius.circular(10),
-                                                                                        color: const Color.fromRGBO(0, 0, 0, 0.5),
+                                                                                        color: Colors.transparent,
                                                                                       ),
                                                                                       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                                                                       child: Row(
@@ -530,8 +530,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                                 child: Stack(
                                                                                                   children: [
                                                                                                     Container(
-                                                                                                      width: 60,
-                                                                                                      height: 60,
+                                                                                                      width: 50,
+                                                                                                      height: 50,
                                                                                                       decoration: BoxDecoration(
                                                                                                         shape: BoxShape.circle,
                                                                                                         color: Colors.grey[200],
@@ -540,8 +540,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                                         child: ClipOval(
                                                                                                           child: Image.asset(
                                                                                                             "assets/profile/profile_${userProfile}.png",
-                                                                                                            width: 50,
-                                                                                                            height: 50,
+                                                                                                            width: 40,
+                                                                                                            height: 40,
                                                                                                             alignment: Alignment.center,
                                                                                                           ),
                                                                                                         ),
@@ -550,31 +550,36 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                                   ],
                                                                                                 ),
                                                                                               ),
-                                                                                              SizedBox(height: 10),
+                                                                                            ],
+                                                                                          ),
+                                                                                          const SizedBox(width: 20),
+                                                                                          Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
                                                                                               Text(
                                                                                                 userNickname,
                                                                                                 style: GoogleFonts.nanumGothic(
                                                                                                   textStyle: TextStyle(
-                                                                                                    fontSize: 15,
+                                                                                                    fontSize: 17,
                                                                                                     fontWeight: FontWeight.bold,
-                                                                                                    color: Colors.white,
+                                                                                                    color: Colors.black,
                                                                                                   ),
                                                                                                 ),
                                                                                               ),
-                                                                                            ],
-                                                                                          ),
-                                                                                          const SizedBox(width: 15),
-                                                                                          Expanded(
-                                                                                              child: Text(
-                                                                                                userAnswer,
-                                                                                                style: const TextStyle(
-                                                                                                  fontSize: 13,
-                                                                                                  color: Colors.white,
+                                                                                              SizedBox(height:7),
+                                                                                              Container(
+                                                                                                width: 290,
+                                                                                                child: Text(
+                                                                                                  userAnswer,
+                                                                                                  style: const TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    color: Colors.black,
+                                                                                                  ),
+                                                                                                  softWrap: true, // 자동 줄바꿈
                                                                                                 ),
-                                                                                                softWrap: true, //자동 줄바꿈
                                                                                               )
-                                                                                          ),
-                                                                                          const SizedBox(width: 15)
+                                                                                            ],
+                                                                                          )
                                                                                         ],
                                                                                       )
                                                                                   );
@@ -967,7 +972,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                 style: const TextStyle(
                                     fontSize: 22, fontWeight: FontWeight.bold
                                 ),
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 softWrap: true, //자동 줄바꿈
                               ),
                             ),
@@ -1030,7 +1035,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       //높이 설정
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: const Color.fromRGBO(0, 0, 0, 0.5),
+                                        color: Colors.transparent,
                                       ),
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 10, horizontal: 20),
@@ -1046,8 +1051,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 child: Stack(
                                                   children: [
                                                     Container(
-                                                      width: 60,
-                                                      height: 60,
+                                                      width: 50,
+                                                      height: 50,
                                                       decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
                                                         color: Colors.grey[200],
@@ -1056,8 +1061,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         child: ClipOval(
                                                           child: Image.asset(
                                                             "assets/profile/profile_${userProfile}.png",
-                                                            width: 50,
-                                                            height: 50,
+                                                            width: 40,
+                                                            height: 40,
                                                             alignment: Alignment.center,
                                                           ),
                                                         ),
@@ -1066,28 +1071,36 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(height: 10),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 20),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
                                               Text(
                                                 userNickname,
                                                 style: GoogleFonts.nanumGothic(
                                                   textStyle: TextStyle(
-                                                    fontSize: 15,
+                                                    fontSize: 17,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ),
+                                              SizedBox(height:7),
+                                              Container(
+                                                width: 290,
+                                                child: Text(
+                                                  isAnswered == false ? userAnswer : "답변을 작성한 후 확인하세요",
+                                                  style: const TextStyle(
+                                                    fontSize: 17,
+                                                    color: Colors.black,
+                                                  ),
+                                                  softWrap: true, //자동 줄바꿈
+                                                ),
+                                              )
                                             ],
-                                          ),
-                                          const SizedBox(width: 30),
-                                          Text(
-                                            isAnswered == false ? userAnswer : "답변을 작성한 후 확인하세요",
-                                            style: const TextStyle(
-                                              fontSize: 17,
-                                              color: Colors.white,
-                                            ),
-                                            softWrap: true, //자동 줄바꿈
-                                          ),
+                                          )
                                         ],
                                       )
                                   ),
@@ -1479,7 +1492,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       style: const TextStyle(
                                                           fontSize: 22, fontWeight: FontWeight.bold
                                                       ),
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       softWrap: true, //자동 줄바꿈
                                                     ),
                                                   ),
@@ -1521,7 +1534,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     userData['nickname'],
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
-                                                        fontSize: 15,
+                                                        fontSize: 20,
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold
                                                     ),
