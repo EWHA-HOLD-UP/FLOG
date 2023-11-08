@@ -54,6 +54,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/font/
+
   assets:
     - assets/app_logo.png
     - assets/face_angry.png

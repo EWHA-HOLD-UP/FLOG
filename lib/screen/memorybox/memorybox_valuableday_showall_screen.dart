@@ -416,7 +416,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                                   _showQuestionBottomSheet(puzzleNumber, questionNo);
                                                 },
                                                 child: Text(
-                                                  '#$questionNo. $question',
+                                                  'Q$questionNo. $question',
                                                   style: GoogleFonts.nanumGothic(
                                                     textStyle: TextStyle(
                                                       fontSize: 12,
