@@ -1,3 +1,4 @@
+import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/notification/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +29,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
   String currentUserNickname = "";
   bool currentUserUploaded = false;
+  String rToken = ""; //댓글알림수신토큰
 
   @override
   void initState() {
@@ -75,15 +77,15 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
             ),
           ),
           content: Text(
-                  '이 FLOGing을 삭제하시겠습니까?',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.nanumGothic(
-                    textStyle: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+            '이 FLOGing을 삭제하시겠습니까?',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+              ),
+            ),
+          ),
           actions: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -104,10 +106,12 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        borderRadius:
+                            BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF609966)),
                   ),
                 ),
                 TextButton(
@@ -123,10 +127,12 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        borderRadius:
+                            BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF609966)),
                   ),
                   onPressed: () async {
                     try {
@@ -197,7 +203,6 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
 
         final caption = flogData['caption'];
 
-
         return Scaffold(
           //extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -261,264 +266,259 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
             ],
           ),
           body: SingleChildScrollView(
-              child: Column(
-                  children: [
-                    SizedBox(height: 10),
-                    Stack(
-                      children: <Widget>[
+            child: Column(children: [
+              SizedBox(height: 10),
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: 345,
+                    height: 500,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(flogData['downloadUrl_back']),
+                        fit: BoxFit.cover,
+                      ),
+                      color: Color(0xffd9d9d9),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: Container(
+                      width: 78,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(flogData['downloadUrl_front']),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection("User")
+                      .doc(flogData['uid'])
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      if (snapshot.data == null || !snapshot.data!.exists) {
+                        return const Text(
+                            '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                      }
+                    }
+                    Map<String, dynamic> userData =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    rToken = userData['token']; //토큰 받아오기
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 30),
                         Container(
-                          width: 345,
-                          height: 500,
+                          width: 50,
+                          height: 50,
                           decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(flogData['downloadUrl_back']),
-                              fit: BoxFit.cover,
+                            shape: BoxShape.circle,
+                            color: Color(0xFFD1E0CA),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/profile/profile_${userData['profile']}.png",
+                              width: 40,
+                              height: 40,
                             ),
-                            color: Color(0xffd9d9d9),
-                            borderRadius: BorderRadius.circular(12.0),
                           ),
                         ),
-                        Positioned(
-                          top: 16,
-                          right: 16,
-                          child: Container(
-                            width: 78,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(flogData['downloadUrl_front']),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2.0,
-                              ),
-                            ),
-                          ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: 290,
+                          height: 55,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFD1E0CA),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  caption,
+                                  style: GoogleFonts.nanumGothic(
+                                    textStyle: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                ),
+                              )),
                         ),
                       ],
-                    ),
-                    SizedBox(height: 10),
-                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                      stream: FirebaseFirestore.instance
-                          .collection("User")
-                          .doc(flogData['uid'])
-                          .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            if (snapshot.data == null || !snapshot.data!.exists) {
-                              return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                            }
-                          }
-                          Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                    );
+                  }),
+              SizedBox(height: 5),
+              Divider(),
+              SizedBox(height: 10),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Floging')
+                    .doc(flogingId)
+                    .collection('Comment')
+                    .orderBy('date', descending: true)
+                    .snapshots(),
+                builder: (context, commentSnapshot) {
+                  if (commentSnapshot.hasError) {
+                    return Text('Error: ${commentSnapshot.error}');
+                  }
+                  if (commentSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  final commentDocuments = commentSnapshot.data!.docs;
+
+                  if (commentDocuments.isEmpty) {
+                    return Column(
+                      children: [
+                        Text(
+                          '아직 댓글이 없습니다. 댓글을 달아보세요!',
+                          style: GoogleFonts.nanumGothic(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 25)
+                      ],
+                    );
+                  }
+                  return Column(
+                    children: commentDocuments.map((commentDoc) {
+                      final commentData =
+                          commentDoc.data() as Map<String, dynamic>;
+                      final commentId = commentData['commentId'];
+                      final text = commentData['text'];
+                      final date = commentData['date'];
+                      final uid = commentData['uid'];
+
+                      return Column(
+                        children: [
+                          CommentCard(
+                            date: date,
+                            commentId: commentId,
+                            text: text,
+                            uid: uid,
+                            flogingId: flogingId,
+                          ),
+                          SizedBox(width: 10),
+                        ],
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ]),
+          ),
+
+          bottomNavigationBar:
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection("User")
+                      .doc(currentUser.email)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      if (snapshot.data == null || !snapshot.data!.exists) {
+                        return const Text(
+                            '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                      }
+                      // 이제 snapshot.data을 안전하게 사용할 수 있음
+                      Map<String, dynamic> userData =
+                          snapshot.data!.data() as Map<String, dynamic>;
+
+                      return SafeArea(
+                        child: Container(
+                          color: Colors.white,
+                          height: kToolbarHeight,
+                          margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          padding: const EdgeInsets.only(left: 16, right: 8),
+                          child: Row(
                             children: [
-                              SizedBox(width: 30),
                               Container(
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Color(0xFFD1E0CA),
+                                  color: Colors.grey[200],
                                 ),
                                 child: Center(
-                                  child: Image.asset(
-                                    "assets/profile/profile_${userData['profile']}.png",
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 290,
-                                height: 55,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFD1E0CA),
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Center(
-                                      child: Text(
-                                        caption,
-                                        style: GoogleFonts.nanumGothic(
-                                          textStyle: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        softWrap: true,
-                                      ),
-                                    )
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                    ),
-                    SizedBox(height: 5),
-                    Divider(),
-                    SizedBox(height: 10),
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Floging')
-                          .doc(flogingId)
-                          .collection('Comment')
-                          .orderBy('date', descending: true)
-                          .snapshots(),
-                      builder: (context, commentSnapshot) {
-                        if (commentSnapshot.hasError) {
-                          return Text('Error: ${commentSnapshot.error}');
-                        }
-                        if (commentSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        }
-                        final commentDocuments = commentSnapshot.data!.docs;
-
-                        if (commentDocuments.isEmpty) {
-                          return Column(
-                            children: [
-                              Text(
-                                '아직 댓글이 없습니다. 댓글을 달아보세요!',
-                                style: GoogleFonts.nanumGothic(
-                                  textStyle: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 25)
-                            ],
-                          );
-                        }
-                        return Column(
-                              children: commentDocuments.map((commentDoc) {
-                                final commentData =
-                                commentDoc.data() as Map<String, dynamic>;
-                                final commentId = commentData['commentId'];
-                                final text = commentData['text'];
-                                final date = commentData['date'];
-                                final uid = commentData['uid'];
-
-                                return Column(
-                                  children: [
-                                    CommentCard(
-                                      date: date,
-                                      commentId: commentId,
-                                      text: text,
-                                      uid: uid,
-                                      flogingId: flogingId,
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      "assets/profile/profile_${userData['profile']}.png",
+                                      width: 40,
+                                      height: 40,
+                                      alignment: Alignment.center,
                                     ),
-                                    SizedBox(width: 10),
-                                  ],
-                                );
-                              }).toList(),
-                        );
-                      },
-                    ),
-                  ]
-              ),
-          ),
-
-          bottomNavigationBar:
-          StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance
-                  .collection("User")
-                  .doc(currentUser.email)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  if (snapshot.data == null || !snapshot.data!.exists) {
-                    return const Text(
-                        '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                  }
-                  // 이제 snapshot.data을 안전하게 사용할 수 있음
-                  Map<String, dynamic> userData =
-                  snapshot.data!.data() as Map<String, dynamic>;
-                  return SafeArea(
-                    child: Container(
-                      color: Colors.white,
-                      height: kToolbarHeight,
-                      margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      padding: const EdgeInsets.only(left: 16, right: 8),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey[200],
-                            ),
-                            child: Center(
-                              child: ClipOval(
-                                child: Image.asset(
-                                  "assets/profile/profile_${userData['profile']}.png",
-                                  width: 40,
-                                  height: 40,
-                                  alignment: Alignment.center,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(left: 16, right: 8),
-                              child: TextField(
-                                controller: _commentTextController,
-                                decoration: InputDecoration(
-                                  hintText:
-                                  '${userData['nickname']}로 댓글 달기',
-                                  border: InputBorder.none,
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 16, right: 8),
+                                  child: TextField(
+                                    controller: _commentTextController,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                          '${userData['nickname']}로 댓글 달기',
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              InkWell(
+                                onTap: () async {
+                                  await fireStoreMethods.postComment(
+                                    widget.flogingId,
+                                    _commentTextController.text,
+                                    currentUser.uid,
+                                  );
+                                  sendNotification(rToken, "[FLOG] 댓글알림",
+                                      " ${userData['nickname']}님이 댓글을 달았습니다!");
+                                  clearTextFieldAndHideKeyboard();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: Image.asset(
+                                    'button/send_green.png',
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                          InkWell(
-                            onTap: () async {
-                              await fireStoreMethods.postComment(
-                                widget.flogingId,
-                                _commentTextController.text,
-                                currentUser.uid,
-                              );
-                              LocalNotification.showNotification(
-                                  userToken:
-                                  "dP_i9sr7QwarKSt_gImO_j:APA91bFs7ZWa_KJ3NXIwH-q3CgX7oajJk3T05bW3FdTvIojGvPK3pjp0ZHt60vg3MnUGusZaie8OvJ6I6QqR-9o2YqaGVG966H6d9WNwMTzGq5g5Q4taO03niDzO47csiGGiIsYFJQNc",
-                                  context: context,
-                                  title: '[댓글알림]',
-                                  message: '댓글을 달았습니다!');
-                              clearTextFieldAndHideKeyboard();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: Image.asset(
-                                'button/send_green.png',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              }),
+                        ),
+                      );
+                    }
+                  }),
         );
       },
     );
