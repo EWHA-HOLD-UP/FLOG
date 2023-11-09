@@ -1,4 +1,6 @@
+import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/notification/local_notification.dart';
+import 'package:flog/notification/postNotifications.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,13 +61,12 @@ class SettingScreen extends StatelessWidget {
               trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
               onTap: () {
                 print('알림설정');
-
-                LocalNotification.showNotification(
-                    userToken:
-                        "dP_i9sr7QwarKSt_gImO_j:APA91bFs7ZWa_KJ3NXIwH-q3CgX7oajJk3T05bW3FdTvIojGvPK3pjp0ZHt60vg3MnUGusZaie8OvJ6I6QqR-9o2YqaGVG966H6d9WNwMTzGq5g5Q4taO03niDzO47csiGGiIsYFJQNc",
-                    context: context,
-                    title: '!!FLOG TIME입니다!!',
-                    message: '가족들은 무엇을 하고 있을까요? 지금 당장 상태를 알리고 확인하세요!');
+                // LocalNotification.showNotification(
+                //     userToken:
+                //         "dP_i9sr7QwarKSt_gImO_j:APA91bFs7ZWa_KJ3NXIwH-q3CgX7oajJk3T05bW3FdTvIojGvPK3pjp0ZHt60vg3MnUGusZaie8OvJ6I6QqR-9o2YqaGVG966H6d9WNwMTzGq5g5Q4taO03niDzO47csiGGiIsYFJQNc",
+                //     context: context,
+                //     title: '!!FLOG TIME입니다!!',
+                //     message: '가족들은 무엇을 하고 있을까요? 지금 당장 상태를 알리고 확인하세요!');
                 // 알림 설정 화면으로 이동하는 코드를 여기에 추가
               },
             ),

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flog/widgets/ImageSticker/sticker_picker.dart';
@@ -50,8 +51,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
   void postImage(String uid, String flogCode) async {
     try {
       // upload to storage and db
-      String res = await FireStoreMethods()
-          .uploadFloging(finalfrontImage, finalbackImage, uid, flogCode, caption);
+      String res = await FireStoreMethods().uploadFloging(
+          finalfrontImage, finalbackImage, uid, flogCode, caption);
     } catch (err) {
       print(err);
     }
@@ -99,10 +100,12 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         return Text('Error: ${snapshot.error}');
                       } else {
                         if (snapshot.data == null || !snapshot.data!.exists) {
-                          return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                          return const Text(
+                              '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
                         }
                       }
-                      Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                      Map<String, dynamic> userData =
+                          snapshot.data!.data() as Map<String, dynamic>;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -129,9 +132,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
                                 '한 마디',
                                 style: GoogleFonts.nanumGothic(
                                   textStyle: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold
-                                  ),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -144,8 +146,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                                 height: 55,
                                 decoration: BoxDecoration(
                                     color: Color(0xFFD1E0CA),
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
+                                    borderRadius: BorderRadius.circular(10)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -160,12 +161,10 @@ class ShootingEditState extends State<ShootingEditScreen> {
                                   ),
                                 ),
                               ),
-                              onTap: _showTextEditingDialog
-                          ),
+                              onTap: _showTextEditingDialog),
                         ],
                       );
-                    }
-                ),
+                    }),
 
                 const SizedBox(height: 20),
 
@@ -197,14 +196,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   Visibility(
                     visible: !isFrontImageVisible, //전면 사진이 안 보이게
                     child: Image.file(
-                      File(widget.backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
+                      File(widget
+                          .backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
                       width: 360,
                       height: 520,
                     ),
                   ),
                   ...backImageStickers.map(
                     //후면 카메라에 붙인 스티커 저장
-                        (sticker) => Center(
+                    (sticker) => Center(
                       child: ImageSticker(
                         key: ObjectKey(sticker.id),
                         onTransform: () {
@@ -222,7 +222,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
                       child: Image.file(
-                        File(widget.frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
+                        File(widget
+                            .frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
                         width: 360,
                         height: 520,
                       ),
@@ -230,7 +231,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   ),
                   ...frontImageStickers.map(
                     //전면 카메라에 붙인 스티커 저장
-                        (sticker) => Center(
+                    (sticker) => Center(
                       child: ImageSticker(
                         key: ObjectKey(sticker.id),
                         onTransform: () {
@@ -288,12 +289,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                               Navigator.of(context).pop();
                             },
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                  borderRadius: BorderRadius.circular(
+                                      15.0), // 모서리를 둥글게 설정
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color(0xFF609966)),
                             ),
                             child: Text(
                               '취소',
@@ -322,12 +326,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                               ),
                             ),
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                  borderRadius: BorderRadius.circular(
+                                      15.0), // 모서리를 둥글게 설정
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color(0xFF609966)),
                             ),
                           ),
                         ],
@@ -373,8 +380,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
                 ],
               ),
-            )
-        )
+            ))
       ],
     );
   }
@@ -420,7 +426,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
               .findRenderObject() as RenderRepaintBoundary;
           ui.Image image = await boundary.toImage();
           ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+              await image.toByteData(format: ui.ImageByteFormat.png);
 
           if (byteData != null) {
             Uint8List pngBytes = byteData.buffer
@@ -432,32 +438,32 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
       child: isFrontImageVisible
           ? Image.asset(
-        //전면카메라일 때
-        "button/flip.png",
-        color: Colors.grey,// 비활성화된 버튼 이미지
-        width: 30,
-        height: 30,
-      )
+              //전면카메라일 때
+              "button/flip.png",
+              color: Colors.grey, // 비활성화된 버튼 이미지
+              width: 30,
+              height: 30,
+            )
           : Column(
-        children: [
-          Image.asset( //후면카메라일 때
-            "button/flip.png", // 활성화된 버튼 이미지
-            width: 30,
-            height: 30,
-          ),
-          Text(
-            '셀카 꾸미기',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 10,
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.bold
-              ),
+              children: [
+                Image.asset(
+                  //후면카메라일 때
+                  "button/flip.png", // 활성화된 버튼 이미지
+                  width: 30,
+                  height: 30,
+                ),
+                Text(
+                  '셀카 꾸미기',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nanumGothic(
+                    textStyle: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -500,18 +506,20 @@ class ShootingEditState extends State<ShootingEditScreen> {
           ),
         ),
         Positioned(
-          bottom: 5, left: 5,
-            child: Text(
-              '뒤로가기',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.nanumGothic(
-                textStyle: TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF609966),
-                  fontWeight: FontWeight.bold,
-                ),
+          bottom: 5,
+          left: 5,
+          child: Text(
+            '뒤로가기',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 10,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
               ),
-            ),)
+            ),
+          ),
+        )
       ],
     );
   }
@@ -522,50 +530,51 @@ class ShootingEditState extends State<ShootingEditScreen> {
       //상태 전송 버튼을 누르면
       onPressed: isSendingButtonEnabled
           ? () async {
-        //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
-        RenderRepaintBoundary boundary = globalKey.currentContext!
-            .findRenderObject() as RenderRepaintBoundary;
-        ui.Image image = await boundary.toImage();
-        ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+              //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
+              RenderRepaintBoundary boundary = globalKey.currentContext!
+                  .findRenderObject() as RenderRepaintBoundary;
+              ui.Image image = await boundary.toImage();
+              ByteData? byteData =
+                  await image.toByteData(format: ui.ImageByteFormat.png);
 
-        if (byteData != null) {
-          Uint8List pngBytes = byteData.buffer
-              .asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
-          finalfrontImage =
-              pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
-        }
+              if (byteData != null) {
+                Uint8List pngBytes = byteData.buffer
+                    .asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
+                finalfrontImage =
+                    pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+              }
 
-        final currentUser = FirebaseAuth.instance.currentUser!;
-        final usersCollection =
-        FirebaseFirestore.instance.collection("User");
-        final groupCollection =
-        FirebaseFirestore.instance.collection("Group");
-        DocumentSnapshot userDocument =
-        await usersCollection.doc(currentUser.email).get();
-        if (userDocument.exists) {
-          String flogCode = userDocument.get('flogCode');
-          postImage(currentUser.email!, flogCode);
-          DocumentSnapshot groupDocument =
-          await groupCollection.doc(flogCode).get();
-          if (groupDocument.exists) {
-            int frog = groupDocument.get('frog');
-            frog = frog + 1;
-            await groupCollection.doc(flogCode).update({'frog': frog});
-          }
-        }
+              final currentUser = FirebaseAuth.instance.currentUser!;
+              final usersCollection =
+                  FirebaseFirestore.instance.collection("User");
+              final groupCollection =
+                  FirebaseFirestore.instance.collection("Group");
+              DocumentSnapshot userDocument =
+                  await usersCollection.doc(currentUser.email).get();
+              if (userDocument.exists) {
+                String flogCode = userDocument.get('flogCode');
+                postImage(currentUser.email!, flogCode);
+                DocumentSnapshot groupDocument =
+                    await groupCollection.doc(flogCode).get();
+                if (groupDocument.exists) {
+                  int frog = groupDocument.get('frog');
+                  frog = frog + 1;
+                  await groupCollection.doc(flogCode).update({'frog': frog});
+                }
+                //await pushUpdate(flogCode);
+              }
 
-        LocalNotification.showNotification(
-            userToken: userDocument.get('token'),
-            context: context,
-            title: '[FLOGing]',
-            message: 'FLOGing 상태를 업로드했습니다 !');
+              LocalNotification.showNotification(
+                  userToken: userDocument.get('token'),
+                  context: context,
+                  title: '[FLOGing]',
+                  message: 'FLOGing 상태를 업로드했습니다 !');
 
-        if (!mounted) return;
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
-      }
+              if (!mounted) return;
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           : null, //상태 전송 버튼이 활성화 되지 않았을 때 (=후면 사진이 나타나있을 때) 버튼을 눌러도 아무것도 x
 
       //상태 전송 버튼 디자인
@@ -637,7 +646,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
     );
   }
-
 
   //이미지 스티커 목록에서 스티커를 눌렀을 때 붙인 스티커 목록에 스티커 추가함
   void onStickerTap(int index) async {
@@ -718,8 +726,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF609966)),
                         borderRadius: BorderRadius.circular(10),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -742,12 +749,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         ),
                       ),
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                            borderRadius:
+                                BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Color(0xFF609966)),
                       ),
                     ),
                     TextButton(
@@ -755,12 +765,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                            borderRadius:
+                                BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Color(0xFF609966)),
                       ),
                       child: Text(
                         '취소',
@@ -777,8 +790,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
               ],
             ),
           );
-        }
-    );
+        });
   }
 }
-

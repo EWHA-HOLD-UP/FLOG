@@ -43,7 +43,7 @@ dependencies:
 
 
   workmanager: ^0.5.1
-  http: ^1.0.0
+  http: ^1.1.0
 
 
 dev_dependencies:
