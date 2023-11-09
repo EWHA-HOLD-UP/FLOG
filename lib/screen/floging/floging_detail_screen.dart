@@ -499,8 +499,10 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                                     _commentTextController.text,
                                     currentUser.uid,
                                   );
-                                  sendNotification(rToken, "[FLOG] 댓글알림",
-                                      " ${userData['nickname']}님이 댓글을 달았습니다!");
+                                  sendNotification(
+                                      rToken,
+                                      "[FLOG] ${userData['nickname']}님이 댓글을 달았습니다!",
+                                      " ${_commentTextController.text}");
                                   clearTextFieldAndHideKeyboard();
                                 },
                                 child: Container(
