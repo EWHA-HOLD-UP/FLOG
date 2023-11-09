@@ -40,8 +40,6 @@ dependencies:
   provider: ^6.0.5
 
   flutter_email_sender: ^6.0.1 #문의하기
-  google_ml_kit: ^0.16.3
-
 
 
   workmanager: ^0.5.1
@@ -53,7 +51,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
-
 
 flutter:
   uses-material-design: true
