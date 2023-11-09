@@ -1,8 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flog/screen/floging/shooting_edit_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
+
 
 class ShootingScreenFront extends StatefulWidget {
   final String backImagePath;
@@ -20,7 +23,8 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
   bool _isCameraInitialized = false; //카메라 초기화되었는지
   bool _isProcessing = false; //사진 찍히고 있는지
   bool _isFlashOn = true; //플래시 켜져있는지
-
+  late final FaceDetector _faceDetector;
+  bool isFaceDetected = false;
   //카메라 초기화
   @override
   void initState() {
@@ -40,6 +44,31 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
     setState(() {
       _isCameraInitialized = true; // 카메라 초기화 완료
     });
+    await _initializeFaceDetector();
+  }
+
+  Future<void> _initializeFaceDetector() async {
+    final options = FaceDetectorOptions(
+      enableLandmarks: true,
+      enableClassification: true,
+      enableTracking: true,
+      minFaceSize: 0.15,
+    );
+
+    _faceDetector = GoogleMlKit.vision.faceDetector(options);
+  }
+
+  void _updateGuide(List<Face> faces) {
+    if (faces.isNotEmpty) {
+      setState(() {
+        guide = '잘하고 있어요!';
+        isFaceDetected = true;
+      });
+    } else {
+      setState(() {
+        guide = '가족에게 얼굴을 보여주세요.';
+      });
+    }
   }
 
   //카메라 컨트롤러 initalize
@@ -54,8 +83,70 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
         setState(() {
           _isCameraReady = true; //카메라 컨트롤러 initalize 마쳤을 때
         });
+
       }
     });
+  }
+
+  void _showFaceDetectingDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+
+        Future.delayed(Duration(seconds: 1), () {
+          Navigator.pop(context);
+          _navigateToEditScreen(context);
+        });
+        String message = isFaceDetected ? '얼굴을 보여주셨군요!\n가족들이 좋아할거예요!' : '얼굴이 인식되지 않았어요ㅠㅠ\n가족들이 당신을 보고싶어할거예요!ㅠ.ㅠ';
+        String title = isFaceDetected ? '얼굴 감지 성공!' : '얼굴 감지 실패!';
+
+        return Stack(
+          children: [
+            ModalBarrier(
+              color: Colors.white,// 배경 색상과 투명도 설정
+              dismissible: false, // 배경 터치를 막음
+
+            ),
+            AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+              ),
+              elevation: 0.0, // 그림자 없음
+              backgroundColor: Color(0xFFD1E0CA), // 배경색 설정
+              title: Text(
+                title,
+                style: GoogleFonts.nanumGothic(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF609966),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              content: SizedBox(
+                height: 70,
+                width: 300,
+                child: Center(
+                    child:SizedBox(
+                        child: Text(
+                          message,
+                          style: GoogleFonts.nanumGothic(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                    )
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   //Edit Screen으로 전환하는 함수
@@ -80,23 +171,23 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
     });
     try {
       final image = await _cameraController!.takePicture();
+      final inputImage = InputImage.fromFilePath(image.path);
+      final faces = await _faceDetector.processImage(inputImage);
+      _updateGuide(faces);
       setState(() {
         _tempFrontImagePath = image.path;
         _isProcessing = false;
       });
-      _navigateToEditScreen(context);
     } catch (e) {
       setState(() {
         _isProcessing = false; // 사진 처리 실패 시 처리 중 표시 해제
       });
     }
+
+    _showFaceDetectingDialog();
   }
 
-  @override
-  void dispose() {
-    _cameraController?.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
