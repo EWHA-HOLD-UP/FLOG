@@ -78,7 +78,15 @@ class MemoryBoxVideoState extends State<MemoryBoxVideoScreen> {
                   aspectRatio: _controller.value.aspectRatio,
                   child: VideoPlayer(_controller), //동영상을 표시
                 )
-                    : CircularProgressIndicator(), //동영상 초기화 중에 로딩 표시
+                    : Container(
+                  width: 30, // 원하는 너비 설정
+                  height: 30, // 원하는 높이 설정
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey), // 원하는 색상 설정
+                    strokeWidth: 3.0, // 원하는 두께 설정
+                  ),
+                )
+                , //동영상 초기화 중에 로딩 표시
               ),
             ),
           ),

@@ -17,7 +17,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
   CameraController? _cameraController; //카메라 컨트롤러
   bool _isCameraReady = false;
   String? _tempBackImagePath; //임시 후면 사진 저장
-  String guide = '지금 무엇을 하고 있는지 가족들에게 보여주세요!'; //ai가 생성한 가이드 문구
+  //String guide = '지금 무엇을 하고 있는지 가족들에게 보여주세요!'; //ai가 생성한 가이드 문구
   bool _isCameraInitialized = false; //카메라 초기화되었는지
   bool _isProcessing = false; //사진 찍히고 있는지
   bool _isFlashOn = true; //플래시 켜져있는지
@@ -207,8 +207,8 @@ class _ShootingScreenState extends State<ShootingScreen> {
                     ],
                   ),
                   const SizedBox(height:10), //간격
-                  Text(guide), //ai 가이드 문구
-                  const SizedBox(height:10), //간격
+                  //Text(guide), //ai 가이드 문구
+                  //const SizedBox(height:10), //간격
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
