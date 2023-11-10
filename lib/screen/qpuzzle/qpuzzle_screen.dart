@@ -1583,6 +1583,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         print(
                                                             'Unlock 상태 업데이트 중 오류 발생: $error');
                                                       });
+                                                      groupNotification(
+                                                          group_no,
+                                                          "[Q-puzzle]",
+                                                          "퍼즐 조각이 풀렸습니다!");
 
                                                       //이제 새로운 조각을 풀어야하기 때문에 나 뿐만 아니라 모든 가족 구성원의 isAnswered 변수 초기화
                                                       final userRefs = firestore
@@ -1713,6 +1717,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             });
                                                           }
                                                         });
+                                                        groupNotification(
+                                                            group_no,
+                                                            "[Q-puzzle]",
+                                                            '$puzzleno 번째 퍼즐이 완성되었습니다!\n메모리 박스에서 확인하세요.');
                                                         showDialog(
                                                           context: context,
                                                           builder: (BuildContext
@@ -2058,7 +2066,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           });
                         });
                         Navigator.of(context).pop();
-                        groupNotification(group_no);
+                        groupNotification(group_no, "[Q-puzzle]",
+                            "새로운 퍼즐이 생성되었습니다! 퍼즐을 확인해보세요");
                       },
                       child: Text(
                         '확인',

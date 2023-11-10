@@ -77,7 +77,7 @@ void sendNotification(String token, String title, String body) async {
   }
 }
 
-void groupNotification(String group_no) async {
+void groupNotification(String group_no, String title, String body) async {
   var headers = {
     'Content-Type': 'application/json',
     'Authorization':
@@ -87,10 +87,7 @@ void groupNotification(String group_no) async {
       http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
   request.body = json.encode({
     "to": "/topics/$group_no",
-    "notification": {
-      "title": "[Q-puzzle]",
-      "body": "새로운 퍼즐이 생성되었습니다! 퍼즐을 확인해보세요"
-    },
+    "notification": {"title": title, "body": body},
     "data": {"KEY": "VALUE"}
   });
   request.headers.addAll(headers);
