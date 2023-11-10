@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flog/models/user.dart' as model;
@@ -115,6 +116,9 @@ class FirebaseAuthProvider with ChangeNotifier {
         FirebaseFirestore.instance.collection('Group');
     DocumentSnapshot docSnapshot = await groupRef.doc(flogCode).get();
 
+    // 현재 그룹 컬렉션의 스냅샷을 가져옵니다.
+    QuerySnapshot groupSnapshot = await groupRef.get();
+
     if (docSnapshot.exists) {
       // 그룹이 존재하는 경우 -> 그룹에 추가하기
       print("[*] 기존 그룹에 추가합니다");
@@ -125,6 +129,8 @@ class FirebaseAuthProvider with ChangeNotifier {
     } else {
       // 그룹이 존재하지 않는 경유 -> 그룹 생성하기
       print("[*] 새로운 그룹을 만듭니다");
+
+      int newGroupNumber = groupSnapshot.size + 1;
       model.Group group = model.Group(
           flogCode: flogCode,
           members: [uid],
@@ -134,8 +140,11 @@ class FirebaseAuthProvider with ChangeNotifier {
           unlock: [false, false, false, false, false, false],
           selectedIndex: -1,
           isAnyFamilyMemberOngoing: false,
-          isAnyFamilyMemberShowedQsheet: false);
+          isAnyFamilyMemberShowedQsheet: false,
+          group_no: newGroupNumber.toString());
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
+      FirebaseMessaging.instance.subscribeToTopic(newGroupNumber.toString());
+      print("$newGroupNumber 알림구독됨");
     }
   }
 }

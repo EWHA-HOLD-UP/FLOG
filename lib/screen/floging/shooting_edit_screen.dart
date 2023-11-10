@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/root_screen.dart';
@@ -48,6 +49,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
   TextEditingController _textEditingController = TextEditingController();
   String caption = '';
   final currentUser = FirebaseAuth.instance.currentUser!;
+  String group_no = '';
 
   void postImage(String uid, String flogCode) async {
     try {
@@ -58,8 +60,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
       print(err);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -536,22 +536,24 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   await usersCollection.doc(currentUser.email).get();
               if (userDocument.exists) {
                 String flogCode = userDocument.get('flogCode');
+
                 postImage(currentUser.email!, flogCode);
                 DocumentSnapshot groupDocument =
                     await groupCollection.doc(flogCode).get();
                 if (groupDocument.exists) {
                   int frog = groupDocument.get('frog');
+                  group_no = groupDocument.get('group_no');
                   frog = frog + 1;
                   await groupCollection.doc(flogCode).update({'frog': frog});
                 }
-                //await pushUpdate(flogCode);
               }
-
-              LocalNotification.showNotification(
-                  userToken: userDocument.get('token'),
-                  context: context,
-                  title: '[FLOGing]',
-                  message: 'FLOGing 상태를 업로드했습니다 !');
+              String nickname = userDocument.get('nickname');
+              FirebaseMessaging.instance.unsubscribeFromTopic(group_no);
+              print("$group_no 알림구독취소");
+              groupNotification(
+                  group_no, "[FLOGing]", "$nickname님이 플로깅을 추가했습니다!");
+              FirebaseMessaging.instance.subscribeToTopic(group_no);
+              print("$group_no 알림재구독");
 
               if (!mounted) return;
               Navigator.pop(context);
