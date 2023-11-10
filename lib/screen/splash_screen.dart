@@ -66,6 +66,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (userDocument.exists) {
           String flogCode = userDocument.get('flogCode');
+          String group_no = "";
+          final CollectionReference groupRef =
+              FirebaseFirestore.instance.collection('Group');
+
+          try {
+            // 'flogCode'와 일치하는 그룹을 조회합니다.
+            QuerySnapshot groupSnapshot =
+                await groupRef.where('flogCode', isEqualTo: flogCode).get();
+
+            // 조회된 그룹이 있는 경우
+            if (groupSnapshot.docs.isNotEmpty) {
+              // 첫 번째로 조회된 그룹의 'group_no'를 반환합니다.
+              group_no = groupSnapshot.docs.first.get('group_no').toString();
+            } else {
+              // 일치하는 그룹이 없는 경우
+              print('일치하는 그룹이 없습니다.');
+              return null;
+            }
+          } catch (e) {
+            // 에러 처리
+            print('그룹 조회 중 오류 발생: $e');
+            return null;
+          }
           if (flogCode == "null") {
             //flogCode가 없는경우(가족 등록 안된 신규 유저)
             ScaffoldMessenger.of(context)
@@ -79,6 +102,8 @@ class _SplashScreenState extends State<SplashScreen> {
                         nickname: prefs.getString('email')!)));
           } else {
             // flogCode가 있는경우(가족 등록된 기존 유저)
+            FirebaseMessaging.instance.subscribeToTopic(group_no);
+            print("$group_no 알림구독됨");
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(

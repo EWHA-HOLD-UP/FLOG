@@ -71,6 +71,7 @@ class Group {
   final int selectedIndex;
   final bool isAnyFamilyMemberOngoing;
   final bool isAnyFamilyMemberShowedQsheet;
+  final String group_no; //그룹번호
 
   Group(
       {required this.flogCode,
@@ -81,7 +82,8 @@ class Group {
       required this.unlock,
       required this.selectedIndex,
       required this.isAnyFamilyMemberOngoing,
-      required this.isAnyFamilyMemberShowedQsheet});
+      required this.isAnyFamilyMemberShowedQsheet,
+      required this.group_no});
 
   // *floging 기능 로직 : 자신의 상태를 업로드해야 다른 구성원 상태 확인 가능
   bool canViewPhotos(String userId) {
@@ -102,7 +104,9 @@ class Group {
         unlock: snapshot["unlock"],
         selectedIndex: snapshot["selectedIndex"],
         isAnyFamilyMemberOngoing: snapshot["isAnyFamilyMemberOngoing"],
-        isAnyFamilyMemberShowedQsheet: snapshot["isAnyFamilyMemberShowedQsheet"]);
+        isAnyFamilyMemberShowedQsheet:
+            snapshot["isAnyFamilyMemberShowedQsheet"],
+        group_no: snapshot["group_no"]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -112,8 +116,9 @@ class Group {
         'memNumber': memNumber,
         'qpuzzleUrl': qpuzzleUrl,
         'unlock': unlock,
-        'selectedIndex' : selectedIndex,
-        'isAnyFamilyMemberOngoing' : isAnyFamilyMemberOngoing,
-        'isAnyFamilyMemberShowedQsheet' : isAnyFamilyMemberShowedQsheet
+        'selectedIndex': selectedIndex,
+        'isAnyFamilyMemberOngoing': isAnyFamilyMemberOngoing,
+        'isAnyFamilyMemberShowedQsheet': isAnyFamilyMemberShowedQsheet,
+        'group_no': group_no
       };
 }
