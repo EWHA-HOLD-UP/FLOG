@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/screen/floging/floging_detail_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/widgets/flog_card.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flog/widgets/checkTodayFlog.dart';
 import 'dart:ui';
@@ -43,17 +44,25 @@ class FlogingScreenState extends State<FlogingScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+            return Scaffold(
+              body: Center(
+                //로딩바 구현 부분
+                child: SpinKitPumpingHeart(
+                  color: Colors.green.withOpacity(0.2),
+                  size: 50.0, //크기 설정
+                  duration: Duration(seconds: 5),
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
             if (snapshot.data == null || !snapshot.data!.exists) {
-              return const Text(
-                  '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+              return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
             }
             // 이제 snapshot.data을 안전하게 사용할 수 있음
-            Map<String, dynamic> currentUserData =
-                snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> currentUserData = snapshot.data!.data() as Map<String, dynamic>;
 
             currentUserFlogCode = currentUserData['flogCode'];
             currentUserNickname = currentUserData['nickname'];
@@ -70,7 +79,17 @@ class FlogingScreenState extends State<FlogingScreen> {
                 }
 
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return Scaffold(
+                    body: Center(
+                      //로딩바 구현 부분
+                      child: SpinKitPumpingHeart(
+                        color: Colors.green.withOpacity(0.2),
+                        size: 50.0, //크기 설정
+                        duration: Duration(seconds: 5),
+                      ),
+                    ),
+                    backgroundColor: Colors.transparent,
+                  );
                 }
 
                 final userDocuments = userSnapshot.data!.docs;
@@ -150,8 +169,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 title: Text(
                                   userNickname,
                                   style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w800,
                                     color: Color(0xFF62BC1B),
                                   ),
                                 ),
@@ -162,150 +181,248 @@ class FlogingScreenState extends State<FlogingScreen> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+                                                ),
                                                 title: Text(
-                                                    '💌$currentUserNickname 🔜 ${userNickname}',
-                                                    textAlign:
-                                                        TextAlign.center),
-                                                actions: <Widget>[
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              '🤨',
-                                                              style: TextStyle(
-                                                                fontSize: 30,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 8),
-                                                            Text(
-                                                              '뭐해?',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors.black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          sendNotification(
-                                                              userToken,
-                                                              "$userNickname! 뭐해?🤨",
-                                                              "지금 뭐하는지 $currentUserNickname가 궁금해해요! ");
-                                                          // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                          // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
-                                                          Navigator.of(context)
-                                                              .pop(); // 팝업 창 닫기
-                                                        },
-                                                      ),
-                                                      SizedBox(width: 16),
-                                                      TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              '🥰',
-                                                              style: TextStyle(
-                                                                fontSize: 30,
-                                                                fontWeight:
-                                                                FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 8),
-                                                            Text(
-                                                              '사랑해',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors.black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          sendNotification(
-                                                              userToken,
-                                                              "$userNickname! 사랑해🥰",
-                                                              " $currentUserNickname가 사랑을 고백했어요!");
-                                                          // 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                          // 이곳에 다른 미안함 표현 관련 코드를 추가하세요.
-                                                          Navigator.of(context)
-                                                              .pop(); // 팝업 창 닫기
-                                                        },
-                                                      ),
-                                                      SizedBox(
-                                                          width:
-                                                              16), // 버튼 사이의 간격 조절
-                                                      TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              '🥹',
-                                                              style: TextStyle(
-                                                                fontSize: 30,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 8),
-                                                            Text(
-                                                              '고마워',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors.black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          sendNotification(
-                                                              userToken,
-                                                              "$userNickname! 고마워🥹",
-                                                              "지금 $currentUserNickname가 고마움을 전했어요!");
-                                                          // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                          // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
-                                                          Navigator.of(context)
-                                                              .pop(); // 팝업 창 닫기
-                                                        },
-                                                      ),
-                                                      SizedBox(width: 16),
-                                                      TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              '😢',
-                                                              style: TextStyle(
-                                                                fontSize: 30,
-                                                                fontWeight:
-                                                                FontWeight.bold,
-
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 8),
-                                                            Text(
-                                                              '미안해',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors.black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          sendNotification(
-                                                              userToken,
-                                                              "$userNickname! 미안해😢",
-                                                              " $currentUserNickname가 미안하대요!");
-                                                          // 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                          // 이곳에 미안함 표현 관련 코드를 추가하세요.
-                                                          Navigator.of(context)
-                                                              .pop(); // 팝업 창 닫기
-                                                        },
-                                                      ),
-                                                    ],
+                                                  '개굴이기!',
+                                                  style: TextStyle(
+                                                    fontSize: 22,
+                                                    color: Color(0xFF62BC1B),
+                                                    fontWeight: FontWeight.bold,
                                                   ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                actions: <Widget>[
+                                                  Padding(
+                                                    padding: EdgeInsets.only(right: 8.0, left: 8.0, bottom: 8.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          height: 50,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(10.0),
+                                                            border: Border.all(
+                                                              color: Color(0xFF62BC1B),
+                                                              width: 1.0,          // 테두리 굵기
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Image.asset(
+                                                                "button/love_letter.png",
+                                                                width: 20,
+                                                                height: 20,
+                                                                color: const Color(0xFF62BC1B),
+                                                              ),
+                                                              const SizedBox(width: 10),
+                                                              Text(
+                                                                currentUserNickname,
+                                                                textAlign: TextAlign.center,
+                                                                style: TextStyle(
+                                                                  color: Color(0xFF62BC1B),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(width: 10),
+                                                              Image.asset(
+                                                                "button/right_arrow.png",
+                                                                width: 20,
+                                                                height: 20,
+                                                                color: const Color(0xFF62BC1B),
+                                                              ),
+                                                              const SizedBox(width: 10),
+                                                              Text(
+                                                                userNickname,
+                                                                textAlign: TextAlign.center,
+                                                                style: TextStyle(
+                                                                  color: Color(0xFF62BC1B),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 20),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                                                                    spreadRadius: 3, // 그림자가 퍼지는 정도
+                                                                    blurRadius: 2, // 그림자의 흐림 정도
+                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: TextButton(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      "assets/emoticons/emoticon_5.png",
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                    ),
+                                                                    SizedBox(height: 8),
+                                                                    Text(
+                                                                      '뭐해?',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Colors.black,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                onPressed: () {
+                                                                  sendNotification(
+                                                                      userToken,
+                                                                      "$userNickname! 뭐해?🤨",
+                                                                      "지금 뭐하는지 $currentUserNickname님이 궁금해해요! ");
+                                                                  // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                                  // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
+                                                                  Navigator.of(context).pop(); // 팝업 창 닫기
+                                                                },
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                                                                    spreadRadius: 3, // 그림자가 퍼지는 정도
+                                                                    blurRadius: 2, // 그림자의 흐림 정도
+                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: TextButton(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      "assets/emoticons/emoticon_3.png",
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                    ),
+                                                                    SizedBox(height: 8),
+                                                                    Text(
+                                                                      '사랑해',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Colors.black,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                onPressed: () {
+                                                                  sendNotification(
+                                                                      userToken,
+                                                                      "$userNickname! 사랑해🥰",
+                                                                      " $currentUserNickname님이 사랑을 고백했어요!");
+                                                                  // 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                                  // 이곳에 다른 미안함 표현 관련 코드를 추가하세요.
+                                                                  Navigator.of(context).pop(); // 팝업 창 닫기
+                                                                },
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                                                                    spreadRadius: 3, // 그림자가 퍼지는 정도
+                                                                    blurRadius: 2, // 그림자의 흐림 정도
+                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child:  TextButton(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      "assets/emoticons/emoticon_10.png",
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                    ),
+                                                                    SizedBox(height: 8),
+                                                                    Text(
+                                                                      '고마워',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Colors.black,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                onPressed: () {
+                                                                  sendNotification(
+                                                                      userToken,
+                                                                      "$userNickname! 고마워🥹",
+                                                                      "지금 $currentUserNickname님이 고마움을 전했어요!");
+                                                                  // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                                  // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
+                                                                  Navigator.of(context).pop(); // 팝업 창 닫기
+                                                                },
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                                                                    spreadRadius: 3, // 그림자가 퍼지는 정도
+                                                                    blurRadius: 2, // 그림자의 흐림 정도
+                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: TextButton(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      "assets/emoticons/emoticon_4.png",
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                    ),
+                                                                    SizedBox(height: 8),
+                                                                    Text(
+                                                                      '미안해',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Colors.black,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                onPressed: () {
+                                                                  sendNotification(
+                                                                      userToken,
+                                                                      "$userNickname! 미안해😢",
+                                                                      " $currentUserNickname님이 미안하대요!");
+                                                                  // 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
+                                                                  // 이곳에 미안함 표현 관련 코드를 추가하세요.
+                                                                  Navigator.of(context).pop(); // 팝업 창 닫기
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
                                                 ],
                                               );
                                             },
@@ -330,9 +447,18 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 if (flogSnapshot.hasError) {
                                   return Text('Error: ${flogSnapshot.error}');
                                 }
-                                if (flogSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                if (flogSnapshot.connectionState == ConnectionState.waiting) {
+                                  return Scaffold(
+                                    body: Center(
+                                      //로딩바 구현 부분
+                                      child: SpinKitPumpingHeart(
+                                        color: Colors.green.withOpacity(0.2),
+                                        size: 50.0, //크기 설정
+                                        duration: Duration(seconds: 5),
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.transparent,
+                                  );
                                 }
                                 final flogDocuments = flogSnapshot.data!.docs;
 

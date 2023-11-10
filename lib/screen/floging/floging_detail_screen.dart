@@ -30,11 +30,16 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
   String currentUserNickname = "";
   bool currentUserUploaded = false;
   String rToken = ""; //댓글알림수신토큰
-
+  bool isSwitched = false;
   @override
   void initState() {
     super.initState();
     getUserData();
+  }
+  void onRightTopImageClicked() {
+    setState(() {
+      isSwitched = !isSwitched;
+    });
   }
 
   // 현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
@@ -70,7 +75,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
-              color: Color(0xFF609966),
+              color: Color(0xFF62BC1B),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -105,7 +110,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       ),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                   ),
                 ),
                 TextButton(
@@ -124,7 +129,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       ),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                   ),
                   onPressed: () async {
                     try {
@@ -212,7 +217,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       style: GoogleFonts.balooBhaijaan2(
                         textStyle: TextStyle(
                           fontSize: 20,
-                          color: Color(0xFF609966),
+                          color: Color(0xFF62BC1B),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -222,7 +227,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                           '${flogData['date'].toDate().hour.toString().padLeft(2, '0')}:${flogData['date'].toDate().minute.toString().padLeft(2, '0')}',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Color(0xFF609966),
+                        color: Color(0xFF62BC1B),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -267,7 +272,11 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     height: 500,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(flogData['downloadUrl_back']),
+                        image: NetworkImage(
+                          !isSwitched
+                              ? flogData['downloadUrl_back']
+                              : flogData['downloadUrl_front'],
+                        ),
                         fit: BoxFit.cover,
                       ),
                       color: Color(0xffd9d9d9),
@@ -277,18 +286,25 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   Positioned(
                     top: 16,
                     right: 16,
-                    child: Container(
-                      width: 78,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(flogData['downloadUrl_front']),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2.0,
+                    child: GestureDetector(
+                      onTap: onRightTopImageClicked,
+                      child: Container(
+                        width: 78,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              isSwitched
+                                  ? flogData['downloadUrl_back']
+                                  : flogData['downloadUrl_front'],
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
                         ),
                       ),
                     ),
@@ -493,6 +509,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                                     'button/send_green.png',
                                     width: 25,
                                     height: 25,
+                                    color: Color(0xFF62BC1B),
                                   ),
                                 ),
                               )

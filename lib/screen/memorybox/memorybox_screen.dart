@@ -58,16 +58,15 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: Center(
-              // 로딩바 구현 부분
+              //로딩바 구현 부분
               child: SpinKitPumpingHeart(
                 color: Colors.green.withOpacity(0.2),
-                size: 50.0, // 크기 설정
-                duration: Duration(seconds: 5), // 속도 설정
+                size: 50.0, //크기 설정
+                duration: Duration(seconds: 5),
               ),
             ),
-            backgroundColor: Colors.transparent, // 투명 배경 설정
+            backgroundColor: Colors.transparent,
           );
-
         }
 
         final documents = snapshot.data!.docs;
@@ -98,11 +97,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     //로딩바 구현 부분
                     child: SpinKitPumpingHeart(
                       color: Colors.green.withOpacity(0.2),
-                      size: 50.0, // 크기 설정
-                      duration: Duration(seconds: 5), //속도 설정
+                      size: 50.0, //크기 설정
+                      duration: Duration(seconds: 5),
                     ),
                   ),
-                );;
+                );
               }
 
               final documents = snapshot.data!.docs;
@@ -118,7 +117,6 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               })
                   .toList();
 
-
               return Scaffold(
                 /*---상단 Memory Box 바---*/
                 extendBodyBehindAppBar: true,
@@ -132,7 +130,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     style: GoogleFonts.balooBhaijaan2(
                       textStyle: TextStyle(
                         fontSize: 30,
-                        color: Color(0xFF609966),
+                        color: Color(0xFF62BC1B),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -144,25 +142,50 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                 body: ListView(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            for (final profile in profiles)
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Person(
-                                  profileNum: profile.profileNum,
-                                  nickname: profile.nickname,
+                      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+                      child: Container(
+                        height: 200,
+                        width: 390,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                              spreadRadius: 3, // 그림자가 퍼지는 정도
+                              blurRadius: 2, // 그림자의 흐림 정도
+                              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    for (final profile in profiles)
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Person(
+                                          profileNum: profile.profileNum,
+                                          nickname: profile.nickname,
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
+                            ),
+                            SizedBox(height: 20),
+                            flogCoinNum(),
                           ],
                         ),
                       ),
                     ),
-                    flogCoinNum(),
                     ourEveryday(),
                     ourValuableday(),
                     SizedBox(height: 20)
@@ -178,54 +201,27 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   
   //모은 개구리 수 보여주기
   Widget flogCoinNum() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 50,
-            width: 390,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1), // 그림자의 색상
-                  spreadRadius: 3, // 그림자가 퍼지는 정도
-                  blurRadius: 2, // 그림자의 흐림 정도
-                  offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 10),
-                Image.asset(
-                  "assets/flog_coin_green.png",
-                  width: 30,
-                  height: 30,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  '모은 개구리수 : $frog마리',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-
-                  ),
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                ),
-
-              ],
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: 10),
+        Image.asset(
+          "assets/flog_coin_green.png",
+          width: 30,
+          height: 30,
+        ),
+        SizedBox(width: 10),
+        Text(
+          '모은 개구리수 : $frog마리',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
-
-        ],
-      ),
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+      ],
     );
   }
 
@@ -312,23 +308,22 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Scaffold(
                                   body: Center(
-                                    // 로딩바 구현 부분
+                                    //로딩바 구현 부분
                                     child: SpinKitPumpingHeart(
                                       color: Colors.green.withOpacity(0.2),
-                                      size: 50.0, // 크기 설정
-                                      duration: Duration(seconds: 5), // 속도 설정
+                                      size: 50.0, //크기 설정
+                                      duration: Duration(seconds: 5),
                                     ),
                                   ),
-                                  backgroundColor: Colors.transparent, // 투명 배경 설정
+                                  backgroundColor: Colors.transparent,
                                 );
-
                               }
 
                               final flogDocuments = snapshot.data?.docs ?? [];
 
                               // 플로깅 데이터가 없을 때 회색 동그라미를 반환
                               if (flogDocuments.isEmpty) {
-                                // 플로깅 데이터가 없을 때 회색 동그라미를 반환
+                                //플로깅 데이터가 없을 때 회색 동그라미를 반환
                                 return Container(
                                   margin: const EdgeInsets.all(3.0),
                                   alignment: Alignment.center,
