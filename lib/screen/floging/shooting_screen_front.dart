@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flog/screen/floging/shooting_edit_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -239,8 +240,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          15.0), // 모서리 둥글게
+                                      borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
                                     ),
                                     title: Text(
                                       '메인 화면으로 돌아가시겠습니까?',
@@ -258,79 +258,75 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                       textAlign: TextAlign.center,
                                     ),
                                     actions: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0), // 모서리를 둥글게 설정
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 40, right: 40),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ButtonStyle(
+                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                                  ),
                                                 ),
+                                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                                               ),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Color(0xFF62BC1B)),
-                                            ),
-                                            child: Text(
-                                              '취소',
-                                              style: GoogleFonts.nanumGothic(
-                                                textStyle: TextStyle(
+                                              child: Text(
+                                                '취소',
+                                                style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              '확인',
-                                              style: GoogleFonts.nanumGothic(
-                                                textStyle: TextStyle(
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                '확인',
+                                                style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                            ),
-                                            style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0), // 모서리를 둥글게 설정
+                                              style: ButtonStyle(
+                                                shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                                  ),
                                                 ),
+                                                backgroundColor:
+                                                MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                                               ),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Color(0xFF62BC1B)),
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   );
                                 },
                               );
                             },
-                            child: Image.asset(
-                              "button/close.png",
-                              width: 20,
-                              height: 20,
-                              color: Colors.white,
-                            ),
+                            child: Container(
+                              color: Colors.transparent,
+                              width: 30,
+                              height: 30,
+                              child: Image.asset(
+                                "button/close.png",
+                                width: 20,
+                                height: 20,
+                                color: Colors.white,
+                              ),
+                            )
                           ),
                         ),
                         Positioned(
@@ -394,10 +390,24 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                   _takeFrontPicture(context);
                                 }
                               : null,
-                          child: _isProcessing
-                              ? const CircularProgressIndicator(
-                                  color: Color(0xFF62BC1B),
-                                ) // 사진 처리 중에는 로딩 스피너 표시
+                          child: _isProcessing ? Center(//로딩바 구현 부분
+                            child: Column(
+                              children: [
+                                SpinKitPumpingHeart(
+                                  color: Colors.green.withOpacity(0.2),
+                                  size: 50.0, //크기 설정
+                                  duration: Duration(seconds: 2),
+                                ),
+                                Text(
+                                  '촬영중!',
+                                  style: TextStyle(
+                                    color: Color(0xFF609966),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                               : Image.asset(
                                   "button/shooting.png",
                                   width: 70,

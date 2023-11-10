@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/resources/firestore_methods.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:flog/widgets/comment_card.dart';
@@ -105,12 +106,10 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                   ),
                 ),
                 TextButton(
@@ -124,12 +123,10 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                   ),
                   onPressed: () async {
                     try {
@@ -151,9 +148,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     } catch (e) {
                       Navigator.of(context).pop(); // 현재 다이얼로그 닫기
 
-                      showDialog<void>(
-                        context: context,
-                        builder: (BuildContext context) {
+                      showDialog<void>(context: context, builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('오류 발생'),
                             content: Text('삭제 중에 오류가 발생했습니다.'),
@@ -191,7 +186,29 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
           return Text('Error: ${flogSnapshot.error}');
         }
         if (flogSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Scaffold(
+            body: Center(
+              //로딩바 구현 부분
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpinKitPumpingHeart(
+                    color: Colors.green.withOpacity(0.2),
+                    size: 50.0, //크기 설정
+                    duration: Duration(seconds: 3),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '전환중...',
+                    style: TextStyle(
+                      color: Color(0xFF62BC1B)
+                    ),
+                  )
+                ],
+              ),
+            ),
+            backgroundColor: Colors.white
+          );
         }
         final flogDocuments = flogSnapshot.data!.docs;
 
@@ -268,8 +285,8 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
               Stack(
                 children: <Widget>[
                   Container(
-                    width: 345,
-                    height: 500,
+                    width: 350,
+                    height: 540,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
@@ -280,7 +297,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                         fit: BoxFit.cover,
                       ),
                       color: Color(0xffd9d9d9),
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   Positioned(
@@ -300,7 +317,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                             ),
                             fit: BoxFit.cover,
                           ),
-                          borderRadius: BorderRadius.circular(12.0),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: Colors.white,
                             width: 2.0,
@@ -319,7 +336,17 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                      return Scaffold(
+                        body: Center(
+                          //로딩바 구현 부분
+                          child: SpinKitPumpingHeart(
+                            color: Colors.green.withOpacity(0.2),
+                            size: 50.0, //크기 설정
+                            duration: Duration(seconds: 2),
+                          ),
+                        ),
+                        backgroundColor: Colors.transparent,
+                      );
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
@@ -379,9 +406,29 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   if (commentSnapshot.hasError) {
                     return Text('Error: ${commentSnapshot.error}');
                   }
-                  if (commentSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                  if (commentSnapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      body: Center(
+                        //로딩바 구현 부분
+                        child: Column(
+                          children: [
+                            SpinKitPumpingHeart(
+                              color: Colors.green.withOpacity(0.2),
+                              size: 50.0, //크기 설정
+                              duration: Duration(seconds: 2),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '댓글 로딩중..',
+                              style: TextStyle(
+                                color: Color(0xFF62BC1B)
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                    );
                   }
                   final commentDocuments = commentSnapshot.data!.docs;
 
@@ -401,8 +448,7 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   }
                   return Column(
                     children: commentDocuments.map((commentDoc) {
-                      final commentData =
-                          commentDoc.data() as Map<String, dynamic>;
+                      final commentData = commentDoc.data() as Map<String, dynamic>;
                       final commentId = commentData['commentId'];
                       final text = commentData['text'];
                       final date = commentData['date'];
@@ -427,98 +473,103 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
             ]),
           ),
 
-          bottomNavigationBar:
-              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: FirebaseFirestore.instance
-                      .collection("User")
-                      .doc(currentUser.email)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.data == null || !snapshot.data!.exists) {
-                        return const Text(
-                            '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                      }
-                      // 이제 snapshot.data을 안전하게 사용할 수 있음
-                      Map<String, dynamic> userData =
-                          snapshot.data!.data() as Map<String, dynamic>;
-
-                      return SafeArea(
-                        child: Container(
-                          color: Colors.white,
-                          height: kToolbarHeight,
-                          margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          padding: const EdgeInsets.only(left: 16, right: 8),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[200],
-                                ),
-                                child: Center(
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      "assets/profile/profile_${userData['profile']}.png",
-                                      width: 40,
-                                      height: 40,
-                                      alignment: Alignment.center,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 16, right: 8),
-                                  child: TextField(
-                                    controller: _commentTextController,
-                                    decoration: InputDecoration(
-                                      hintText:
-                                          '${userData['nickname']}로 댓글 달기',
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
+          bottomNavigationBar: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection("User")
+                  .doc(currentUser.email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Scaffold(
+                    body: Center(
+                      //로딩바 구현 부분
+                      child: SpinKitPumpingHeart(
+                        color: Colors.green.withOpacity(0.2),
+                        size: 50.0, //크기 설정
+                           duration: Duration(seconds: 5),
+                      ),
+                    ),
+                    backgroundColor: Colors.transparent,
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  if (snapshot.data == null || !snapshot.data!.exists) {
+                    return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                  }
+                  // 이제 snapshot.data을 안전하게 사용할 수 있음
+                  Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                  return SafeArea(
+                    child: Container(
+                         color: Colors.white,
+                      height: kToolbarHeight,
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[200],
+                            ),
+                            child: Center(
+                              child: ClipOval(
+                                child: Image.asset(
+                                  "assets/profile/profile_${userData['profile']}.png",
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.center,
                                 ),
                               ),
-                              InkWell(
-                                onTap: () async {
-                                  await fireStoreMethods.postComment(
-                                    widget.flogingId,
-                                    _commentTextController.text,
-                                    currentUser.uid,
-                                  );
-                                  if (currentUser.email != flogData['uid'])
-                                    sendNotification(
-                                        rToken,
-                                        "[FLOG] ${userData['nickname']}님이 댓글을 달았습니다!",
-                                        " ${_commentTextController.text}");
-                                  clearTextFieldAndHideKeyboard();
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: Image.asset(
-                                    'button/send_green.png',
-                                    width: 25,
-                                    height: 25,
-                                    color: Color(0xFF62BC1B),
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  }),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 16, right: 8),
+                              child: TextField(
+                                controller: _commentTextController,
+                                decoration: InputDecoration(
+                                  hintText:
+                                  '${userData['nickname']}로 댓글 달기',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await fireStoreMethods.postComment(
+                                widget.flogingId,
+                                _commentTextController.text,
+                                currentUser.uid,
+                              );
+                              if (currentUser.email != flogData['uid'])
+                                sendNotification(
+                                    rToken,
+                                    "[FLOG] ${userData['nickname']}님이 댓글을 달았습니다!",
+                                    " ${_commentTextController.text}");
+                              clearTextFieldAndHideKeyboard();
+                              },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: Image.asset(
+                                'button/send_green.png',
+                                width: 25,
+                                height: 25,
+                                color: Color(0xFF62BC1B),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              }),
         );
       },
     );

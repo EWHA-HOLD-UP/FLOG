@@ -9,6 +9,7 @@ import 'package:flog/screen/root_screen.dart';
 import 'package:flog/widgets/ImageSticker/sticker_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
@@ -75,7 +76,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             style: GoogleFonts.balooBhaijaan2(
               textStyle: TextStyle(
                 fontSize: 30,
-                color: Color(0xFF609966),
+                color: Color(0xFF62BC1B),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -98,7 +99,17 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        //return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                        return Scaffold(
+                          body: Center(
+                            //로딩바 구현 부분
+                            child: SpinKitPumpingHeart(
+                              color: Colors.green.withOpacity(0.2),
+                              size: 50.0, //크기 설정
+                              duration: Duration(seconds: 2),
+                            ),
+                          ),
+                          backgroundColor: Colors.transparent,
+                        );
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
@@ -263,7 +274,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       '메인 화면으로 돌아가시겠습니까?',
                       style: TextStyle(
                         fontSize: 18,
-                        color: Color(0xFF609966),
+                        color: Color(0xFF62BC1B),
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -277,71 +288,73 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       textAlign: TextAlign.center,
                     ),
                     actions: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15.0), // 모서리를 둥글게 설정
+                      Padding(
+                        padding: EdgeInsets.only(left: 40, right: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                  ),
+                                ),
+                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                              ),
+                              child: Text(
+                                '취소',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFF609966)),
                             ),
-                            child: Text(
-                              '취소',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              '확인',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15.0), // 모서리를 둥글게 설정
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                '확인',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFF609966)),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                  ),
+                                ),
+                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      )
                     ],
                   );
                 },
               );
             },
-            child: Image.asset(
-              "button/close.png",
-              width: 20,
-              height: 20,
-              color: Colors.white,
-            ),
+            child: Container(
+              color: Colors.transparent,
+              width: 30,
+              height: 30,
+              child: Image.asset(
+                "button/close.png",
+                width: 20,
+                height: 20,
+                color: Colors.white,
+              ),
+            )
           ),
         ),
         /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
@@ -569,7 +582,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
           ),
           fixedSize: const Size(180, 65),
-          backgroundColor: const Color(0xff609966)),
+          backgroundColor: const Color(0xFF62BC1B)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -692,7 +705,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             title: Text(
               '가족에게 한 마디!',
               style: TextStyle(
-                color: Color(0xFF609966),
+                color: Color(0xFF62BC1B),
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -707,7 +720,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       hintText: '클릭하여 작성하기...',
                       hintStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF609966)),
+                        borderSide: BorderSide(color: Color(0xFF62BC1B)),
                         borderRadius: BorderRadius.circular(10),
                       )),
                 ),
@@ -741,7 +754,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                           ),
                         ),
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                            MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                       ),
                     ),
                     TextButton(
@@ -757,7 +770,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                           ),
                         ),
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Color(0xFF609966)),
+                            MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
                       ),
                       child: Text(
                         '취소',

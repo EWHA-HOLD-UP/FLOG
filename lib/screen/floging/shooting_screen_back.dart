@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flog/screen/floging/shooting_screen_front.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:async';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -148,12 +149,17 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Image.asset(
-                            "button/close.png",
-                            width: 20,
-                            height: 20,
-                            color: Colors.white,
-                          ),
+                          child: Container(
+                            color: Colors.transparent,
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              "button/close.png",
+                              width: 20,
+                              height: 20,
+                              color: Colors.white,
+                            ),
+                          )
                         ),
                       ),
                       Positioned(
@@ -212,10 +218,24 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           _takeBackPicture(context);
                         }
                             : null,
-                        child: _isProcessing
-                            ? const CircularProgressIndicator(
-                          color: Color(0xFF62BC1B),
-                        ) // 사진 처리 중에는 로딩 스피너 표시
+                        child: _isProcessing ? Center(//로딩바 구현 부분
+                          child: Column(
+                            children: [
+                              SpinKitPumpingHeart(
+                                  color: Colors.green.withOpacity(0.2),
+                                  size: 50.0, //크기 설정
+                                  duration: Duration(seconds: 2),
+                                ),
+                              Text(
+                                '촬영중!',
+                                style: TextStyle(
+                                color: Color(0xFF609966),
+                                fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            ],
+                          ),
+                          )
                             : Image.asset(
                           "button/shooting.png",
                           width: 70,
