@@ -148,7 +148,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     } catch (e) {
                       Navigator.of(context).pop(); // 현재 다이얼로그 닫기
 
-                      showDialog<void>(context: context, builder: (BuildContext context) {
+                      showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('오류 발생'),
                             content: Text('삭제 중에 오류가 발생했습니다.'),

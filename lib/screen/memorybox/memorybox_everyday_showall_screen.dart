@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
@@ -285,7 +286,17 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return Scaffold(
+                    body: Center(
+                      //로딩바 구현 부분
+                      child: SpinKitPumpingHeart(
+                        color: Colors.green.withOpacity(0.2),
+                        size: 40.0, //크기 설정
+                        duration: Duration(seconds: 5),
+                      ),
+                    ),
+                    backgroundColor: Colors.transparent,
+                  );
                 }
 
                 final flogDocuments = snapshot.data?.docs ?? [];

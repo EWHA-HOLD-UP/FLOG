@@ -49,8 +49,17 @@ class ShootingEditState extends State<ShootingEditScreen> {
       Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
   TextEditingController _textEditingController = TextEditingController();
   String caption = '';
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String group_no = '';
+  String profile = "";
+  int profileNum = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserProfile();
+  }
 
   void postImage(String uid, String flogCode) async {
     try {
@@ -61,6 +70,19 @@ class ShootingEditState extends State<ShootingEditScreen> {
       print(err);
     }
   }
+  Future<void> getUserProfile() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+    if (userDoc.exists) {
+      setState(() {
+        profile = userDoc.data()!['profile'];
+        profileNum = int.parse(profile);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +106,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
           elevation: 0.0, //그림자 없음
           centerTitle: true,
         ),
+        backgroundColor: Colors.white,
         body: Center(
           child: SafeArea(
             child: Column(
@@ -92,92 +115,61 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 showPicture(), //1️⃣사진을 보여주는 부분
                 const SizedBox(height: 10), //간격
                 /*---캡션을 보여주는 부분---*/
-                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseFirestore.instance
-                        .collection("User")
-                        .doc(currentUser.email)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Scaffold(
-                          body: Center(
-                            //로딩바 구현 부분
-                            child: SpinKitPumpingHeart(
-                              color: Colors.green.withOpacity(0.2),
-                              size: 50.0, //크기 설정
-                              duration: Duration(seconds: 2),
-                            ),
-                          ),
-                          backgroundColor: Colors.transparent,
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        if (snapshot.data == null || !snapshot.data!.exists) {
-                          return const Text(
-                              '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
-                        }
-                      }
-                      Map<String, dynamic> userData =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 30),
-                          Image.asset(
-                            "assets/profile/profile_${userData['profile']}.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                          Text(
-                            ': ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(width: 10),
-                          GestureDetector(
-                            child: Container(
-                              width: 290,
-                              height: 55,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 35, top:18),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      isCaptionExist?caption:"클릭하여 가족에게 한마디 작성하기....",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      softWrap: true,
-                                    ),
-                                    SizedBox(height: 5),
-                                    Container(
-                                      height: 0.5, // Divider의 길이 설정
-                                      color: Colors.grey, // 라인의 색상 설정
-                                    ),
-                                  ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 30),
+                    Image.asset(
+                      "assets/profile/profile_${profileNum}.png",
+                      width: 40,
+                      height: 40,
+                    ),
+                    Text(
+                      ': ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                      child: Container(
+                        width: 290,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 35, top:15),
+                          child: Column(
+                            children: [
+                              Text(
+                                isCaptionExist?caption:"클릭하여 가족에게 한마디 작성하기....",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: isCaptionExist?Colors.black:Colors.grey,
                                 ),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
                               ),
-                            ),
-                            onTap: () {
-                              _showTextEditingDialog();
-                            },
+                              SizedBox(height: 5),
+                              Container(
+                                height: 0.5, // Divider의 길이 설정
+                                color: Colors.grey, // 라인의 색상 설정
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    }),
-
-                const SizedBox(height: 20),
+                        ),
+                      ),
+                      onTap: () {
+                        _showTextEditingDialog();
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
 
                 /*---상태 전송 버튼---*/
                 sendingButton(), //6️⃣상태 전송 버튼
@@ -581,7 +573,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
           ),
-          fixedSize: const Size(180, 65),
+          fixedSize: const Size(180, 60),
           backgroundColor: const Color(0xFF62BC1B)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -592,7 +584,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
             '상태 전송',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
             ),
           ),

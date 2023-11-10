@@ -22,8 +22,8 @@ class _ImageStickerState extends State<ImageSticker> {
   double vTransform = 0;
   double actualScale = 0.3;
 
-  double maxWidth = 360; // 사진의 최대 너비
-  double maxHeight = 470; // 사진의 최대 높이
+  double maxWidth = 345; // 사진의 최대 너비
+  double maxHeight = 458; // 사진의 최대 높이
 
   @override
   Widget build(BuildContext context) {

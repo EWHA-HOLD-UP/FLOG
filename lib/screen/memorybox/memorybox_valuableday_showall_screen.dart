@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,7 +65,7 @@ class _MemoryBoxValuabledayShowAllScreenState
         backgroundColor: Colors.white,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
         ),
         builder: (BuildContext context) {
           return SizedBox(
@@ -79,7 +80,17 @@ class _MemoryBoxValuabledayShowAllScreenState
                     return Text('Error: ${userSnapshot.error}');
                   }
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Scaffold(
+                      body: Center(
+                        //로딩바 구현 부분
+                        child: SpinKitPumpingHeart(
+                          color: Colors.green.withOpacity(0.2),
+                          size: 50.0, //크기 설정
+                          duration: Duration(seconds: 3),
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                    );
                   }
 
                   final userDocuments = userSnapshot.data!.docs;
@@ -103,7 +114,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                       const SizedBox(height: 25),
                       Center(
                         child: Image.asset(
-                          "assets/flog_logo.png",
+                          "assets/profile/profile_0.png",
                           width: 70,
                           height: 70,
                           alignment: Alignment.centerLeft,
@@ -133,11 +144,12 @@ class _MemoryBoxValuabledayShowAllScreenState
                             final questionContent = questionData['questionContent']; // 질문 내용 가져오기
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
+                                padding: const EdgeInsets.symmetric(horizontal: 30), //왼쪽과 오른쪽 간격 지정
                                 child: Text(
                                   'Q${questionNo + 1}. $questionContent',
                                   style: const TextStyle(
-                                      fontSize: 22, fontWeight: FontWeight.bold
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold
                                   ),
                                   textAlign: TextAlign.left,
                                   softWrap: true, //자동 줄바꿈
@@ -169,7 +181,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                   return Text('Error: ${answerSnapshot.error}');
                                 }
                                 if (answerSnapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                  return CircularProgressIndicator(color: Colors.white);
                                 }
                                 final answerDocuments = answerSnapshot.data!.docs;
                                 String userAnswer = '';
@@ -231,17 +243,15 @@ class _MemoryBoxValuabledayShowAllScreenState
                                             children: [
                                               Text(
                                                 userNickname,
-                                                style: GoogleFonts.nanumGothic(
-                                                  textStyle: TextStyle(
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                               SizedBox(height:7),
                                               Container(
-                                                width: 290,
+                                                width: 260,
                                                 child: Text(
                                                 userAnswer,
                                                 style: const TextStyle(
@@ -317,7 +327,17 @@ class _MemoryBoxValuabledayShowAllScreenState
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return Scaffold(
+                        body: Center(
+                          //로딩바 구현 부분
+                          child: SpinKitPumpingHeart(
+                            color: Colors.green.withOpacity(0.2),
+                            size: 50.0, //크기 설정
+                            duration: Duration(seconds: 3),
+                          ),
+                        ),
+                        backgroundColor: Colors.transparent,
+                      );
                     }
 
                     final docs = snapshot.data?.docs ?? [];
@@ -348,7 +368,17 @@ class _MemoryBoxValuabledayShowAllScreenState
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               // 데이터를 가져오는 중이면 로딩 표시 또는 다른 UI 표시 가능
-                              return CircularProgressIndicator();
+                              return Scaffold(
+                                body: Center(
+                                  //로딩바 구현 부분
+                                  child: SpinKitPumpingHeart(
+                                    color: Colors.green.withOpacity(0.2),
+                                    size: 50.0, //크기 설정
+                                    duration: Duration(seconds: 3),
+                                  ),
+                                ),
+                                backgroundColor: Colors.transparent,
+                              );
                             }
                             if (snapshot.hasError) {
                               // 에러가 발생하면 에러 메시지 표시 또는 다른 오류 처리
