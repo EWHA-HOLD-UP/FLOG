@@ -103,7 +103,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                       style: GoogleFonts.balooBhaijaan2(
                         textStyle: TextStyle(
                           fontSize: 30,
-                          color: Color(0xFF609966),
+                          color: Color(0xFF62BC1B),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -149,12 +149,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 ),
                                 title: Text(
                                   userNickname,
-                                  style: GoogleFonts.nanumGothic(
-                                    textStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff609966),
-                                    ),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF62BC1B),
                                   ),
                                 ),
                                 trailing: !isCurrentUser
@@ -179,28 +177,17 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                           children: [
                                                             Text(
                                                               '🤨',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 30,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 30,
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
                                                             SizedBox(height: 8),
                                                             Text(
                                                               '뭐해?',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors.black,
                                                               ),
                                                             ),
                                                           ],
@@ -222,28 +209,18 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                           children: [
                                                             Text(
                                                               '🥰',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 30,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 30,
+                                                                fontWeight:
+                                                                FontWeight.bold,
                                                               ),
                                                             ),
                                                             SizedBox(height: 8),
                                                             Text(
                                                               '사랑해',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors.black,
                                                               ),
                                                             ),
                                                           ],
@@ -267,28 +244,17 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                           children: [
                                                             Text(
                                                               '🥹',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 30,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 30,
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
                                                             SizedBox(height: 8),
                                                             Text(
                                                               '고마워',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors.black,
                                                               ),
                                                             ),
                                                           ],
@@ -310,28 +276,19 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                           children: [
                                                             Text(
                                                               '😢',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 30,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 30,
+                                                                fontWeight:
+                                                                FontWeight.bold,
+
                                                               ),
                                                             ),
                                                             SizedBox(height: 8),
                                                             Text(
                                                               '미안해',
-                                                              style: GoogleFonts
-                                                                  .nanumGothic(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors.black,
                                                               ),
                                                             ),
                                                           ],
@@ -354,23 +311,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                                             },
                                           );
                                         },
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF609966),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Text(
-                                            '개굴 To. ${userNickname}',
-                                            style: GoogleFonts.nanumGothic(
-                                              textStyle: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                        child: Image.asset(
+                                          "button/gaegul.png",
+                                          width: 35,
+                                          height: 35,
+                                        )
                                       )
                                     : SizedBox(), // 현재 사용자면 아무것도 표시하지 않음
                               ),
@@ -440,14 +385,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                   SizedBox(height: 10),
                                                   Text(
                                                     '아직 상태를 업로드하지 않았어요.',
-                                                    style:
-                                                        GoogleFonts.nanumGothic(
-                                                      textStyle: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                 ],
@@ -527,7 +469,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                       BorderRadius.circular(
                                                           12.0),
                                                   border: Border.all(
-                                                    color: Color(0xff609966),
+                                                    color: Color(0xFF62BC1B),
                                                     width: 2.0,
                                                   )),
                                               child: Center(
@@ -543,14 +485,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                     SizedBox(height: 10),
                                                     Text(
                                                       '플로깅 후 $userNickname의 상태를 확인하세요!',
-                                                      style: GoogleFonts
-                                                          .nanumGothic(
-                                                        textStyle: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.white,
-                                                        ),
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
                                                       ),
                                                     ),
                                                   ],

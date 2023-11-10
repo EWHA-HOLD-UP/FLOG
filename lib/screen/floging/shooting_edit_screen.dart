@@ -38,6 +38,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
   Set<StickerModel> backImageStickers = {}; //후면 카메라에 붙인 스티커 저장
   bool isSendingButtonEnabled = false; //상태전송버튼 활성화 여부 설정 위한 부분
   bool isFrontImageVisible = false; //후면 -> 전면 플립 기능 위한 부분
+  bool isCaptionExist = false;
   String? selectedId; //스티커 선택하여 붙일 때 사용할 스티커 아이디
   GlobalKey globalKey = GlobalKey(); //스티커 포함하여 캡처하기 위한 global key
   Uint8List finalbackImage =
@@ -112,58 +113,55 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(width: 30),
-                          Column(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFFD1E0CA),
-                                ),
-                                child: Center(
-                                  child: Image.asset(
-                                    "assets/profile/profile_${userData['profile']}.png",
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 3),
-                              Text(
-                                '한 마디',
-                                style: GoogleFonts.nanumGothic(
-                                  textStyle: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          Image.asset(
+                            "assets/profile/profile_${userData['profile']}.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          Text(
+                            ': ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(width: 10),
                           GestureDetector(
-                              child: Container(
-                                width: 290,
-                                height: 55,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFD1E0CA),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    caption,
-                                    style: GoogleFonts.nanumGothic(
-                                      textStyle: TextStyle(
-                                        fontSize: 16,
+                            child: Container(
+                              width: 290,
+                              height: 55,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 35, top:18),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      isCaptionExist?caption:"클릭하여 가족에게 한마디 작성하기....",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey,
                                       ),
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
                                     ),
-                                    textAlign: TextAlign.center,
-                                    softWrap: true,
-                                  ),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      height: 0.5, // Divider의 길이 설정
+                                      color: Colors.grey, // 라인의 색상 설정
+                                    ),
+                                  ],
                                 ),
                               ),
-                              onTap: _showTextEditingDialog),
+                            ),
+                            onTap: () {
+                              _showTextEditingDialog();
+                            },
+                          ),
                         ],
                       );
                     }),
@@ -250,8 +248,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
           ),
         ),
         Positioned(
-          top: 10,
-          left: 10,
+          top: 20,
+          left: 20,
           child: InkWell(
             onTap: () {
               showDialog(
@@ -263,22 +261,18 @@ class ShootingEditState extends State<ShootingEditScreen> {
                     ),
                     title: Text(
                       '메인 화면으로 돌아가시겠습니까?',
-                      style: GoogleFonts.nanumGothic(
-                        textStyle: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFF609966),
-                          fontWeight: FontWeight.bold,
-                        ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF609966),
+                        fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     content: Text(
                       '메인으로 돌아가면\n방금 찍은 사진들은 복구할 수 없어요!\n',
-                      style: GoogleFonts.nanumGothic(
-                        textStyle: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                        ),
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -303,11 +297,9 @@ class ShootingEditState extends State<ShootingEditScreen> {
                             ),
                             child: Text(
                               '취소',
-                              style: GoogleFonts.nanumGothic(
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -320,11 +312,9 @@ class ShootingEditState extends State<ShootingEditScreen> {
                             },
                             child: Text(
                               '확인',
-                              style: GoogleFonts.nanumGothic(
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             style: ButtonStyle(
@@ -346,37 +336,28 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 },
               );
             },
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              child: Center(
-                child: Image.asset(
-                  "button/close.png",
-                  width: 15,
-                  height: 15,
-                ),
-              ),
+            child: Image.asset(
+              "button/close.png",
+              width: 20,
+              height: 20,
+              color: Colors.white,
             ),
           ),
         ),
         /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
         Positioned(
             bottom: 10,
-            left: 18,
+            left: 20,
             child: Container(
               width: 310,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  textButton(), //2️⃣텍스트 버튼
+                  //textButton(), //2️⃣텍스트 버튼
                   flipButton(), //3️⃣사진 전환 버튼
                   imageStickerButton(), //4️⃣이미지 스티커 버튼
                   stickerUndoButton(), //5️⃣스티커 뒤로가기 버튼
@@ -387,7 +368,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
     );
   }
 
-  // 2️⃣텍스트 버튼
+  /* 2️⃣텍스트 버튼
   Widget textButton() {
     return InkWell(
       onTap: () {
@@ -399,19 +380,17 @@ class ShootingEditState extends State<ShootingEditScreen> {
           Text(
             '한 마디',
             textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 10,
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.bold,
-              ),
+            style: TextStyle(
+              fontSize: 10,
+              color: Color(0xFF609966),
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
     );
   }
-
+*/
   // 3️⃣플립 버튼
   Widget flipButton() {
     return InkWell(
@@ -453,15 +432,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   "button/flip.png", // 활성화된 버튼 이미지
                   width: 30,
                   height: 30,
+                  color: Colors.white,
                 ),
                 Text(
                   '셀카 꾸미기',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.nanumGothic(
-                    textStyle: TextStyle(
-                        fontSize: 10,
-                        color: Color(0xFF609966),
-                        fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
                   ),
                 ),
               ],
@@ -477,16 +456,20 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
       child: Column(
         children: [
-          Image.asset("button/sticker.png", width: 30, height: 30),
+          Image.asset(
+            "button/sticker.png",
+            width: 30,
+            height: 30,
+            color: Colors.white,
+          ),
+          SizedBox(height: 5),
           Text(
             '스티커',
             textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 10,
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.bold,
-              ),
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -496,33 +479,31 @@ class ShootingEditState extends State<ShootingEditScreen> {
 
   // 5️⃣ 스티커 뒤로가기 버튼
   Widget stickerUndoButton() {
-    return Stack(
-      children: [
-        IconButton(
-          onPressed: () {
-            undoSticker(); //클릭 시 되돌리기
-          },
-          icon: Icon(
-            Icons.undo, //추후에 undo 버튼 제작하여 변경?
-            color: Color(0xFF609966),
+
+    return InkWell(
+      onTap: () {
+        undoSticker(); //클릭 시 이미지 스티커 뒤로가기
+      },
+      child: Column(
+        children: [
+          Image.asset(
+            "button/back_sticker.png",
+            width: 25,
+            height: 25,
+            color: Colors.white,
           ),
-        ),
-        Positioned(
-          bottom: 5,
-          left: 5,
-          child: Text(
-            '뒤로가기',
+          SizedBox(height: 5),
+          Text(
+            '되돌리기',
             textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 10,
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.bold,
-              ),
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
@@ -594,12 +575,10 @@ class ShootingEditState extends State<ShootingEditScreen> {
           const SizedBox(width: 20),
           Text(
             '상태 전송',
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -738,6 +717,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       onPressed: () {
                         setState(() {
                           caption = _textEditingController.text;
+                          isCaptionExist = true;
                         });
                         Navigator.of(context).pop();
                       },

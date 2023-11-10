@@ -112,7 +112,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
               style: GoogleFonts.balooBhaijaan2(
                 textStyle: TextStyle(
                   fontSize: 30,
-                  color: Color(0xFF609966),
+                  color: Color(0xFF62BC1B),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -133,7 +133,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                         borderRadius: BorderRadius.circular(20), //둥근 모서리
                         child: SizedBox(
                           width: 360,
-                          height: 520,
+                          height: 540,
                           child: _cameraController != null && _isCameraReady
                               ? CameraPreview(_cameraController!)
                               : Container(
@@ -142,26 +142,17 @@ class _ShootingScreenState extends State<ShootingScreen> {
                         ),
                       ),
                       Positioned(
-                        top: 10,
-                        left: 10,
+                        top: 20,
+                        left: 20,
                         child: InkWell(
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                "button/close.png",
-                                width: 15,
-                                height: 15,
-                              ),
-                            ),
+                          child: Image.asset(
+                            "button/close.png",
+                            width: 20,
+                            height: 20,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -180,6 +171,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                             });
                           },
                           child: Container(
+                            height: 70,
                             decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,
                                 color: Colors.white.withOpacity(0.5),
@@ -191,12 +183,13 @@ class _ShootingScreenState extends State<ShootingScreen> {
                                   "button/flash.png",
                                   width: 50,
                                   height: 50,
-                                  color: _isFlashOn ? null : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
+                                  color: _isFlashOn ? Colors.white : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                                 ),
                                 Text(
-                                  _isFlashOn ? "Auto" : "off", // 텍스트 내용
+                                  _isFlashOn ? "자동" : "OFF", // 텍스트 내용
                                   style: TextStyle(
-                                    color: _isFlashOn ? Color(0xFF609966) : Colors.grey, // 텍스트 색상 변경
+                                    fontSize: 13,
+                                    color: _isFlashOn ? Colors.white : Colors.grey, // 텍스트 색상 변경
                                   ),
                                 ),
                               ],
@@ -221,14 +214,14 @@ class _ShootingScreenState extends State<ShootingScreen> {
                             : null,
                         child: _isProcessing
                             ? const CircularProgressIndicator(
-                          color: Color(0xFF609966),
+                          color: Color(0xFF62BC1B),
                         ) // 사진 처리 중에는 로딩 스피너 표시
                             : Image.asset(
                           "button/shooting.png",
                           width: 70,
                           height: 70,
                           color: _cameraController != null && _isCameraReady && _isCameraInitialized
-                              ? null
+                              ? Color(0xFF62BC1B)
                               : Colors.grey,
                         ),
                       ),

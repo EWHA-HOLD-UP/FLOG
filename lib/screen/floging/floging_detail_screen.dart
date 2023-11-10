@@ -68,22 +68,18 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
           title: Text(
             'FLOGing 삭제',
             textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 20,
-                color: Color(0xFF609966),
-                fontWeight: FontWeight.bold,
-              ),
+            style: TextStyle(
+              fontSize: 20,
+              color: Color(0xFF609966),
+              fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
             '이 FLOGing을 삭제하시겠습니까?',
             textAlign: TextAlign.center,
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
             ),
           ),
           actions: <Widget>[
@@ -93,11 +89,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 TextButton(
                   child: Text(
                     '취소',
-                    style: GoogleFonts.nanumGothic(
-                      textStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   onPressed: () {
@@ -117,11 +111,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                 TextButton(
                   child: Text(
                     '삭제',
-                    style: GoogleFonts.nanumGothic(
-                      textStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ButtonStyle(
@@ -327,42 +319,32 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 30),
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xFFD1E0CA),
+                        Image.asset(
+                          "assets/profile/profile_${userData['profile']}.png",
+                          width: 40,
+                          height: 40,
+                        ),
+                        Text(
+                          ': ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
                           ),
-                          child: Center(
-                            child: Image.asset(
-                              "assets/profile/profile_${userData['profile']}.png",
-                              width: 40,
-                              height: 40,
+                          textAlign: TextAlign.center,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 35),
+                            child: Text(
+                              caption,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.center,
+                              softWrap: true,
                             ),
                           ),
-                        ),
-                        SizedBox(width: 10),
-                        Container(
-                          width: 290,
-                          height: 55,
-                          decoration: BoxDecoration(
-                              color: Color(0xFFD1E0CA),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  caption,
-                                  style: GoogleFonts.nanumGothic(
-                                    textStyle: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  softWrap: true,
-                                ),
-                              )),
                         ),
                       ],
                     );
@@ -392,11 +374,9 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                       children: [
                         Text(
                           '아직 댓글이 없습니다. 댓글을 달아보세요!',
-                          style: GoogleFonts.nanumGothic(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 25)

@@ -19,7 +19,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
   CameraController? _cameraController; //카메라 컨트롤러
   bool _isCameraReady = false;
   String? _tempFrontImagePath; //임시 전면 사진 저장
-  String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
+  //String guide = '가족들의 하루를 응원하는 마음을 담아 화이팅! 을 표현해주세요.'; //ai가 생성한 가이드 문구
   bool _isCameraInitialized = false; //카메라 초기화되었는지
   bool _isProcessing = false; //사진 찍히고 있는지
   bool _isFlashOn = true; //플래시 켜져있는지
@@ -58,6 +58,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
     _faceDetector = FaceDetector(options: options);
   }
 
+  /*
   void _updateGuide(List<Face> faces) {
     if (faces.isNotEmpty) {
       setState(() {
@@ -70,6 +71,8 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
       });
     }
   }
+  */
+
 
   //카메라 컨트롤러 initalize
   void _initializeCameraController(CameraDescription camera) {
@@ -114,12 +117,10 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
               backgroundColor: Color(0xFFD1E0CA), // 배경색 설정
               title: Text(
                 title,
-                style: GoogleFonts.nanumGothic(
-                  textStyle: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFF609966),
-                    fontWeight: FontWeight.bold,
-                  ),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color(0xFF62BC1B),
+                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -171,7 +172,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
       final image = await _cameraController!.takePicture();
       final inputImage = InputImage.fromFilePath(image.path);
       final faces = await _faceDetector.processImage(inputImage);
-      _updateGuide(faces);
+      //_updateGuide(faces);
       setState(() {
         _tempFrontImagePath = image.path;
         _isProcessing = false;
@@ -199,7 +200,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                 style: GoogleFonts.balooBhaijaan2(
                   textStyle: TextStyle(
                     fontSize: 30,
-                    color: Color(0xFF609966),
+                    color: Color(0xFF62BC1B),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -220,7 +221,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                           borderRadius: BorderRadius.circular(20), //둥근 모서리
                           child: SizedBox(
                             width: 360,
-                            height: 520,
+                            height: 540,
                             child: _cameraController != null && _isCameraReady
                                 ? CameraPreview(_cameraController!)
                                 : Container(
@@ -229,8 +230,8 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                           ),
                         ),
                         Positioned(
-                          top: 10,
-                          left: 10,
+                          top: 20,
+                          left: 20,
                           child: InkWell(
                             onTap: () {
                               showDialog(
@@ -243,12 +244,10 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                     ),
                                     title: Text(
                                       '메인 화면으로 돌아가시겠습니까?',
-                                      style: GoogleFonts.nanumGothic(
-                                        textStyle: TextStyle(
-                                          fontSize: 18,
-                                          color: Color(0xFF609966),
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Color(0xFF62BC1B),
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -278,7 +277,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                               ),
                                               backgroundColor:
                                                   MaterialStateProperty.all<
-                                                      Color>(Color(0xFF609966)),
+                                                      Color>(Color(0xFF62BC1B)),
                                             ),
                                             child: Text(
                                               '취소',
@@ -316,7 +315,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                               ),
                                               backgroundColor:
                                                   MaterialStateProperty.all<
-                                                      Color>(Color(0xFF609966)),
+                                                      Color>(Color(0xFF62BC1B)),
                                             ),
                                           ),
                                         ],
@@ -326,20 +325,11 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                 },
                               );
                             },
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  "button/close.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                              ),
+                            child: Image.asset(
+                              "button/close.png",
+                              width: 20,
+                              height: 20,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -361,6 +351,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                               });
                             },
                             child: Container(
+                              height: 70,
                               decoration: BoxDecoration(
                                   shape: BoxShape.rectangle,
                                   color: Colors.white.withOpacity(0.5),
@@ -372,14 +363,14 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                     width: 50,
                                     height: 50,
                                     color: _isFlashOn
-                                        ? null
+                                        ? Colors.white
                                         : Colors.grey, // 플래시 상태에 따라 아이콘 색상 변경
                                   ),
                                   Text(
-                                    _isFlashOn ? "Auto" : "off", // 텍스트 내용
+                                    _isFlashOn ? "자동" : "OFF", // 텍스트 내용
                                     style: TextStyle(
                                       color: _isFlashOn
-                                          ? Color(0xFF609966)
+                                          ? Colors.white
                                           : Colors.grey, // 텍스트 색상 변경
                                     ),
                                   ),
@@ -391,8 +382,8 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                       ],
                     ),
                     const SizedBox(height: 10), //간격
-                    Text(guide), //ai 가이드 문구
-                    const SizedBox(height: 10), //간격
+                    //Text(guide), //ai 가이드 문구
+                    //const SizedBox(height: 10), //간격
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -405,7 +396,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                               : null,
                           child: _isProcessing
                               ? const CircularProgressIndicator(
-                                  color: Color(0xFF609966),
+                                  color: Color(0xFF62BC1B),
                                 ) // 사진 처리 중에는 로딩 스피너 표시
                               : Image.asset(
                                   "button/shooting.png",
@@ -414,7 +405,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                   color: _cameraController != null &&
                                           _isCameraReady &&
                                           _isCameraInitialized
-                                      ? null
+                                      ? Color(0xFF62BC1B)
                                       : Colors.grey,
                                 ),
                         ),
