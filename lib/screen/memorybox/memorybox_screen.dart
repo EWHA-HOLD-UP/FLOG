@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 import 'memorybox_valuableday_showall_screen.dart';
 import 'memorybox_video_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
@@ -55,7 +56,18 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Scaffold(
+            body: Center(
+              // 로딩바 구현 부분
+              child: SpinKitPumpingHeart(
+                color: Colors.green.withOpacity(0.2),
+                size: 50.0, // 크기 설정
+                duration: Duration(seconds: 5), // 속도 설정
+              ),
+            ),
+            backgroundColor: Colors.transparent, // 투명 배경 설정
+          );
+
         }
 
         final documents = snapshot.data!.docs;
@@ -81,7 +93,16 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Scaffold(
+                  body: Center(
+                    //로딩바 구현 부분
+                    child: SpinKitPumpingHeart(
+                      color: Colors.green.withOpacity(0.2),
+                      size: 50.0, // 크기 설정
+                      duration: Duration(seconds: 5), //속도 설정
+                    ),
+                  ),
+                );;
               }
 
               final documents = snapshot.data!.docs;
@@ -144,6 +165,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     flogCoinNum(),
                     ourEveryday(),
                     ourValuableday(),
+                    SizedBox(height: 20)
                   ],
                 ),
               );
@@ -157,27 +179,51 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   //모은 개구리 수 보여주기
   Widget flogCoinNum() {
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            "assets/flog_coin_green.png",
-            width: 30,
-            height: 30,
+          Container(
+            height: 50,
+            width: 390,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+                  spreadRadius: 3, // 그림자가 퍼지는 정도
+                  blurRadius: 2, // 그림자의 흐림 정도
+                  offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 10),
+                Image.asset(
+                  "assets/flog_coin_green.png",
+                  width: 30,
+                  height: 30,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  '모은 개구리수 : $frog마리',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+
+                  ),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+
+              ],
+            ),
           ),
-          const SizedBox(width: 10),
-      Text(
-        '모은 개구리수 : $frog마리',
-        style: GoogleFonts.nanumGothic(
-          textStyle: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        textAlign: TextAlign.left,
-      ),
+
         ],
       ),
     );
@@ -189,171 +235,195 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     final startDate = DateTime(now.year, now.month, now.day - 13); // 오늘부터 13일 이전의 날짜 계산
 
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: Column(
-        children: [
-          Text(
-            '우리의 모든 날',
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
+      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+      child: Container(
+        height: 260,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+              spreadRadius: 3, // 그림자가 퍼지는 정도
+              blurRadius: 2, // 그림자의 흐림 정도
+              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '우리의 모든 날',
+              style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w800,
                 color: Colors.black,
               ),
+              textAlign: TextAlign.left,
             ),
-            textAlign: TextAlign.left,
-          ),
-          const SizedBox(height: 10),
-          Container(
-            height: 200,
-            width: 350,
-            decoration: BoxDecoration(
-              color: Color(0xffd6d6d6),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 15),
-                Flexible(
-                  child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(8.0),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7,
-                      mainAxisSpacing: 10.0,
-                    ),
-                    itemCount: 14, // 14일간의 날짜 수
-                    itemBuilder: (BuildContext context, int index) {
-                      final currentDate = startDate.add(Duration(days: index));
-                      final containerNumber = currentDate.day;
-                      final formattedDate = DateFormat('yy.MM.dd').format(currentDate);
+            const SizedBox(height: 10),
+            Container(
+              height: 200,
+              width: 350,
+              decoration: BoxDecoration(
+                color: Color(0xffd6d6d6).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 15),
+                  Flexible(
+                    child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7,
+                        mainAxisSpacing: 10.0,
+                      ),
+                      itemCount: 14, // 14일간의 날짜 수
+                      itemBuilder: (BuildContext context, int index) {
+                        final currentDate = startDate.add(Duration(days: index));
+                        final containerNumber = currentDate.day;
+                        final formattedDate = DateFormat('yy.MM.dd').format(currentDate);
 
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => MemoryBoxDetailScreen(
-                                selectedDate: formattedDate,
-                              ),
-                            ),
-                          );
-                        },
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('Floging')
-                              .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(currentDate))
-                              .where('date', isLessThan: Timestamp.fromDate(currentDate.add(Duration(days: 1))))
-                              .where('flogCode', isEqualTo: currentUserFlogCode)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            }
-
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            }
-
-                            final flogDocuments = snapshot.data?.docs ?? [];
-
-                            // 플로깅 데이터가 없을 때 회색 동그라미를 반환
-                            if (flogDocuments.isEmpty) {
-                              // 플로깅 데이터가 없을 때 회색 동그라미를 반환
-                              return Container(
-                                margin: const EdgeInsets.all(3.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  containerNumber.toString(),
-                                  style: GoogleFonts.inter(
-                                    textStyle: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => MemoryBoxDetailScreen(
+                                  selectedDate: formattedDate,
                                 ),
-                              );
-                            }
-
-                            // 가져온 플로깅 사진을 사용하여 이미지 컨테이너를 생성하고 반환
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => MemoryBoxDetailScreen(
-                                      selectedDate: formattedDate,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  ..._buildFlogImageContainers(flogDocuments), // 플로깅 사진을 추가
-                                  Center(
-                                    child: Text(
-                                      containerNumber.toString(),
-                                      style: const TextStyle(color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
                               ),
                             );
                           },
-                        ),
-                      );
-                    },
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Floging')
+                                .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(currentDate))
+                                .where('date', isLessThan: Timestamp.fromDate(currentDate.add(Duration(days: 1))))
+                                .where('flogCode', isEqualTo: currentUserFlogCode)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Scaffold(
+                                  body: Center(
+                                    // 로딩바 구현 부분
+                                    child: SpinKitPumpingHeart(
+                                      color: Colors.green.withOpacity(0.2),
+                                      size: 50.0, // 크기 설정
+                                      duration: Duration(seconds: 5), // 속도 설정
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.transparent, // 투명 배경 설정
+                                );
+
+                              }
+
+                              final flogDocuments = snapshot.data?.docs ?? [];
+
+                              // 플로깅 데이터가 없을 때 회색 동그라미를 반환
+                              if (flogDocuments.isEmpty) {
+                                // 플로깅 데이터가 없을 때 회색 동그라미를 반환
+                                return Container(
+                                  margin: const EdgeInsets.all(3.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    containerNumber.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              // 가져온 플로깅 사진을 사용하여 이미지 컨테이너를 생성하고 반환
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MemoryBoxDetailScreen(
+                                        selectedDate: formattedDate,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  children: [
+                                    ..._buildFlogImageContainers(flogDocuments), // 플로깅 사진을 추가
+                                    Center(
+                                      child: Text(
+                                        containerNumber.toString(),
+                                        style: const TextStyle(color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    const SizedBox(width: 133),
-                    OutlinedButton(
-                      onPressed: () {
-                        // "전체 보기" 버튼 클릭 시 동작
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MemoryBoxEverydayShowAllScreen(),
+                  Row(
+                    children: [
+                      const SizedBox(width: 133),
+                      OutlinedButton(
+                        onPressed: () {
+                          // "전체 보기" 버튼 클릭 시 동작
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => MemoryBoxEverydayShowAllScreen(),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 2.0, color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: const Text(
+                          '전체 보기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        '전체 보기',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                      const SizedBox(width: 80),
+                      InkWell(
+                        onTap: () {
+                          //자동 영상 생성
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => MemoryBoxVideoScreen(),
+                            ),
+                          );
+                        },
+                        child: Image.asset(
+                          "button/video.png",
+                          width: 35,
+                          height: 35,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 80),
-                    InkWell(
-                      onTap: () {
-                        //자동 영상 생성
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MemoryBoxVideoScreen(),
-                          ),
-                        );
-                      },
-                      child: Image.asset(
-                        "button/video.png",
-                        width: 35,
-                        height: 35,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 
@@ -361,144 +431,166 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   Widget ourValuableday() {
 
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: Column(
-        children: [
-          Text(
-            '우리의 소중한 날',
-            style: GoogleFonts.nanumGothic(
-              textStyle: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+      child: Container(
+        height: 310,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1), // 그림자의 색상
+              spreadRadius: 3, // 그림자가 퍼지는 정도
+              blurRadius: 2, // 그림자의 흐림 정도
+              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '우리의 소중한 날',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black,
+                ),
+              textAlign: TextAlign.left,
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 250,
+              width: 350,
+              decoration: BoxDecoration(
+                color: Color(0xffd6d6d6).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(10.0),
               ),
-            ),
-            textAlign: TextAlign.left,
-          ),
-          const SizedBox(height: 10),
-          Container(
-            height: 250,
-            width: 350,
-            decoration: BoxDecoration(
-              color: Color(0xffd6d6d6),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Qpuzzle')
-                        .where('flogCode', isEqualTo: currentUserFlogCode)
-                        .where('isComplete', isEqualTo : true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Qpuzzle')
+                          .where('flogCode', isEqualTo: currentUserFlogCode)
+                          .where('isComplete', isEqualTo : true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
 
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      }
-
-                      final docs = snapshot.data?.docs ?? [];
-
-                      if (docs.isEmpty) {
-                        return Center(
-                          child: Text(
-                            '어서 큐퍼즐을 완성해보세요!',
-                            style: GoogleFonts.nanumGothic(
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black38,
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Scaffold(
+                            body: Center(
+                              // 로딩바 구현 부분
+                              child: SpinKitPumpingHeart(
+                                color: Colors.green.withOpacity(0.2),
+                                size: 50.0, // 크기 설정
+                                duration: Duration(seconds: 3), // 속도 설정
                               ),
                             ),
-                            textAlign: TextAlign.left,
-                          ),
-                        );
-                      }
+                            backgroundColor: Colors.transparent, // 투명 배경 설정
+                          );
 
-                      return GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(8.0),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 2.0 / 3.0,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 10.0,
-                        ),
-                        itemCount: docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final imagePath = docs[index]['pictureUrl'];
+                        }
 
-                          return Container(
-                            margin: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.white, width: 2),
-                              color: Color(0x70ffffff),
-                              image: DecorationImage(
-                                image: NetworkImage(imagePath),
-                                fit: BoxFit.cover,
+                        final docs = snapshot.data?.docs ?? [];
+
+                        if (docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              '어서 큐퍼즐을 완성해보세요!',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black38,
                               ),
+                              textAlign: TextAlign.left,
+                            ),
+                          );
+                        }
+
+                        return GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(8.0),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 2.0 / 3.0,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                          ),
+                          itemCount: docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final imagePath = docs[index]['pictureUrl'];
+
+                            return Container(
+                              margin: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(color: Colors.white, width: 2),
+                                color: Color(0x70ffffff),
+                                image: DecorationImage(
+                                  image: NetworkImage(imagePath),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(width: 133),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => MemoryBoxValuabledayShowAllScreen(),
                             ),
                           );
                         },
-                      );
-                    },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 2.0, color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text(
+                          '전체 보기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 80),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const MemoryBoxBookScreen(),
+                            ),
+                          );
+                        },
+                        child: Image.asset(
+                          "button/book.png",
+                          width: 35,
+                          height: 35,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    const SizedBox(width: 133),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MemoryBoxValuabledayShowAllScreen(),
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        '전체 보기',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 80),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const MemoryBoxBookScreen(),
-                          ),
-                        );
-                      },
-                      child: Image.asset(
-                        "button/book.png",
-                        width: 35,
-                        height: 35,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15)
-              ],
+                  const SizedBox(height: 15)
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 40)
-        ],
+          ],
+        ),
       ),
     );
   }
