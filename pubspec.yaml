@@ -95,7 +95,9 @@ flutter:
     - assets/flog_logo.png
     - assets/flog_name.png
     - assets/flog_name_3d.png
+    - assets/matching_screen_background.png
     - assets/splash.png
+    - assets/start.png
     - assets/emoticons/
     - assets/profile/
     - button/

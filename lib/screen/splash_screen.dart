@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
+import 'package:flog/screen/register/start_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/models/model_auth.dart';
@@ -117,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       } else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            context, MaterialPageRoute(builder: (context) => StartScreen()));
       }
     });
   }
@@ -157,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,

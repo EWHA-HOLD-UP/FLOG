@@ -7,6 +7,7 @@ import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flog/screen/qpuzzle/qpuzzle_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_screen.dart';
 import 'package:flog/screen/profile/profile_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class RootScreen extends StatefulWidget {
@@ -52,7 +53,14 @@ class _RootScreenState extends State<RootScreen> {
                 .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                  return Center(
+                    //로딩바 구현 부분
+                    child: SpinKitPumpingHeart(
+                      color: Colors.green.withOpacity(0.2),
+                      size: 50.0, //크기 설정
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
