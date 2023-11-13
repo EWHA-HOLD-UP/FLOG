@@ -157,11 +157,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  Widget build(Object context) {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: Center(
-        child: Text('Splash Screen'),
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/splash.png'),
+              fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
+            ),
+          ),
+        ),
       ),
     );
   }
