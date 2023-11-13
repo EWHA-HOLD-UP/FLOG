@@ -438,7 +438,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                         final question = entry.value;
                                         return Column(
                                           children: [
-                                            if (entry.key > 0) Divider(height: 1, thickness: 1, color: Color(0xff609966)), // 상단 구분선 (첫 번째 질문 이후부터 추가)
+                                            if (entry.key > 0) Divider(height: 1, thickness: 1, color: Color(0xFF62BC1B)), // 상단 구분선 (첫 번째 질문 이후부터 추가)
                                             Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 8.0), // 상단과 하단 간격 조절
                                               child: GestureDetector(

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -25,6 +26,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
+          ),
           backgroundColor: Colors.white,
           title: Text(
             '닉네임을 수정하시겠어요?',
@@ -38,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               hintStyle: TextStyle(color: Colors.grey),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xff609966), // 활성 상태의 밑줄 색상 변경
+                  color: Color(0xFF62BC1B), // 활성 상태의 밑줄 색상 변경
                 ),
               ),
             ),
@@ -46,24 +50,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
               newValue = value;
             },
           ),
-          actions: [
-            TextButton(
-              child: Text(
-                '취소',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xff609966)),
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 40, right: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      newValue = "";
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    ),
+                    child: Text(
+                      '취소',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(newValue);
+
+                    },
+                    child: Text(
+                      '저장',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                        ),
+                      ),
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            TextButton(
-              child: Text(
-                '저장',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xff609966)),
-              ),
-              onPressed: () => Navigator.of(context).pop(newValue),
             )
-          ]),
+          ],
+      ),
     );
 
     //파이어베이스 변경사항 업데이트하기
@@ -116,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '저장',
                           style: TextStyle(
                             fontSize: 18,
-                            color: Color(0xff609966), // 버튼 텍스트 색상
+                            color: Color(0xFF62BC1B), // 버튼 텍스트 색상
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -155,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: Colors.transparent, // 이미지 버튼의 배경색 설정
                               border: Border.all(
                                 color: selectedIndex == index
-                                    ? Color(0xff609966) // 선택된 이미지의 테두리 색상
+                                    ? Color(0xFF62BC1B) // 선택된 이미지의 테두리 색상
                                     : Colors.transparent, // 선택되지 않은 이미지는 테두리 없음
                                 width: 2.0, // 테두리 두께
                               ),
@@ -278,7 +320,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: GoogleFonts.balooBhaijaan2(
             textStyle: TextStyle(
               fontSize: 30,
-              color: Color(0xFF609966),
+              color: Color(0xFF62BC1B),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -307,13 +349,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+              return Scaffold(
+                body: Center(
+                  //로딩바 구현 부분
+                  child: SpinKitPumpingHeart(
+                    color: Colors.green.withOpacity(0.2),
+                    size: 50.0, //크기 설정
+                    duration: Duration(seconds: 3),
+                  ),
+                ),
+                backgroundColor: Colors.transparent,
+              );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
               if (snapshot.data == null || !snapshot.data!.exists) {
-                return const Text(
-                    '데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
+                return const Text('데이터 없음 또는 문서가 없음'); // Firestore 문서가 없는 경우 또는 데이터가 null인 경우 처리
               }
               // 이제 snapshot.data을 안전하게 사용할 수 있음
               Map<String, dynamic> userData =
@@ -358,6 +409,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'button/edit.png',
                                       width: 30,
                                       height: 30,
+                                      color: Color(0xFF62BC1B),
                                     ),
                                     onPressed: () =>
                                         editImage('profile', userData['profile']),
@@ -368,20 +420,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        TextButton(
-                          child: Text(
-                            userData['nickname'],
-                            style: GoogleFonts.nanumGothic(
-                              textStyle: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff609966)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              userData['nickname'],
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF62BC1B),
                               ),
                             ),
-                          ),
-                          onPressed: () =>
-                              editField('nickname', userData['nickname']),
+                            SizedBox(width: 5),
+                            GestureDetector(
+                              onTap: () => editField('nickname', userData['nickname']),
+                              child: Image.asset(
+                                'button/edit.png',
+                                width: 20,
+                                height: 20,
+                                color: Color(0xFF62BC1B),
+                              ),
+                            ),
+                          ],
                         ),
+                        SizedBox(height: 5),
                         Text(userData['email'],
                             style: const TextStyle(fontSize: 15)),
                         const SizedBox(height: 30),
