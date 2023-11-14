@@ -130,21 +130,16 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                   ),
                   onPressed: () async {
                     try {
+                      Navigator.of(context).pop(); // 현재 다이얼로그 닫기
+                      Navigator.of(context).pop(); // FlogingDetailScreen 닫기
                       // Firebase에서 Floging 삭제
                       await FirebaseFirestore.instance
                           .collection('Floging')
                           .doc(widget.flogingId)
-                          .delete()
-                          .then((_) {
-                        // Floging 삭제 작업이 완료된 후에 checkTodayFlog 함수 호출
-                        checkTodayFlog();
-                        getUserData();
-                      });
+                          .delete();
 
-                      Navigator.of(context).pop(); // 현재 다이얼로그 닫기
-
-                      // 다이얼로그를 닫은 후 FlogingDetailScreen를 닫고 FlogingScreen을 엽니다.
-                      Navigator.of(context).pop(); // FlogingDetailScreen 닫기
+                      await checkTodayFlog();
+                      await getUserData();
                     } catch (e) {
                       Navigator.of(context).pop(); // 현재 다이얼로그 닫기
 
