@@ -16,9 +16,9 @@ class ShootingScreen extends StatefulWidget {
 
 class _ShootingScreenState extends State<ShootingScreen> {
   CameraController? _cameraController; //카메라 컨트롤러
-  bool _isCameraReady = false;
   String? _tempBackImagePath; //임시 후면 사진 저장
-  //String guide = '지금 무엇을 하고 있는지 가족들에게 보여주세요!'; //ai가 생성한 가이드 문구
+
+  bool _isCameraReady = false;
   bool _isCameraInitialized = false; //카메라 초기화되었는지
   bool _isProcessing = false; //사진 찍히고 있는지
   bool _isFlashOn = true; //플래시 켜져있는지
@@ -111,7 +111,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
             title: Text(
               'Floging',
               style: GoogleFonts.balooBhaijaan2(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 30,
                   color: Color(0xFF62BC1B),
                   fontWeight: FontWeight.bold,
@@ -137,9 +137,7 @@ class _ShootingScreenState extends State<ShootingScreen> {
                           height: 540,
                           child: _cameraController != null && _isCameraReady
                               ? CameraPreview(_cameraController!)
-                              : Container(
-                            color: Colors.white,
-                          ),
+                              : Container(color: Colors.white,),
                         ),
                       ),
                       Positioned(
@@ -206,27 +204,24 @@ class _ShootingScreenState extends State<ShootingScreen> {
                     ],
                   ),
                   const SizedBox(height:10), //간격
-                  //Text(guide), //ai 가이드 문구
-                  //const SizedBox(height:10), //간격
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell( //후면 카메라 촬영 버튼
                         onTap:
-                        _cameraController != null && _isCameraReady
-                            ? () {
+                        _cameraController != null && _isCameraReady ? () {
                           _takeBackPicture(context);
                         }
-                            : null,
-                        child: _isProcessing ? Center(//로딩바 구현 부분
+                        : null,
+                        child: _isProcessing ? Center( //로딩바 구현 부분
                           child: Column(
                             children: [
                               SpinKitPumpingHeart(
                                   color: Colors.green.withOpacity(0.2),
                                   size: 50.0, //크기 설정
-                                  duration: Duration(seconds: 2),
+                                  duration: const Duration(seconds: 2),
                                 ),
-                              Text(
+                              const Text(
                                 '촬영중!',
                                 style: TextStyle(
                                 color: Color(0xFF609966),
@@ -235,17 +230,15 @@ class _ShootingScreenState extends State<ShootingScreen> {
                               )
                             ],
                           ),
-                          )
-                            : Image.asset(
+                          ) : Image.asset(
                           "button/shooting.png",
                           width: 70,
                           height: 70,
                           color: _cameraController != null && _isCameraReady && _isCameraInitialized
-                              ? Color(0xFF62BC1B)
+                              ? const Color(0xFF62BC1B)
                               : Colors.grey,
                         ),
                       ),
-
                     ],
                   ),
                 ],

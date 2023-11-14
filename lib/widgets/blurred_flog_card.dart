@@ -13,7 +13,8 @@ class BlurredFlogCard extends StatelessWidget {
   final String flogingId;
   final String uid;
 
-  BlurredFlogCard({
+  const BlurredFlogCard({
+    super.key,
     required this.date,
     required this.frontImageURL,
     required this.backImageURL,
@@ -52,8 +53,8 @@ class BlurredFlogCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('${uid.split('@')[0]}', style: TextStyle(color: Colors.white),),
-                Text('${date.toDate().hour.toString().padLeft(2, '0')}:${date.toDate().minute.toString().padLeft(2, '0')}', style: TextStyle(color: Colors.white)), //hh:mm 형식으로 표시
+                Text(uid.split('@')[0], style: const TextStyle(color: Colors.white),),
+                Text('${date.toDate().hour.toString().padLeft(2, '0')}:${date.toDate().minute.toString().padLeft(2, '0')}', style: const TextStyle(color: Colors.white)), //hh:mm 형식으로 표시
               ],
             ),
           ),
@@ -69,8 +70,8 @@ class BlurredFlogCard extends StatelessWidget {
                 width: 30,
                 height: 30,
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 '상태를 공유하고 확인하세요 !',
                 style: TextStyle(
                   fontSize: 8,

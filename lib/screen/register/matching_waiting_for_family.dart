@@ -26,7 +26,7 @@ class _WaitingState extends State<WaitingForFamily>{
         child: Center(
           child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/matching_screen_background.png"),
                 fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정

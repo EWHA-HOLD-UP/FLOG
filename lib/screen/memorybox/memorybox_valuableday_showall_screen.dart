@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,12 +8,10 @@ class MemoryBoxValuabledayShowAllScreen extends StatefulWidget {
   const MemoryBoxValuabledayShowAllScreen({Key? key}) : super(key: key);
 
   @override
-  _MemoryBoxValuabledayShowAllScreenState createState() =>
-      _MemoryBoxValuabledayShowAllScreenState();
+  MemoryBoxValuabledayShowAllScreenState createState() => MemoryBoxValuabledayShowAllScreenState();
 }
 
-class _MemoryBoxValuabledayShowAllScreenState
-    extends State<MemoryBoxValuabledayShowAllScreen> {
+class MemoryBoxValuabledayShowAllScreenState extends State<MemoryBoxValuabledayShowAllScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = "";
@@ -37,7 +34,7 @@ class _MemoryBoxValuabledayShowAllScreenState
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
 
   Future<List<String>> getQuestions(int puzzleNumber) async {
@@ -53,7 +50,6 @@ class _MemoryBoxValuabledayShowAllScreenState
       final questionContent = doc['questionContent'] as String;
       questions.add(questionContent);
     }
-
     return questions;
   }
 
@@ -81,12 +77,11 @@ class _MemoryBoxValuabledayShowAllScreenState
                   }
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return Scaffold(
-                      body: Center(
-                        //로딩바 구현 부분
+                      body: Center( //로딩바 구현 부분
                         child: SpinKitPumpingHeart(
                           color: Colors.green.withOpacity(0.2),
                           size: 50.0, //크기 설정
-                          duration: Duration(seconds: 3),
+                          duration: const Duration(seconds: 3),
                         ),
                       ),
                       backgroundColor: Colors.transparent,
@@ -132,14 +127,14 @@ class _MemoryBoxValuabledayShowAllScreenState
                               return Text('Error: ${snapshot.error}');
                             }
                             if (!snapshot.hasData) {
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             }
 
                             final questionData = snapshot.data!.docs.isNotEmpty
                                 ? snapshot.data!.docs.first.data() as Map<String, dynamic>
                                 : null;
                             if (questionData == null) {
-                              return Text('Question not found');
+                              return const Text('Question not found');
                             }
                             final questionContent = questionData['questionContent']; // 질문 내용 가져오기
                             return Center(
@@ -181,7 +176,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                   return Text('Error: ${answerSnapshot.error}');
                                 }
                                 if (answerSnapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator(color: Colors.white);
+                                  return const CircularProgressIndicator(color: Colors.white);
                                 }
                                 final answerDocuments = answerSnapshot.data!.docs;
                                 String userAnswer = '';
@@ -224,7 +219,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                                       child: Center(
                                                         child: ClipOval(
                                                           child: Image.asset(
-                                                            "assets/profile/profile_${userProfile}.png",
+                                                            "assets/profile/profile_$userProfile.png",
                                                             width: 40,
                                                             height: 40,
                                                             alignment: Alignment.center,
@@ -243,14 +238,14 @@ class _MemoryBoxValuabledayShowAllScreenState
                                             children: [
                                               Text(
                                                 userNickname,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              SizedBox(height:7),
-                                              Container(
+                                              const SizedBox(height:7),
+                                              SizedBox(
                                                 width: 260,
                                                 child: Text(
                                                 userAnswer,
@@ -291,17 +286,15 @@ class _MemoryBoxValuabledayShowAllScreenState
           },
         ),
         backgroundColor: Colors.white,
-        title: Row(
+        title: const Row(
           children: [
             SizedBox(width: 95),
             Text(
               '소중한 날',
-              style: GoogleFonts.inter(
-                textStyle: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
@@ -313,7 +306,7 @@ class _MemoryBoxValuabledayShowAllScreenState
         child: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -328,12 +321,11 @@ class _MemoryBoxValuabledayShowAllScreenState
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Scaffold(
-                        body: Center(
-                          //로딩바 구현 부분
+                        body: Center( //로딩바 구현 부분
                           child: SpinKitPumpingHeart(
                             color: Colors.green.withOpacity(0.2),
                             size: 50.0, //크기 설정
-                            duration: Duration(seconds: 3),
+                            duration: const Duration(seconds: 3),
                           ),
                         ),
                         backgroundColor: Colors.transparent,
@@ -343,15 +335,13 @@ class _MemoryBoxValuabledayShowAllScreenState
                     final docs = snapshot.data?.docs ?? [];
 
                     if (docs.isEmpty) {
-                      return Center(
+                      return const Center(
                         child: Text(
                           '완성된 소중한 날이 아직 없어요.\n\n어서 큐퍼즐을 완성해보세요!',
-                          style: GoogleFonts.nanumGothic(
-                            textStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black38,
-                            ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black38,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -367,29 +357,25 @@ class _MemoryBoxValuabledayShowAllScreenState
                           future: getQuestions(puzzleNumber),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              // 데이터를 가져오는 중이면 로딩 표시 또는 다른 UI 표시 가능
                               return Scaffold(
-                                body: Center(
-                                  //로딩바 구현 부분
+                                body: Center( //로딩바 구현 부분
                                   child: SpinKitPumpingHeart(
                                     color: Colors.green.withOpacity(0.2),
                                     size: 50.0, //크기 설정
-                                    duration: Duration(seconds: 3),
+                                    duration: const Duration(seconds: 3),
                                   ),
                                 ),
                                 backgroundColor: Colors.transparent,
                               );
                             }
                             if (snapshot.hasError) {
-                              // 에러가 발생하면 에러 메시지 표시 또는 다른 오류 처리
-                              print('Error: ${snapshot.error}');
+                              //print('Error: ${snapshot.error}');
                               return Text('Error: ${snapshot.error}');
-
                             }
+
                             final questions = snapshot.data;
 
-                            if (questions != null) {
-                              // questions가 null이 아닌 경우에만 .map 호출
+                            if (questions != null) { // questions가 null이 아닌 경우에만 .map 호출
                               return Row(
                                 children: [
                                   Stack(
@@ -414,12 +400,12 @@ class _MemoryBoxValuabledayShowAllScreenState
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
-                                            color: Color(0x99ffffff),
+                                            color: const Color(0x99ffffff),
                                             borderRadius: BorderRadius.circular(10),
                                           ),
                                           child: Text(
                                             '#$puzzleNumber',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 12,
                                               color: Colors.black,
@@ -429,7 +415,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                       ),
                                     ]
                                   ),
-                                  SizedBox(width: 10), // 사진과 질문 사이 간격
+                                  const SizedBox(width: 10), // 사진과 질문 사이 간격
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,7 +424,7 @@ class _MemoryBoxValuabledayShowAllScreenState
                                         final question = entry.value;
                                         return Column(
                                           children: [
-                                            if (entry.key > 0) Divider(height: 1, thickness: 1, color: Color(0xFF62BC1B)), // 상단 구분선 (첫 번째 질문 이후부터 추가)
+                                            if (entry.key > 0) const Divider(height: 1, thickness: 1, color: Color(0xFF62BC1B)), // 상단 구분선 (첫 번째 질문 이후부터 추가)
                                             Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 8.0), // 상단과 하단 간격 조절
                                               child: GestureDetector(
@@ -447,28 +433,23 @@ class _MemoryBoxValuabledayShowAllScreenState
                                                 },
                                                 child: Text(
                                                   'Q$questionNo. $question',
-                                                  style: GoogleFonts.nanumGothic(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
-
                                             ),
                                           ],
                                         );
                                       }).toList(),
                                     ),
                                   ),
-
                                 ],
                               );
-                            } else {
-                              // questions가 null인 경우에 대한 대체 처리
-                              return CircularProgressIndicator(); // 예를 들어 로딩 중 표시
+                            } else { // questions가 null인 경우에 대한 대체 처리
+                              return const CircularProgressIndicator();
                             }
                           },
                         );

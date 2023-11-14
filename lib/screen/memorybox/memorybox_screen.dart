@@ -14,6 +14,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MemoryBoxScreen extends StatefulWidget {
   const MemoryBoxScreen({Key? key}) : super(key: key);
+
   @override
   MemoryBoxState createState() => MemoryBoxState();
 }
@@ -22,6 +23,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+
   int frog = 0;
   int coinNum = 1;
 
@@ -43,7 +45,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
 
   @override
@@ -57,12 +59,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
-            body: Center(
-              //로딩바 구현 부분
+            body: Center( //로딩바 구현 부분
               child: SpinKitPumpingHeart(
                 color: Colors.green.withOpacity(0.2),
                 size: 50.0, //크기 설정
-                duration: Duration(seconds: 5),
+                duration: const Duration(seconds: 5),
               ),
             ),
             backgroundColor: Colors.transparent,
@@ -70,19 +71,16 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
         }
 
         final documents = snapshot.data!.docs;
-        final profiles = documents
-            .where((doc) {
+        final profiles = documents.where((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return data['flogCode'] == currentUserFlogCode;
-        })
-            .map((doc) {
+        }).map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return Person(
             profileNum: data['profile'],
             nickname: data['nickname'],
           );
-        })
-            .toList();
+        }).toList();
 
         return StreamBuilder<QuerySnapshot> (
             stream: FirebaseFirestore.instance.collection('Group').snapshots(),
@@ -93,29 +91,25 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(
-                  body: Center(
-                    //로딩바 구현 부분
+                  body: Center( //로딩바 구현 부분
                     child: SpinKitPumpingHeart(
                       color: Colors.green.withOpacity(0.2),
                       size: 50.0, //크기 설정
-                      duration: Duration(seconds: 5),
+                      duration: const Duration(seconds: 5),
                     ),
                   ),
                 );
               }
 
               final documents = snapshot.data!.docs;
-              final frogs = documents
-                  .where((doc) {
+              documents.where((doc) {
                 final data = doc.data() as Map<String, dynamic>;
                 return data['flogCode'] == currentUserFlogCode;
-              })
-                  .map((doc) {
+              }).map((doc) {
                 final data = doc.data() as Map<String, dynamic>;
                 frog = data['frog'];
                 return frog;
-              })
-                  .toList();
+              }).toList();
 
               return Scaffold(
                 /*---상단 Memory Box 바---*/
@@ -128,7 +122,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   title: Text(
                     'Memory Box',
                     style: GoogleFonts.balooBhaijaan2(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 30,
                         color: Color(0xFF62BC1B),
                         fontWeight: FontWeight.bold,
@@ -154,7 +148,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                               color: Colors.grey.withOpacity(0.1), // 그림자의 색상
                               spreadRadius: 3, // 그림자가 퍼지는 정도
                               blurRadius: 2, // 그림자의 흐림 정도
-                              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                              offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
                             ),
                           ],
                         ),
@@ -180,7 +174,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             flogCoinNum(),
                           ],
                         ),
@@ -188,7 +182,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     ),
                     ourEveryday(),
                     ourValuableday(),
-                    SizedBox(height: 20)
+                    const SizedBox(height: 20)
                   ],
                 ),
               );
@@ -204,16 +198,16 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Image.asset(
           "assets/flog_coin_green.png",
           width: 30,
           height: 30,
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(
           '모은 개구리수 : $frog마리',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -242,14 +236,14 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               color: Colors.grey.withOpacity(0.1), // 그림자의 색상
               spreadRadius: 3, // 그림자가 퍼지는 정도
               blurRadius: 2, // 그림자의 흐림 정도
-              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+              offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               '우리의 모든 날',
               style: TextStyle(
                 fontSize: 20,
@@ -263,7 +257,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               height: 200,
               width: 350,
               decoration: BoxDecoration(
-                color: Color(0xffd6d6d6).withOpacity(0.4),
+                color: const Color(0xffd6d6d6).withOpacity(0.4),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
@@ -271,7 +265,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                   const SizedBox(height: 15),
                   Flexible(
                     child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(8.0),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 7,
@@ -297,7 +291,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                             stream: FirebaseFirestore.instance
                                 .collection('Floging')
                                 .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(currentDate))
-                                .where('date', isLessThan: Timestamp.fromDate(currentDate.add(Duration(days: 1))))
+                                .where('date', isLessThan: Timestamp.fromDate(currentDate.add(const Duration(days: 1))))
                                 .where('flogCode', isEqualTo: currentUserFlogCode)
                                 .snapshots(),
                             builder: (context, snapshot) {
@@ -307,12 +301,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Scaffold(
-                                  body: Center(
-                                    //로딩바 구현 부분
+                                  body: Center( //로딩바 구현 부분
                                     child: SpinKitPumpingHeart(
                                       color: Colors.green.withOpacity(0.2),
                                       size: 50.0, //크기 설정
-                                      duration: Duration(seconds: 5),
+                                      duration: const Duration(seconds: 5),
                                     ),
                                   ),
                                   backgroundColor: Colors.transparent,
@@ -321,15 +314,13 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
                               final flogDocuments = snapshot.data?.docs ?? [];
 
-                              // 플로깅 데이터가 없을 때 회색 동그라미를 반환
                               if (flogDocuments.isEmpty) {
-                                //플로깅 데이터가 없을 때 회색 동그라미를 반환
                                 return Container(
                                   margin: const EdgeInsets.all(3.0),
                                   alignment: Alignment.center,
                                   child: Text(
                                     containerNumber.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w700
                                     ),
@@ -371,16 +362,15 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                     children: [
                       const SizedBox(width: 133),
                       OutlinedButton(
-                        onPressed: () {
-                          // "전체 보기" 버튼 클릭 시 동작
+                        onPressed: () { // "전체 보기" 버튼 클릭 시 동작
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => MemoryBoxEverydayShowAllScreen(),
+                              builder: (context) => const MemoryBoxEverydayShowAllScreen(),
                             ),
                           );
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 2.0, color: Colors.white),
+                          side: const BorderSide(width: 2.0, color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -437,14 +427,14 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               color: Colors.grey.withOpacity(0.1), // 그림자의 색상
               spreadRadius: 3, // 그림자가 퍼지는 정도
               blurRadius: 2, // 그림자의 흐림 정도
-              offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+              offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               '우리의 소중한 날',
               style: TextStyle(
                   fontSize: 20,
@@ -458,7 +448,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
               height: 250,
               width: 350,
               decoration: BoxDecoration(
-                color: Color(0xffd6d6d6).withOpacity(0.4),
+                color: const Color(0xffd6d6d6).withOpacity(0.4),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
@@ -478,12 +468,11 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Scaffold(
-                            body: Center(
-                              // 로딩바 구현 부분
+                            body: Center( // 로딩바 구현 부분
                               child: SpinKitPumpingHeart(
                                 color: Colors.green.withOpacity(0.2),
                                 size: 50.0, // 크기 설정
-                                duration: Duration(seconds: 3), // 속도 설정
+                                duration: const Duration(seconds: 3), // 속도 설정
                               ),
                             ),
                             backgroundColor: Colors.transparent, // 투명 배경 설정
@@ -494,7 +483,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         final docs = snapshot.data?.docs ?? [];
 
                         if (docs.isEmpty) {
-                          return Center(
+                          return const Center(
                             child: Text(
                               '어서 큐퍼즐을 완성해보세요!',
                               style: TextStyle(
@@ -525,7 +514,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 border: Border.all(color: Colors.white, width: 2),
-                                color: Color(0x70ffffff),
+                                color: const Color(0x70ffffff),
                                 image: DecorationImage(
                                   image: NetworkImage(imagePath),
                                   fit: BoxFit.cover,
@@ -544,12 +533,12 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => MemoryBoxValuabledayShowAllScreen(),
+                              builder: (context) => const MemoryBoxValuabledayShowAllScreen(),
                             ),
                           );
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 2.0, color: Colors.white),
+                          side: const BorderSide(width: 2.0, color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -595,8 +584,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
 
     double radius = 20 * 0.5;
 
-    if (flogDocuments.length == 1) {
-      // flogDocuments의 길이가 1인 경우, 동그라미를 센터에 놓음
+    if (flogDocuments.length == 1) { // flogDocuments의 길이가 1인 경우, 동그라미를 센터에 놓음
       final flogData = flogDocuments[0].data() as Map<String, dynamic>;
       final backImageURL = flogData['downloadUrl_back'];
 
@@ -617,8 +605,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           ),
         ),
       );
-    } else if (flogDocuments.length == 2) {
-      // flogDocuments의 길이가 2인 경우, 대각선으로 배치
+    } else if (flogDocuments.length == 2) { // flogDocuments의 길이가 2인 경우, 대각선으로 배치
       final flogData1 = flogDocuments[0].data() as Map<String, dynamic>;
       final flogData2 = flogDocuments[1].data() as Map<String, dynamic>;
 
@@ -664,8 +651,7 @@ class MemoryBoxState extends State<MemoryBoxScreen> {
           ),
         ),
       );
-    } else {
-      // flogDocuments의 길이가 3 이상인 경우, 세잎 클로버 모양으로 배치
+    } else { // flogDocuments의 길이가 3 이상인 경우, 세잎 클로버 모양으로 배치
       for (int i = 0; i < flogDocuments.length; i++) {
         double angle = (-pi / 2) + (2 * pi / flogDocuments.length) * i; // 정삼각형의 각도 계산
 

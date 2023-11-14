@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 import 'memorybox_detail_screen.dart';
@@ -24,16 +23,16 @@ class MemoryBoxEverydayShowAllScreen extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.white,
-        title: Row(
+        title: const Row(
           children: [
             SizedBox(width: 105),
-            Text('모든 날',
-              style: GoogleFonts.inter(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  )),
+            Text(
+              '모든 날',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -64,6 +63,7 @@ class MemoryBoxInfiniteCalendar extends StatefulWidget {
 class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
   late PageController _pageController;
   late DateTime _currentDate;
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
@@ -93,7 +93,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
 
   @override
@@ -115,10 +115,8 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
   Widget _buildMonthCalendar(int year, int month) {
     final lastDayOfMonth = DateTime(year, month + 1, 0);
     final daysInMonth = lastDayOfMonth.day;
-    int today = DateTime.now().day;
-    //해당 월의 첫 번째 날 요일 가져오기(1: 월요일, 7: 일요일)
-    int firstDayOfWeek = DateTime(year, month, 1).weekday;
-    //일요일(7)을 1로 변경
+    int today = DateTime.now().day; //해당 월의 첫 번째 날 요일 가져오기(1: 월요일, 7: 일요일)
+    int firstDayOfWeek = DateTime(year, month, 1).weekday; //일요일(7)을 1로 변경
     if (firstDayOfWeek == 7) {
       firstDayOfWeek = 1;
     } else {
@@ -130,89 +128,73 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
         const SizedBox(height: 40),
         Text(
           DateFormat('yyyy.MM').format(DateTime(year, month)),
-          style: GoogleFonts.inter(
-              textStyle: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-              )),
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: 30),
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(width: 32),
             Text(
               "일",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "월",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "화",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "수",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "목",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "금",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 5),
             Text(
                 "토",
-              style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 33),
-
           ],
         ),
         const SizedBox(height: 20),
@@ -262,11 +244,9 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                 alignment: Alignment.center,
                 child: Text(
                   containerNumber.toString(),
-                  style: GoogleFonts.inter(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -292,7 +272,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                       child: SpinKitPumpingHeart(
                         color: Colors.green.withOpacity(0.2),
                         size: 40.0, //크기 설정
-                        duration: Duration(seconds: 5),
+                        duration: const Duration(seconds: 5),
                       ),
                     ),
                     backgroundColor: Colors.transparent,
@@ -302,16 +282,13 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
                 final flogDocuments = snapshot.data?.docs ?? [];
 
                 if (flogDocuments.isEmpty) {
-                  // 플로깅 데이터가 없을 때 회색 동그라미를 반환
                   return Container(
                     margin: const EdgeInsets.all(3.0),
                     alignment: Alignment.center,
                     child: Text(
                       containerNumber.toString(),
-                      style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
+                      style: const TextStyle(
+                        color: Colors.grey,
                       ),
                     ),
                   );
@@ -354,8 +331,7 @@ class MemoryBoxInfiniteCalendarState extends State<MemoryBoxInfiniteCalendar> {
 
     double radius = 20 * 0.5;
 
-    if (flogDocuments.length == 1) {
-      // flogDocuments의 길이가 1인 경우, 동그라미를 센터에 놓음
+    if (flogDocuments.length == 1) { // flogDocuments의 길이가 1인 경우, 동그라미를 센터에 놓음
       final flogData = flogDocuments[0].data() as Map<String, dynamic>;
       final backImageURL = flogData['downloadUrl_back'];
 

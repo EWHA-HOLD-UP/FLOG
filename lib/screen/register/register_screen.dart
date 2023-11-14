@@ -56,12 +56,12 @@ class RegisterScreen extends StatelessWidget {
                 const EmailInput(),
                 const PasswordInput(),
                 const PasswordConfirmInput(),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const BirthInput(),
+                    BirthInput(),
                     SizedBox(width: 10),
-                    const NicknameInput()
+                    NicknameInput()
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -137,10 +137,10 @@ class PasswordInput extends StatefulWidget {
   const PasswordInput({super.key});
 
   @override
-  _PasswordInputState createState() => _PasswordInputState();
+  PasswordInputState createState() => PasswordInputState();
 }
 
-class _PasswordInputState extends State<PasswordInput> {
+class PasswordInputState extends State<PasswordInput> {
   final TextEditingController _pwcontroller = TextEditingController();
   String _errorText = '';
 
@@ -287,10 +287,10 @@ class BirthInput extends StatefulWidget {
   const BirthInput({super.key});
 
   @override
-  _BirthInputState createState() => _BirthInputState();
+  BirthInputState createState() => BirthInputState();
 }
 
-class _BirthInputState extends State<BirthInput> {
+class BirthInputState extends State<BirthInput> {
   final TextEditingController _birthcontroller = TextEditingController();
   String _errorText = '';
 

@@ -2,19 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../widgets/flog_card.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flog/screen/floging/floging_detail_screen.dart';
-import '../../widgets/flog_card.dart';
 
 class MemoryBoxDetailScreen extends StatefulWidget {
   final String selectedDate;
-
   const MemoryBoxDetailScreen({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
@@ -24,6 +16,7 @@ class MemoryBoxDetailScreen extends StatefulWidget {
 class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
+
   String currentUserFlogCode = "";
 
   @override
@@ -34,13 +27,12 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
 
   Future<void> getUserFlogCode() async {
     final userDoc = await FirebaseFirestore.instance.collection('User').doc(currentUser.email).get();
-
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
 
   @override
@@ -55,9 +47,9 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
           return Text('Error: ${userSnapshot.error}');
         }
         if (userSnapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
-        final userDocuments = userSnapshot.data!.docs;
+        userSnapshot.data!.docs;
 
         return Scaffold(
           appBar: AppBar(
@@ -76,7 +68,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
             title: Text(
               widget.selectedDate,
               style: GoogleFonts.balooBhaijaan2(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 30,
                   color: Color(0xFF62BC1B),
                   fontWeight: FontWeight.bold,
@@ -94,7 +86,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
                 return Text('Error: ${flogSnapshot.error}');
               }
               if (flogSnapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               final flogDocuments = flogSnapshot.data!.docs;
 
@@ -113,22 +105,20 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
               }).length;
 
               return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // 2개의 열로 플로그 카드 표시
                   mainAxisSpacing: 10, // 수직 방향 간격
                   crossAxisSpacing: 10, // 수평 방향 간격
                   childAspectRatio: 0.8, // 카드의 가로 세로 비율 (플로그 카드에 따라 조정)
                 ),
                 itemCount: flogCount, // 선택한 날짜에 해당하는 Flog 개수로 설정
-                padding: EdgeInsets.all(50.0),
+                padding: const EdgeInsets.all(50.0),
                 itemBuilder: (context, index) {
                   final selectedFlogDocs = flogDocuments.where((flogDoc) {
                     final flogData = flogDoc.data() as Map<String, dynamic>;
                     final date = flogData['date'] as Timestamp;
                     final flogDate = date.toDate();
-                    return flogDate.year % 100 == selectedYear &&
-                        flogDate.month == selectedMonth &&
-                        flogDate.day == selectedDay;
+                    return flogDate.year % 100 == selectedYear && flogDate.month == selectedMonth && flogDate.day == selectedDay;
                   }).toList();
 
                   if (index < selectedFlogDocs.length) {

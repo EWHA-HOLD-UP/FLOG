@@ -16,7 +16,7 @@ class StartScreen extends StatelessWidget {
             child: Center(
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/start.png'),
                     fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
@@ -46,7 +46,7 @@ class StartScreen extends StatelessWidget {
                       child: Text(
                         'START',
                         style: GoogleFonts.balooBhaijaan2(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 25,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

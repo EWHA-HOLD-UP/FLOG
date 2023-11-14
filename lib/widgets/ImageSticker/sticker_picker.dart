@@ -14,7 +14,7 @@ class StickerPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFD1E0CA), //배경색 설정
+        color: const Color(0xFFD1E0CA), //배경색 설정
         borderRadius: BorderRadius.circular(15.0),
       ),
       height: 110,

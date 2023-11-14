@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/models/model_auth.dart';
 import 'package:flog/models/model_login.dart';
-import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/root_screen.dart';
-import 'package:flog/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +24,7 @@ class LoginScreen extends StatelessWidget {
               Navigator.pop(context); // 뒤로가기 기능 추가
             },
           ),
-          title: Text(
+          title: const Text(
             '로그인',
             style: TextStyle(
               color: Colors.black,

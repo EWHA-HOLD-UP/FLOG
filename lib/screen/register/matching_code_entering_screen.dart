@@ -2,14 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flog/models/model_auth.dart';
 import 'package:flog/resources/auth_methods.dart';
-import 'package:flog/screen/register/login_screen.dart';
-import 'package:flog/screen/register/matching_waiting_for_family.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../providers/user_provider.dart';
-import 'matching_screen.dart';
 
 class MatchingCodeEnteringScreen extends StatefulWidget {
   const MatchingCodeEnteringScreen({Key? key}) : super(key: key);
@@ -20,7 +15,7 @@ class MatchingCodeEnteringScreen extends StatefulWidget {
 
 class _EnteringState extends State<MatchingCodeEnteringScreen> {
   TextEditingController codeController = TextEditingController();
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -86,18 +81,18 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                   DocumentSnapshot docSnapshot =
                       await groupRef.doc(enteredFamilycode).get();
 
-                  if (docSnapshot.exists && _auth.currentUser != null) {
+                  if (docSnapshot.exists && auth.currentUser != null) {
                     //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
                         listen: false);
                     authClient.registerGroup(
-                        enteredFamilycode, _auth.currentUser!.email!);
+                        enteredFamilycode, auth.currentUser!.email!);
 
                     //유저 정보 flogCode 업데이트
-                    AuthMethods().updateUser(_auth.currentUser!.email!,
+                    AuthMethods().updateUser(auth.currentUser!.email!,
                         'flogCode', enteredFamilycode);
-                  } else if (docSnapshot.exists && _auth.currentUser == null) {
+                  } else if (docSnapshot.exists && auth.currentUser == null) {
                     //그룹 등록하기
                     final authClient = Provider.of<FirebaseAuthProvider>(
                         context,
@@ -112,7 +107,7 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                          SnackBar(content: Text('flogCode를 다시 확인하여주세요!')));
+                          const SnackBar(content: Text('flogCode를 다시 확인하여주세요!')));
                     return;
                   }
 

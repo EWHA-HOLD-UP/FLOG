@@ -1,10 +1,9 @@
-import 'package:flog/notification/fcm_controller.dart';
-import 'package:flog/notification/local_notification.dart';
-import 'package:flog/notification/postNotifications.dart';
-import 'package:flog/screen/register/login_screen.dart';
+//import 'package:flog/notification/fcm_controller.dart';
+//import 'package:flog/notification/local_notification.dart';
+//import 'package:flog/notification/postNotifications.dart';
+//import 'package:flog/screen/register/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../models/model_auth.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -12,8 +11,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authClient =
-        Provider.of<FirebaseAuthProvider>(context, listen: false);
+    final authClient = Provider.of<FirebaseAuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -51,8 +49,7 @@ class SettingScreen extends StatelessWidget {
               leading: const Icon(Icons.language), // 아이콘 예시
               title: const Text('언어 설정'),
               trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
-              onTap: () {
-                // 언어 설정 화면으로 이동하는 코드를 여기에 추가
+              onTap: () { // 언어 설정 화면으로 이동하는 코드를 여기에 추가
               },
             ),
             ListTile(
@@ -60,7 +57,7 @@ class SettingScreen extends StatelessWidget {
               title: const Text('알림 설정'),
               trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
               onTap: () {
-                print('알림설정');
+                // print('알림설정');
                 // LocalNotification.showNotification(
                 //     userToken:
                 //         "dP_i9sr7QwarKSt_gImO_j:APA91bFs7ZWa_KJ3NXIwH-q3CgX7oajJk3T05bW3FdTvIojGvPK3pjp0ZHt60vg3MnUGusZaie8OvJ6I6QqR-9o2YqaGVG966H6d9WNwMTzGq5g5Q4taO03niDzO47csiGGiIsYFJQNc",
@@ -71,7 +68,6 @@ class SettingScreen extends StatelessWidget {
               },
             ),
             const Divider(), // 분리선 추가
-
             const Text(
               '계정 설정',
               style: TextStyle(
@@ -83,8 +79,7 @@ class SettingScreen extends StatelessWidget {
               leading: const Icon(Icons.security), // 아이콘 예시
               title: const Text('보안 설정'),
               trailing: const Icon(Icons.arrow_forward_ios), // 화살표 아이콘 예시
-              onTap: () {
-                // 보안 설정 화면으로 이동하는 코드를 여기에 추가
+              onTap: () { // 보안 설정 화면으로 이동하는 코드를 여기에 추가
               },
             ),
             ListTile(
@@ -95,7 +90,7 @@ class SettingScreen extends StatelessWidget {
                   await authClient.logout();
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('로그아웃되었습니다')));
+                    ..showSnackBar(const SnackBar(content: Text('로그아웃되었습니다')));
                   Navigator.of(context).pushNamed('/login');
                 }),
           ],

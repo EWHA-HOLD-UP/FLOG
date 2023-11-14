@@ -35,7 +35,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   TextEditingController answerController = TextEditingController();
   TextEditingController qpuzzleTitleController = TextEditingController();
   bool isSendButtonEnabled = false;
-  String group_no = "";
+  String groupNo = "";
 
   // Firestore 인스턴스 생성
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -120,18 +120,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
   void postImage(String flogCode, int puzzleNo, String uid) async {
     try {
       Uint8List img = await image?.readAsBytes() as Uint8List;
-      String res = await FireStoreMethods().uploadQpuzzle(img, flogCode, puzzleNo, uid);
+      await FireStoreMethods().uploadQpuzzle(img, flogCode, puzzleNo, uid);
     } catch (err) {
-      print(err);
+      //print(err);
     }
   }
 
   //Answer 문서 파이어베이스에 생성
   void postAnswer(String flogCode, int puzzleNo, int questionNo) async {
     try {
-      String res = await FireStoreMethods().uploadAnswer(flogCode, puzzleNo, questionNo);
+      await FireStoreMethods().uploadAnswer(flogCode, puzzleNo, questionNo);
     } catch (err) {
-      print(err);
+      //print(err);
     }
   }
 
@@ -148,19 +148,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
           }
           if (groupSnapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
-              body: Center(
-                //로딩바 구현 부분
+              body: Center( //로딩바 구현 부분
                 child: SpinKitPumpingHeart(
                   color: Colors.green.withOpacity(0.2),
                   size: 50.0, //크기 설정
-                  duration: Duration(seconds: 3),
+                  duration: const Duration(seconds: 3),
                 ),
               ),
               backgroundColor: Colors.transparent,
             );
           }
           final groupDocuments = groupSnapshot.data!.docs;
-          group_no = groupDocuments[0]['group_no'];
+          groupNo = groupDocuments[0]['group_no'];
 
           //qpuzzleUrl 가져오는 함수
           String? qpuzzleUrl = groupDocuments.isNotEmpty
@@ -184,7 +183,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                 return Text('Error: ${puzzleSnapshot.error}');
               }
               if (puzzleSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
 
               final latestPuzzleDocument = puzzleSnapshot.data!.docs; //마지막 큐퍼즐
@@ -223,7 +222,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   title: Text(
                     appbarText,
                     style: GoogleFonts.balooBhaijaan2(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 30,
                         color: Color(0xFF62BC1B),
                         fontWeight: FontWeight.bold,
@@ -243,7 +242,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(width: 20),
+                                  const SizedBox(width: 20),
                                   StreamBuilder<
                                       DocumentSnapshot<Map<String, dynamic>>>(
                                       stream: (qpuzzleUploader.isNotEmpty)
@@ -261,7 +260,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               shape: BoxShape.circle,
                                               color: Colors.grey[200],
                                             ),
-                                            child: Center(
+                                            child: const Center(
                                               child: Icon(
                                                 Icons.help_outline, // 물음표 아이콘
                                                 size: 30, // 아이콘의 크기 조정
@@ -277,7 +276,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                             child: SpinKitPumpingHeart(
                                               color: Colors.green.withOpacity(0.2),
                                               size: 50.0, //크기 설정
-                                              duration: Duration(seconds: 5),
+                                              duration: const Duration(seconds: 5),
                                             ),
                                           );
                                         } else if (snapshot.hasError) {
@@ -299,10 +298,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           ],
                                         );
                                       }),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     ': $qpuzzleTitle',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -311,7 +310,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               if (qpuzzleUrl != null) //qpuzzleUrl이 있을 때 !! 이미지를 표시
                                 Stack(
                                   children: [
@@ -365,7 +364,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             });
                                                       } else {
                                                         isAnyFamilyMemberOngoing = groupDocuments[0]['isAnyFamilyMemberOngoing'];
-                                                        print('!!$isAnyFamilyMemberOngoing');
+                                                        //print('!!$isAnyFamilyMemberOngoing');
                                                       }
                                                       if (isQuestionSheetShowed == true) {
                                                         isAnyFamilyMemberShowedQsheet = true;
@@ -382,14 +381,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             });
                                                       } else {
                                                         isAnyFamilyMemberShowedQsheet = groupDocuments[0]['isAnyFamilyMemberShowedQsheet'];
-                                                        print('!?!$isAnyFamilyMemberShowedQsheet');
+
                                                       }
 
                                                       if (unlockStates[row * 2 + col] == true || (unlockStates[row * 2 + col] == false
                                                           && ongoing == true && selectedCellIndex == row * 2 + col)) {
-                                                        //이미 풀린 조각 및 나는 답변 완료한 조각의 질문 답변 조회
-                                                        //isAnswered = true;
-                                                        // 나는 답변 완료
+
                                                         tempCellIndex = row * 2 + col; //문제 번호 표시를 위한 임시 조각 번호 대입
                                                         showModalBottomSheet(
                                                             context: context,
@@ -399,7 +396,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                               borderRadius: BorderRadius.vertical(
                                                                   top: Radius.circular(20.0)),
                                                             ),
-                                                            builder: (BuildContextcontext) {
+                                                            builder: (BuildContext context) {
                                                               return SizedBox(
                                                                 height: MediaQuery.of(context).size.height * 0.7, //전체 화면의 70% 덮는 크기
                                                                 child: StreamBuilder<QuerySnapshot>(
@@ -417,7 +414,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                           child: SpinKitPumpingHeart(
                                                                             color: Colors.green.withOpacity(0.2),
                                                                             size: 50.0, //크기 설정
-                                                                            duration: Duration(seconds: 3),
+                                                                            duration: const Duration(seconds: 3),
                                                                           ),
                                                                         );
                                                                       }
@@ -467,7 +464,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                     child: SpinKitPumpingHeart(
                                                                                       color: Colors.green.withOpacity(0.2),
                                                                                       size: 50.0, //크기 설정
-                                                                                      duration: Duration(seconds: 1),
+                                                                                      duration: const Duration(seconds: 1),
                                                                                     ),
                                                                                   ),
                                                                                   backgroundColor: Colors.transparent,
@@ -479,7 +476,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                   : null;
 
                                                                               if (questionData == null) {
-                                                                                return Text('Question not found');
+                                                                                return const Text('Question not found');
                                                                               }
                                                                               final questionContent = questionData['questionContent']; // 질문 내용 가져오기
                                                                               return Center(
@@ -527,7 +524,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                         child: SpinKitPumpingHeart(
                                                                                           color: Colors.green.withOpacity(0.2),
                                                                                           size: 50.0, //크기 설정
-                                                                                          duration: Duration(seconds: 3),
+                                                                                          duration: const Duration(seconds: 3),
                                                                                         ),
                                                                                       );
                                                                                     }
@@ -572,7 +569,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                                         child: Center(
                                                                                                           child: ClipOval(
                                                                                                             child: Image.asset(
-                                                                                                              "assets/profile/profile_${userProfile}.png",
+                                                                                                              "assets/profile/profile_$userProfile.png",
                                                                                                               width: 40,
                                                                                                               height: 40,
                                                                                                               alignment: Alignment.center,
@@ -591,14 +588,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                               children: [
                                                                                                 Text(
                                                                                                   userNickname,
-                                                                                                  style: TextStyle(
+                                                                                                  style: const TextStyle(
                                                                                                     fontSize: 17,
                                                                                                     fontWeight: FontWeight.bold,
                                                                                                     color: Colors.black,
                                                                                                   ),
                                                                                                 ),
-                                                                                                SizedBox(height: 7),
-                                                                                                Container(
+                                                                                                const SizedBox(height: 7),
+                                                                                                SizedBox(
                                                                                                   width: 280,
                                                                                                   child: Text(
                                                                                                     userAnswer,
@@ -632,9 +629,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             .doc(currentUser.email);
                                                         userRef.update({'isQuestionSheetShowed': isQuestionSheetShowed}) // 필드 업데이트
                                                             .then((_) {
-                                                              print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                              //print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                             }).catchError((error) {
-                                                              print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
+                                                              //print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
                                                             });
                                                         isAnyFamilyMemberShowedQsheet = true;
                                                         FirebaseFirestore.instance
@@ -660,9 +657,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                             'isAnswered': false
                                                           }) //isAnswered 필드 업데이트
                                                               .then((_) {
-                                                                print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                                //print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                               }).catchError((error) {
-                                                                print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                                //print('isAnswered 상태 업데이트 중 오류 발생: $error');
                                                               });
 
                                                           //selectedCellIndex(선택한 조각) 변수 파이어베이스에 업데이트
@@ -734,7 +731,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                     "assets/flog_foot_green.png",
                                                                     width: 50,
                                                                     height: 50,
-                                                                    color: Color(0xFF62BC1B),
+                                                                    color: const Color(0xFF62BC1B),
                                                                   ),
                                                                 ),
                                                               ],
@@ -772,7 +769,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     ),
                                   ),
                                 ),
-                              SizedBox(height: 15),
+                              const SizedBox(height: 15),
                               StreamBuilder<QuerySnapshot>(
                                   stream: FirebaseFirestore.instance
                                       .collection("Question")
@@ -790,7 +787,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         child: SpinKitPumpingHeart(
                                           color: Colors.green.withOpacity(0.2),
                                           size: 50.0, //크기 설정
-                                          duration: Duration(seconds: 5),
+                                          duration: const Duration(seconds: 5),
                                         ),
                                       );
                                     }
@@ -799,9 +796,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         ? snapshot.data!.docs.first.data() as Map<String, dynamic>
                                         : null;
                                     if (questionData == null) {
-                                      return Text(
+                                      return const Text(
                                         '조각이 선택되지 않았습니다.',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.center,
@@ -812,7 +809,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     questionData['questionContent'];
                                     return Container(
                                       width: 350,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           color: Colors.transparent,
                                       ),
                                       child: Padding(
@@ -821,7 +818,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           children: [
                                             Text(
                                               'Q${selectedCellIndex + 1}. $questionContent',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 17,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
@@ -834,7 +831,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       ),
                                     );
                                   }),
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                             ],
                           ),
                         ],
@@ -884,9 +881,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
     DocumentReference userRef =
     FirebaseFirestore.instance.collection('User').doc(currentUser.email);
     userRef.update({'isQuestionSheetShowed': true}).then((_) {
-      print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+      //print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
     }).catchError((error) {
-      print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
+      //print('isQuestionSheetShowed 상태 업데이트 중 오류 발생: $error');
     });
 
     //탭 띄우기
@@ -917,7 +914,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                       child: SpinKitPumpingHeart(
                         color: Colors.green.withOpacity(0.2),
                         size: 50.0, //크기 설정
-                        duration: Duration(seconds: 3),
+                        duration: const Duration(seconds: 3),
                       ),
                     );
                   }
@@ -967,7 +964,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   child: SpinKitPumpingHeart(
                                     color: Colors.green.withOpacity(0.2),
                                     size: 50.0, //크기 설정
-                                    duration: Duration(seconds: 3),
+                                    duration: const Duration(seconds: 3),
                                   ),
                                 ),
                                 backgroundColor: Colors.transparent,
@@ -979,7 +976,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                             as Map<String, dynamic>
                                 : null;
                             if (questionData == null) {
-                              return Text('Question not found');
+                              return const Text('Question not found');
                             }
                             final questionContent =
                             questionData['questionContent']; // 질문 내용 가져오기
@@ -1028,7 +1025,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     child: SpinKitPumpingHeart(
                                       color: Colors.green.withOpacity(0.2),
                                       size: 50.0, //크기 설정
-                                      duration: Duration(seconds: 3),
+                                      duration: const Duration(seconds: 3),
                                     ),
                                   );
                                 }
@@ -1044,8 +1041,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     }
                                   }
                                 }
-                                if (userData['email'] == currentUser.email && isAnswered == false)
+                                if (userData['email'] == currentUser.email && isAnswered == false) {
                                   userAnswer = "클릭하여 답변 쓰기...";
+                                }
 
                                 return GestureDetector(
                                   onTap: () {
@@ -1086,7 +1084,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       child: Center(
                                                         child: ClipOval(
                                                           child: Image.asset(
-                                                            "assets/profile/profile_${userProfile}.png",
+                                                            "assets/profile/profile_$userProfile.png",
                                                             width: 40,
                                                             height: 40,
                                                             alignment: Alignment
@@ -1106,14 +1104,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                             children: [
                                               Text(
                                                 userNickname,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              SizedBox(height: 7),
-                                              Container(
+                                              const SizedBox(height: 7),
+                                              SizedBox(
                                                 width: 280,
                                                 child: Text(
                                                   isAnswered == false
@@ -1211,9 +1209,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           .collection('User')
                                                           .doc(currentUser.email);
                                                       userRef.update({'ongoing': true}).then((_) {
-                                                        print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        //print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                       }).catchError((error) {
-                                                        print('ongoing 상태 업데이트 중 오류 발생: $error');
+                                                        //print('ongoing 상태 업데이트 중 오류 발생: $error');
                                                       });
                                                     });
 
@@ -1222,9 +1220,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         .collection('User')
                                                         .doc(currentUser.email);
                                                     userRef.update({'isAnswered': true}).then((_) {
-                                                      print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      //print('isAnswered 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                     }).catchError((error) {
-                                                      print('isAnswered 상태 업데이트 중 오류 발생: $error');
+                                                      //print('isAnswered 상태 업데이트 중 오류 발생: $error');
                                                     });
 
                                                     //내 답변 파이어베이스에 업로드
@@ -1241,9 +1239,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                       existingAnswers[userData['email']] = myanswer;
 
                                                       existingAnswerDocument.reference.update({'answers': existingAnswers,}).then((_) {
-                                                        print('Answer이 Firebase Firestore에 업데이트되었습니다.');
+                                                        //print('Answer이 Firebase Firestore에 업데이트되었습니다.');
                                                       }).catchError((error) {
-                                                        print('Answer 업데이트 중 오류 발생: $error');
+                                                        //print('Answer 업데이트 중 오류 발생: $error');
                                                       });
                                                     });
 
@@ -1258,7 +1256,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                         isQuestionSheetShowed = false; //초기화
                                                         isAnyFamilyMemberOngoing = false;
                                                         isAnyFamilyMemberShowedQsheet = false;
-                                                        print('여기선 업뎃됨');
                                                         FirebaseFirestore.instance
                                                             .collection('Group')
                                                             .where('flogCode', isEqualTo: currentUserFlogCode)
@@ -1280,9 +1277,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
                                                         userRef.update({'isQuestionSheetShowed': false}) // 필드 업데이트
                                                             .then((_) {
-                                                              print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                              //print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                             }).catchError((error) {
-                                                              print('isQ 상태 업데이트 중 오류 발생: $error');
+                                                              //print('isQ 상태 업데이트 중 오류 발생: $error');
                                                             });
                                                       });
 
@@ -1291,11 +1288,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           .collection('Group')
                                                           .doc(currentUserFlogCode);
                                                       groupRef.update({'unlock': unlockStates}).then((_) {
-                                                        print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                        //print('Unlock 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                       }).catchError((error) {
-                                                        print('Unlock 상태 업데이트 중 오류 발생: $error');
+                                                        //print('Unlock 상태 업데이트 중 오류 발생: $error');
                                                       });
-                                                      groupNotification(group_no, "[Q-puzzle]", "퍼즐 조각이 풀렸습니다!");
+                                                      groupNotification(groupNo, "[Q-puzzle]", "퍼즐 조각이 풀렸습니다!");
 
                                                       //이제 새로운 조각을 풀어야하기 때문에 나 뿐만 아니라 모든 가족 구성원의 isAnswered 변수 초기화
                                                       final userRefs = firestore
@@ -1317,9 +1314,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           .doc(currentUser.email);
                                                       userRef.update({'ongoing': false}) //isAnswered 필드 업데이트
                                                           .then((_) {
-                                                            print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                            //print('ongoing 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                           }).catchError((error) {
-                                                            print('ongoing 상태 업데이트 중 오류 발생: $error');
+                                                            ///print('ongoing 상태 업데이트 중 오류 발생: $error');
                                                           });
 
                                                       isAnswered = false;
@@ -1365,17 +1362,17 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                               }
                                                             });
                                                         groupNotification(
-                                                            group_no,
+                                                            groupNo,
                                                             "[Q-puzzle]",
                                                             '$puzzleno 번째 퍼즐이 완성되었습니다!\n메모리 박스에서 확인하세요.');
                                                         showDialog(
                                                           context: context,
-                                                          builder: (BuildContextcontext) {
+                                                          builder: (BuildContext context) {
                                                             return AlertDialog(
                                                               shape: RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
                                                               ),
-                                                              title: Text(
+                                                              title: const Text(
                                                                 '퍼즐 완성!',
                                                                 style:
                                                                 TextStyle(
@@ -1386,7 +1383,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                               ),
                                                               content: Text(
                                                                 '$puzzleno 번째 퍼즐이 완성되었습니다!\n메모리 박스에서 확인하세요.',
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   color: Colors.black,
                                                                   fontWeight: FontWeight.bold,
                                                                 ),
@@ -1397,26 +1394,26 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                   mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
                                                                   children: [
                                                                     TextButton(
-                                                                      child: Text(
-                                                                        'OK',
-                                                                        style: GoogleFonts.balooBhaijaan2(
-                                                                          textStyle: TextStyle(
-                                                                            color: Colors.white,
-                                                                            fontWeight: FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ),
                                                                       style:
                                                                       ButtonStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                                                         RoundedRectangleBorder(
                                                                           borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                                                                         ),
                                                                       ),
-                                                                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                                                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
                                                                       ),
                                                                       onPressed: () { //팝업 닫기
                                                                         Navigator.of(context).pop();
                                                                       },
+                                                                      child: Text(
+                                                                        'OK',
+                                                                        style: GoogleFonts.balooBhaijaan2(
+                                                                          textStyle: const TextStyle(
+                                                                            color: Colors.white,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1437,9 +1434,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
 
                                                     //파이어베이스 초기화
                                                     userRef.update({'isQuestionSheetShowed': false}).then((_) {
-                                                      print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
+                                                      //print('isQuestionSheetShowed 상태가 Firebase Firestore에 업데이트되었습니다.');
                                                     }).catchError((error) {
-                                                      print('isQ 상태 업데이트 중 오류 발생: $error');
+                                                      //print('isQ 상태 업데이트 중 오류 발생: $error');
                                                     });
                                                   }
                                                 },
@@ -1448,7 +1445,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                   width: 30,
                                                   height: 30,
                                                   color: isSendButtonEnabled
-                                                      ? Color(0xFF62BC1B)
+                                                      ? const Color(0xFF62BC1B)
                                                       : Colors.grey,
                                                 ),
                                               ),
@@ -1479,7 +1476,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     child: SpinKitPumpingHeart(
                                                       color: Colors.green.withOpacity(0.2),
                                                       size: 50.0, //크기 설정
-                                                      duration: Duration(seconds: 5),
+                                                      duration: const Duration(seconds: 5),
                                                     ),
                                                   );
                                                 }
@@ -1491,7 +1488,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 as Map<String, dynamic>
                                                     : null;
                                                 if (questionData == null) {
-                                                  return Text(
+                                                  return const Text(
                                                       'Question not found'
                                                   );
                                                 }
@@ -1544,7 +1541,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               Text(
                                                 userData['nickname'],
                                                 textAlign: TextAlign.left,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black,
                                                     fontWeight:
@@ -1619,7 +1616,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
             ),
-            title: Text(
+            title: const Text(
               '퍼즐에 대해 설명해주세요!',
               style: TextStyle(
                 color: Color(0xFF62BC1B),
@@ -1635,9 +1632,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   maxLength: 25,
                   decoration: InputDecoration(
                       hintText: '클릭하여 설명 쓰기...',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF62BC1B)),
+                        borderSide: const BorderSide(color: Color(0xFF62BC1B)),
                         borderRadius: BorderRadius.circular(10),
                       )),
                 ),
@@ -1666,18 +1663,9 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           });
                         });
                         Navigator.of(context).pop();
-                        groupNotification(group_no, "[Q-puzzle]",
+                        groupNotification(groupNo, "[Q-puzzle]",
                             "새로운 퍼즐이 생성되었습니다! 퍼즐을 확인해보세요");
                       },
-                      child: Text(
-                        '확인',
-                        style: GoogleFonts.balooBhaijaan2(
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                       style: ButtonStyle(
                         shape:
                         MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -1687,7 +1675,16 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           ),
                         ),
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                        MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                      ),
+                      child: Text(
+                        '확인',
+                        style: GoogleFonts.balooBhaijaan2(
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     TextButton(
@@ -1703,12 +1700,12 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                           ),
                         ),
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                        MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
                       ),
                       child: Text(
                         '취소',
                         style: GoogleFonts.balooBhaijaan2(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),

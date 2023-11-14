@@ -11,7 +11,8 @@ class FlogCard extends StatelessWidget {
   final String flogingId;
   final String uid;
 
-  FlogCard({
+  const FlogCard({
+    super.key,
     required this.date,
     required this.frontImageURL,
     required this.backImageURL,
@@ -31,7 +32,7 @@ class FlogCard extends StatelessWidget {
                 image: DecorationImage(image: NetworkImage(backImageURL),
                     fit: BoxFit.cover,
                 ),
-            color: Color(0xffd9d9d9),
+            color: const Color(0xffd9d9d9),
             borderRadius: BorderRadius.circular(12.0),
           ),
         ),
@@ -62,8 +63,8 @@ class FlogCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('${uid.split('@')[0]}', style: TextStyle(color: Colors.white),),
-                Text('${date.toDate().hour.toString().padLeft(2, '0')}:${date.toDate().minute.toString().padLeft(2, '0')}', style: TextStyle(color: Colors.white)), //hh:mm 형식으로 표시
+                Text(uid.split('@')[0], style: const TextStyle(color: Colors.white),),
+                Text('${date.toDate().hour.toString().padLeft(2, '0')}:${date.toDate().minute.toString().padLeft(2, '0')}', style: const TextStyle(color: Colors.white)), //hh:mm 형식으로 표시
               ],
             ),
           ),

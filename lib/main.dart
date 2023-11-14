@@ -1,24 +1,23 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flog/notification/fcm_controller.dart';
+//import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/splash_screen.dart';
-import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flog/screen/register/sms_login_home.dart';
+//import 'package:flog/screen/register/sms_login_home.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
-import 'package:workmanager/workmanager.dart';
+//import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 import 'models/model_auth.dart';
 import 'screen/register/login_screen.dart';
 import 'screen/register/register_screen.dart';
-import 'package:flog/notification/scheduling.dart';
+//import 'package:flog/notification/scheduling.dart';
 
 // 백그라운드 설정 코드는 맨 최상단에 위치해야함
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message ${message.messageId}');
+  //print('Handling a background message ${message.messageId}');
 }
 
 void initializeNotification() async {
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
           ),
           initialRoute: '/',
           routes: {
-            '/': (context) => SplashScreen(),
+            '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/register': (context) => const RegisterScreen(),
             '/index': (context) => const FlogingScreen(),

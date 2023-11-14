@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -14,6 +13,7 @@ class CommentCard extends StatelessWidget {
   final String flogingId;
 
   CommentCard({
+    super.key,
     required this.date,
     required this.commentId,
     required this.text,
@@ -34,7 +34,7 @@ class CommentCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
           ),
-          title: Text(
+          title: const Text(
             '댓글 삭제',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -43,7 +43,7 @@ class CommentCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
+          content: const Text(
             '이 댓글을 삭제하시겠습니까?',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -56,40 +56,33 @@ class CommentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton(
-                  child: Text(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
                     '취소',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
-                      ),
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
                 TextButton(
-                  child: Text(
-                    '삭제',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
                   ),
                   onPressed: () async {
                     try {
@@ -108,7 +101,7 @@ class CommentCard extends StatelessWidget {
                       showDialog<void>(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
+                          return const AlertDialog(
                             title: Text('오류 발생'),
                             content: Text('댓글 삭제 중에 오류가 발생했습니다.'),
                           );
@@ -116,6 +109,13 @@ class CommentCard extends StatelessWidget {
                       );
                     }
                   },
+                  child: const Text(
+                    '삭제',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -139,7 +139,7 @@ class CommentCard extends StatelessWidget {
       }
       if (userSnapshot.connectionState ==
           ConnectionState.waiting) {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       }
       final userDocuments = userSnapshot.data!.docs;
       final userData = userDocuments.first.data() as Map<String, dynamic>;
@@ -178,18 +178,18 @@ class CommentCard extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: userData['nickname'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          WidgetSpan(
+                          const WidgetSpan(
                             child: SizedBox(width: 4),
                           ),
                           TextSpan(
                             text: DateFormat('yy.MM.dd HH:mm').format(date.toDate()),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
@@ -216,7 +216,7 @@ class CommentCard extends StatelessWidget {
                 onPressed: () {
                   _showDeleteCommentConfirmationDialog(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.delete_rounded,
                   size: 16,
                 ),

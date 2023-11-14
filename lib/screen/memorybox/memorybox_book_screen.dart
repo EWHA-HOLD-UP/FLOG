@@ -12,9 +12,10 @@ class MemoryBoxBookScreen extends StatefulWidget {
 }
 class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
   bool isMaking = false;
-  final currentUser = FirebaseAuth.instance.currentUser!;
   String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
   int memoryBookNo = 0;
+
+  final currentUser = FirebaseAuth.instance.currentUser!;
 
   @override
   void initState() {
@@ -35,8 +36,9 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
         currentUserFlogCode = userDoc.data()!['flogCode'];
       });
     }
-    print(currentUserFlogCode);
+    //print(currentUserFlogCode);
   }
+
   Future<void> getisMaking() async {
     final groupDoc = await FirebaseFirestore.instance
         .collection('Group')
@@ -58,8 +60,8 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: Colors.black, // 뒤로가기 버튼 아이콘 색상
-          ), // 이미지 경로 지정
+            color: Colors.black,
+          ),
           onPressed: () {
             Navigator.pop(context); // 뒤로가기 기능 추가
           },
@@ -67,7 +69,7 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
         backgroundColor: Colors.white,
         title: Text('Memory Box',
             style: GoogleFonts.balooBhaijaan2(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 30,
                   color: Color(0xFF62BC1B),
                   fontWeight: FontWeight.bold,
@@ -81,8 +83,8 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
         backgroundColor: Colors.white, //화면 배경색
         body: Column(
           children: [
-            SizedBox(height: 70),
-            Center(
+            const SizedBox(height: 70),
+            const Center(
                 child: Text(
                   '가족들의 소중한 사진을\n오프라인으로 만나보세요!',
                   style: TextStyle(
@@ -93,7 +95,7 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
                   textAlign: TextAlign.center,
                 ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Image.asset(
               "assets/memory_book.png",
               width: 250, height: 250,
@@ -106,32 +108,26 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
                     return Text('Error: ${snapshot.error}');
                   }
                   if(snapshot.connectionState == ConnectionState.waiting){
-                    return Center(
-                        //로딩바 구현 부분
+                    return Center( //로딩바 구현 부분
                         child: SpinKitPumpingHeart(
                           color: Colors.green.withOpacity(0.2),
                           size: 50.0, //크기 설정
-                          duration: Duration(seconds: 5),
+                          duration: const Duration(seconds: 5),
                         ),
                     );
                   }
                   final documents = snapshot.data!.docs;
-                  final bookNos = documents
-                      .where((doc) {
+                  documents.where((doc) {
                     final data = doc.data() as Map<String, dynamic>;
                     return data['flogCode'] == currentUserFlogCode;
-                  })
-                      .map((doc) {
+                  }).map((doc) {
                     final data = doc.data() as Map<String, dynamic>;
                     memoryBookNo = data['memoryBookNo'];
                     isMaking = data['isMaking'];
-
-                  })
-                      .toList();
+                  }).toList();
                   return ElevatedButton(
                     //추억북 신청하기 버튼을 누르면
                     onPressed: !isMaking ? () async{
-
                       setState(() {
                         memoryBookNo = memoryBookNo + 1;
                         isMaking = true;
@@ -146,16 +142,14 @@ class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
                     //추억북 신청하기 버튼 디자인
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30), // 둥근 모서리 설정
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                         elevation: 0,
                         fixedSize: const Size(270, 60),
                         backgroundColor: const Color(0xFF62BC1B)
                     ),
                     child: Text(
-                      !isMaking? '${memoryBookNo+1}번째 추억북 신청하기' : '${memoryBookNo}번째 추억북 제작중 ...',
-                      style: TextStyle(
+                      !isMaking? '${memoryBookNo+1}번째 추억북 신청하기' : '$memoryBookNo번째 추억북 제작중 ...',
+                      style: const TextStyle(
                         fontSize: 23,
                         color: Colors.white,
                       ),

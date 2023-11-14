@@ -9,7 +9,6 @@ import 'package:flog/widgets/flog_card.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flog/widgets/checkTodayFlog.dart';
-import 'dart:ui';
 
 class FlogingScreen extends StatefulWidget {
   const FlogingScreen({Key? key}) : super(key: key);
@@ -36,8 +35,7 @@ class FlogingScreenState extends State<FlogingScreen> {
     final year = now.year;
     final month = now.month;
     final day = now.day;
-
-    final formattedDate = '$year.$month.$day';
+    //final formattedDate = '$year.$month.$day';
 
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
@@ -47,12 +45,11 @@ class FlogingScreenState extends State<FlogingScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
-              body: Center(
-                //로딩바 구현 부분
+              body: Center(//로딩바 구현 부분
                 child: SpinKitPumpingHeart(
                   color: Colors.green.withOpacity(0.2),
                   size: 50.0, //크기 설정
-                  duration: Duration(seconds: 5),
+                  duration: const Duration(seconds: 5),
                 ),
               ),
               backgroundColor: Colors.transparent,
@@ -82,12 +79,11 @@ class FlogingScreenState extends State<FlogingScreen> {
 
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
                   return Scaffold(
-                    body: Center(
-                      //로딩바 구현 부분
+                    body: Center(//로딩바 구현 부분
                       child: SpinKitPumpingHeart(
                         color: Colors.green.withOpacity(0.2),
                         size: 50.0, //크기 설정
-                        duration: Duration(seconds: 5),
+                        duration: const Duration(seconds: 5),
                       ),
                     ),
                     backgroundColor: Colors.transparent,
@@ -95,6 +91,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                 }
 
                 final userDocuments = userSnapshot.data!.docs;
+
                 // currentUser를 가장 먼저 배열
                 userDocuments.sort((a, b) {
                   final aData = a.data() as Map<String, dynamic>;
@@ -106,8 +103,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                     return -1; // a를 먼저 배치
                   } else if (bEmail == currentUser.email) {
                     return 1; // b를 먼저 배치
-                  } else {
-                    // 다른 사용자들의 정렬 순서는 상관없으므로 동등하게 처리
+                  } else { // 다른 사용자들의 정렬 순서는 상관없으므로 동등하게 처리
                     return 0;
                   }
                 });
@@ -122,7 +118,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                     title: Text(
                       'FLOGing',
                       style: GoogleFonts.balooBhaijaan2(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 30,
                           color: Color(0xFF62BC1B),
                           fontWeight: FontWeight.bold,
@@ -135,8 +131,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                     child: ListView.builder(
                       itemCount: userDocuments.length,
                       itemBuilder: (context, index) {
-                        final userData =
-                            userDocuments[index].data() as Map<String, dynamic>;
+                        final userData = userDocuments[index].data() as Map<String, dynamic>;
                         final userProfile = userData['profile'];
                         final userNickname = userData['nickname'];
                         final userToken = userData['token'];
@@ -158,7 +153,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                     child: Center(
                                       child: ClipOval(
                                         child: Image.asset(
-                                          "assets/profile/profile_${userProfile}.png",
+                                          "assets/profile/profile_$userProfile.png",
                                           width: 50,
                                           height: 50,
                                           alignment: Alignment.center,
@@ -169,7 +164,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 ),
                                 title: Text(
                                   userNickname,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.w800,
                                     color: Color(0xFF62BC1B),
@@ -185,7 +180,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
                                                 ),
-                                                title: Text(
+                                                title: const Text(
                                                   '개굴이기!',
                                                   style: TextStyle(
                                                     fontSize: 22,
@@ -196,7 +191,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                 ),
                                                 actions: <Widget>[
                                                   Padding(
-                                                    padding: EdgeInsets.only(right: 8.0, left: 8.0, bottom: 8.0),
+                                                    padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 8.0),
                                                     child: Column(
                                                       children: [
                                                         Container(
@@ -205,8 +200,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                             color: Colors.white,
                                                             borderRadius: BorderRadius.circular(10.0),
                                                             border: Border.all(
-                                                              color: Color(0xFF62BC1B),
-                                                              width: 1.0,          // 테두리 굵기
+                                                              color: const Color(0xFF62BC1B),
+                                                              width: 1.0,
                                                             ),
                                                           ),
                                                           child: Row(
@@ -222,7 +217,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                               Text(
                                                                 currentUserNickname,
                                                                 textAlign: TextAlign.center,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   color: Color(0xFF62BC1B),
                                                                 ),
                                                               ),
@@ -237,7 +232,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                               Text(
                                                                 userNickname,
                                                                 textAlign: TextAlign.center,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   color: Color(0xFF62BC1B),
                                                                 ),
                                                               ),
@@ -257,7 +252,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                     color: Colors.grey.withOpacity(0.1), // 그림자의 색상
                                                                     spreadRadius: 3, // 그림자가 퍼지는 정도
                                                                     blurRadius: 2, // 그림자의 흐림 정도
-                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                    offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
                                                                   ),
                                                                 ],
                                                               ),
@@ -269,8 +264,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       width: 50,
                                                                       height: 50,
                                                                     ),
-                                                                    SizedBox(height: 8),
-                                                                    Text(
+                                                                    const SizedBox(height: 8),
+                                                                    const Text(
                                                                       '뭐해?',
                                                                       style: TextStyle(
                                                                         fontSize: 15,
@@ -284,13 +279,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       userToken,
                                                                       "$userNickname! 뭐해?🤨",
                                                                       "지금 뭐하는지 $currentUserNickname님이 궁금해해요! ");
-                                                                  // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                                  // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
                                                                   Navigator.of(context).pop(); // 팝업 창 닫기
                                                                 },
                                                               ),
                                                             ),
-                                                            SizedBox(width: 10),
+                                                            const SizedBox(width: 10),
                                                             Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
@@ -300,7 +293,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                     color: Colors.grey.withOpacity(0.1), // 그림자의 색상
                                                                     spreadRadius: 3, // 그림자가 퍼지는 정도
                                                                     blurRadius: 2, // 그림자의 흐림 정도
-                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                    offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
                                                                   ),
                                                                 ],
                                                               ),
@@ -312,8 +305,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       width: 50,
                                                                       height: 50,
                                                                     ),
-                                                                    SizedBox(height: 8),
-                                                                    Text(
+                                                                    const SizedBox(height: 8),
+                                                                    const Text(
                                                                       '사랑해',
                                                                       style: TextStyle(
                                                                         fontSize: 15,
@@ -327,13 +320,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       userToken,
                                                                       "$userNickname! 사랑해🥰",
                                                                       " $currentUserNickname님이 사랑을 고백했어요!");
-                                                                  // 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                                  // 이곳에 다른 미안함 표현 관련 코드를 추가하세요.
-                                                                  Navigator.of(context).pop(); // 팝업 창 닫기
+                                                                 Navigator.of(context).pop(); // 팝업 창 닫기
                                                                 },
                                                               ),
                                                             ),
-                                                            SizedBox(width: 10),
+                                                            const SizedBox(width: 10),
                                                             Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
@@ -343,7 +334,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                     color: Colors.grey.withOpacity(0.1), // 그림자의 색상
                                                                     spreadRadius: 3, // 그림자가 퍼지는 정도
                                                                     blurRadius: 2, // 그림자의 흐림 정도
-                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                    offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
                                                                   ),
                                                                 ],
                                                               ),
@@ -355,8 +346,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       width: 50,
                                                                       height: 50,
                                                                     ),
-                                                                    SizedBox(height: 8),
-                                                                    Text(
+                                                                    const SizedBox(height: 8),
+                                                                    const Text(
                                                                       '고마워',
                                                                       style: TextStyle(
                                                                         fontSize: 15,
@@ -370,13 +361,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       userToken,
                                                                       "$userNickname! 고마워🥹",
                                                                       "지금 $currentUserNickname님이 고마움을 전했어요!");
-                                                                  // 또 다른 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                                  // 이곳에 또 다른 미안함 표현 관련 코드를 추가하세요.
                                                                   Navigator.of(context).pop(); // 팝업 창 닫기
                                                                 },
                                                               ),
                                                             ),
-                                                            SizedBox(width: 10),
+                                                            const SizedBox(width: 10),
                                                             Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
@@ -386,7 +375,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                     color: Colors.grey.withOpacity(0.1), // 그림자의 색상
                                                                     spreadRadius: 3, // 그림자가 퍼지는 정도
                                                                     blurRadius: 2, // 그림자의 흐림 정도
-                                                                    offset: Offset(0, 1), // 그림자의 위치 (가로, 세로)
+                                                                    offset: const Offset(0, 1), // 그림자의 위치 (가로, 세로)
                                                                   ),
                                                                 ],
                                                               ),
@@ -398,8 +387,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       width: 50,
                                                                       height: 50,
                                                                     ),
-                                                                    SizedBox(height: 8),
-                                                                    Text(
+                                                                    const SizedBox(height: 8),
+                                                                    const Text(
                                                                       '미안해',
                                                                       style: TextStyle(
                                                                         fontSize: 15,
@@ -413,8 +402,6 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                       userToken,
                                                                       "$userNickname! 미안해😢",
                                                                       " $currentUserNickname님이 미안하대요!");
-                                                                  // 미안함 표현 버튼을 눌렀을 때 수행할 동작 추가
-                                                                  // 이곳에 미안함 표현 관련 코드를 추가하세요.
                                                                   Navigator.of(context).pop(); // 팝업 창 닫기
                                                                 },
                                                               ),
@@ -435,20 +422,20 @@ class FlogingScreenState extends State<FlogingScreen> {
                                           height: 35,
                                         )
                                       )
-                                    : SizedBox(), // 현재 사용자면 아무것도 표시하지 않음
+                                    : const SizedBox(), // 현재 사용자면 아무것도 표시하지 않음
                               )
                             ): RichText(
                               text: TextSpan(
                                 children: [
                                   TextSpan(
                                     text: '$userNickname',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w800,
                                       color: Color(0xFF62BC1B), // Change color for the userNickname
                                     ),
                                   ),
-                                  TextSpan(
+                                  const TextSpan(
                                     text: ' 님, \n오늘도 가족과 함께하세요!',
                                     style: TextStyle(
                                       fontSize: 22,
@@ -459,7 +446,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('Floging')
@@ -476,7 +463,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                       child: SpinKitPumpingHeart(
                                         color: Colors.green.withOpacity(0.2),
                                         size: 50.0, //크기 설정
-                                        duration: Duration(seconds: 5),
+                                        duration: const Duration(seconds: 5),
                                       ),
                                     ),
                                     backgroundColor: Colors.transparent,
@@ -486,16 +473,14 @@ class FlogingScreenState extends State<FlogingScreen> {
 
                                 // 데이터를 날짜를 기준으로 내림차순으로 정렬
                                 flogDocuments.sort((a, b) {
-                                  final aData =
-                                      a.data() as Map<String, dynamic>;
-                                  final bData =
-                                      b.data() as Map<String, dynamic>;
+                                  final aData = a.data() as Map<String, dynamic>;
+                                  final bData = b.data() as Map<String, dynamic>;
                                   final aDate = aData['date'] as Timestamp;
                                   final bDate = bData['date'] as Timestamp;
                                   return bDate.compareTo(aDate); // 내림차순으로 정렬
                                 });
 
-                                return Container(
+                                return SizedBox(
                                   height: 200,
                                   child: (() {
                                     if (flogDocuments.where((flogDoc) {
@@ -510,7 +495,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                             height: 200,
                                             width: double.infinity,
                                             decoration: BoxDecoration(
-                                              border: Border.all(color: Color(0xFFD9D9D9), width: 2),
+                                              border: Border.all(color: const Color(0xFFD9D9D9), width: 2),
                                               borderRadius: BorderRadius.circular(10),
                                             ),
                                             child: Center(
@@ -522,10 +507,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                       'button/padlock.png',
                                                       width: 30,
                                                       height: 30,
-                                                      color: Color(0xFFD9D9D9)
+                                                      color: const Color(0xFFD9D9D9)
                                                   ),
-                                                  SizedBox(height: 10),
-                                                  Text(
+                                                  const SizedBox(height: 10),
+                                                  const Text(
                                                     '아직 상태를 업로드하지 않았어요.',
                                                     style: TextStyle(
                                                         fontSize: 18,
@@ -544,7 +529,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                           height: 200,
                                           width: 130,
                                           decoration: BoxDecoration(
-                                            border: Border.all(color: Color(0xFFD9D9D9), width: 2),
+                                            border: Border.all(color: const Color(0xFFD9D9D9), width: 2),
                                             borderRadius: BorderRadius.circular(10),
                                           ),
                                           child: Center(
@@ -561,7 +546,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                 "button/plus.png",
                                                 width: 30,
                                                 height: 30,
-                                                color: Color(0xFF62BC1B),
+                                                color: const Color(0xFF62BC1B),
                                               ),
                                             ),
                                           ),
@@ -572,56 +557,40 @@ class FlogingScreenState extends State<FlogingScreen> {
                                       if (currentUserUploaded) { //나도 올림
                                         return ListView(
                                           scrollDirection: Axis.horizontal,
-                                          children:
-                                              flogDocuments.where((flogDoc) {
-                                            final flogData = flogDoc.data()
-                                                as Map<String, dynamic>;
-                                            final date =
-                                                flogData['date'] as Timestamp;
-                                            final flogDate = DateTime
-                                                .fromMicrosecondsSinceEpoch(date
-                                                    .microsecondsSinceEpoch);
-                                            return flogDate.year == year &&
-                                                flogDate.month == month &&
-                                                flogDate.day == day;
+                                          children: flogDocuments.where((flogDoc) {
+                                            final flogData = flogDoc.data() as Map<String, dynamic>;
+                                            final date = flogData['date'] as Timestamp;
+                                            final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
+                                            return flogDate.year == year && flogDate.month == month && flogDate.day == day;
                                           }).map((flogDoc) {
-                                            final flogData = flogDoc.data()
-                                                as Map<String, dynamic>;
-                                            final flogingId =
-                                                flogData['flogingId'];
-                                            final flogCode =
-                                                flogData['flogCode'];
+                                            final flogData = flogDoc.data() as Map<String, dynamic>;
+                                            final flogingId = flogData['flogingId'];
+                                            final flogCode = flogData['flogCode'];
                                             final date = flogData['date'];
-                                            final frontImageURL =
-                                                flogData['downloadUrl_front'];
-                                            final backImageURL =
-                                                flogData['downloadUrl_back'];
+                                            final frontImageURL = flogData['downloadUrl_front'];
+                                            final backImageURL = flogData['downloadUrl_back'];
                                             final uid = flogData['uid'];
 
                                             return GestureDetector(
                                               onTap: () {
                                                 Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        FlogingDetailScreen(
-                                                      flogingId: flogingId,
-                                                    ),
-                                                  ),
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => FlogingDetailScreen(flogingId: flogingId)
+                                                    )
                                                 );
                                               },
                                               child: Row(
                                                 children: [
                                                   FlogCard(
                                                     date: date,
-                                                    frontImageURL:
-                                                        frontImageURL,
+                                                    frontImageURL: frontImageURL,
                                                     backImageURL: backImageURL,
                                                     flogCode: flogCode,
                                                     flogingId: flogingId,
                                                     uid: uid,
                                                   ),
-                                                  SizedBox(width: 10),
+                                                  const SizedBox(width: 10),
                                                 ],
                                               ),
                                             );
@@ -655,7 +624,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                     flogingId: flogingId,
                                                     uid: uid,
                                                   ),
-                                                  SizedBox(width: 10),
+                                                  const SizedBox(width: 10),
                                                 ],
                                               );
                                           }).toList(),
@@ -666,7 +635,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                 );
                               },
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                           ],
                         );
                       },

@@ -13,6 +13,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class RootScreen extends StatefulWidget {
   final String matchedFamilycode;
   const RootScreen({required this.matchedFamilycode, Key? key}) : super(key: key);
+
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
@@ -31,7 +32,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
 
-    print('개발 중 확인용 - ${widget.matchedFamilycode}의 가족');
+    //print('개발 중 확인용 - ${widget.matchedFamilycode}의 가족');
     return WillPopScope(
       onWillPop: () async => false,
       child:
@@ -58,7 +59,7 @@ class _RootScreenState extends State<RootScreen> {
                     child: SpinKitPumpingHeart(
                       color: Colors.green.withOpacity(0.2),
                       size: 50.0, //크기 설정
-                      duration: Duration(seconds: 3),
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 } else if (snapshot.hasError) {
@@ -100,7 +101,7 @@ class _RootScreenState extends State<RootScreen> {
                           child: Container(
                             width: 20,
                             height: 20,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
                             ),
@@ -109,7 +110,7 @@ class _RootScreenState extends State<RootScreen> {
                                 "button/plus.png",
                                 width: 13,
                                 height: 13,
-                                color: Color(0xFF62BC1B),
+                                color: const Color(0xFF62BC1B),
                               ),
                             ),
                           ),
@@ -147,22 +148,22 @@ class BottomTabBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Image.asset('button/floging_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
+          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30, color: const Color(0xFF62BC1B)),
           label: 'Floging',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
+          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30, color: const Color(0xFF62BC1B)),
           label: 'Qpuzzle',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
+          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30, color: const Color(0xFF62BC1B)),
           label: 'memory box',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/profile_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
+          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30, color: const Color(0xFF62BC1B)),
           label: 'setting',
         ),
       ],

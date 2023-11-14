@@ -4,9 +4,7 @@ import 'package:flog/screen/register/matching_waiting_for_family.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import '../../models/user.dart' as flog_User;
 
 class FamilyMatchingScreen extends StatefulWidget {
   final String nickname;
@@ -70,9 +68,9 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
       // 'familyCode'를 저장할 새로운 문서를 추가합니다.
       await groupListCollection.doc(familycode).set({'flogCode': familycode});
 
-      print('Family code saved successfully.');
+      //print('Family code saved successfully.');
     } catch (e) {
-      print('Error saving family code: $e');
+      //print('Error saving family code: $e');
     }
 
     setState(() {
@@ -89,7 +87,7 @@ class _FamilyMatchingScreenState extends State<FamilyMatchingScreen> {
           child: Center(
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage("assets/matching_screen_background.png"),
                   fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
