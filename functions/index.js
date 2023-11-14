@@ -1,106 +1,65 @@
-var admin = require("firebase-admin");
 const functions = require("firebase-functions");
+var admin = require("firebase-admin");
+const axios = require("axios");
+
 var serviceAccount = require("./flog-e708e-firebase-adminsdk-aj67m-97a960b137.json");
-const express = require("express");
-const cors = require("cors");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
-const db = admin.firestore();
 
-const app = express();
-app.use(cors({origin: true}));
+// 랜덤한 시간 생성 함수
+function getRandomTime() {
+  const hours = Math.floor(Math.random() * 24);
+  const minutes = Math.floor(Math.random() * 60);
+  const cronExpression = `${minutes} ${hours} * * *`; // 매일 랜덤한 시간
 
-exports.pushFcm = functions.https.onRequest(app);
+  return cronExpression;
+}
 
-// "/update" 엔드포인트
-app.post("/update", (req, res) => {
-    const flogCode = req.body.flogCode; // 요청에서 flogCode 가져오기
-    const tokens = [];
-    if (flogCode) {
-        // Firebase Firestore에서 flogCode와 일치하는 사용자 찾기
-        db.collection("User")
-            .where("flogCode", "==", flogCode)
-            .get()
-            .then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    const token = doc.data().token;
-                    if (token) {
-                        tokens.push(token);
-                    }
-                });
-                console.log(tokens);
-                if (tokens.length > 0) {
-                    const payload = {
-                        notification: {
-                            title: "가족알림",
-                            body: "가족알림테스트입니다",
-                        },
-                    };
-                    // 토큰 목록에 알림 보내기
-                    admin.messaging().sendToDevice(tokens, payload)
-                        .then((response) => {
-                            console.log("Successfully sent message:", response);
-                            return true;
-                        });
-                }
-            })
-            .catch((err) => {
-                console.log("Error getting documents", err);
-                tokens.push("Error getting documents");
-                return tokens;
-            });
+// 알림 전송 함수
+async function groupNotification(groupNo, title, body) {
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization":
+    "key=AAAAT-_37n8:APA91bG1SGAS3DipkjSH4C3pFveprmKolT4xC8LKR8Lk7w7ghcMdOZMzVSVCqCjcF847-x3aYHV4YDLZaIzXTOE7cvRssSG9lIJwE9IVqYJZi34MkHkMR9LYYAXmC5hI3r3hMzzo2dyU",
+  };
+
+  const requestBody = {
+    to: `/topics/${groupNo}`,
+    notification: {title, body},
+    data: {KEY: "VALUE"},
+  };
+
+  try {
+    const response = await axios.post(
+        "https://fcm.googleapis.com/fcm/send",
+      JSON.stringify(requestBody),
+      {headers},
+    );
+
+    if (response.status === 200) {
+      console.log(response.data);
+    } else {
+      console.error(response.statusText);
     }
-});
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 
-// "/updateAnswer" 엔드포인트
-app.post("/updateAnswer", (req, res) => {
-    const sendingUid = req.body.sendingUid; // 알림을 보내는 User의 uid
-    const receivingUid = req.body.receivingUid; // 알림을 받는 User의 uid
-    if (sendingUid && receivingUid) {
-        // Firebase Firestore에서 receivingUid에 해당하는 사용자의 토큰 가져오기
-        db.collection("User")
-            .where("email", "==", receivingUid)
-            .get()
-            .then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    const token = doc.data().token;
-                    if (token) {
-                        const payload = {
-                            notification: {
-                                title: "특정유저알림",
-                                body: "특정유저알림테스트입니다",
-                            },
-                            data: {
-                                sendingUid: sendingUid, // 알림을 보내는 User의 uid를 데이터로 포함
-                            },
-                        };
-                        // 토큰에 알림 보내기
-                        admin.messaging().sendToDevice(token, payload)
-                            .then((response) => {
-                                console.log("Successfully sent message:", response);
-                                return true;
-                            });
-                    }
-                });
-            })
-            .catch((err) => {
-                console.log("Error getting documents", err);
-            });
-    }
-});
+// 매일 랜덤한 시간에 알림 보내기
+exports.scheduleNotifications = functions.pubsub
+  .schedule(getRandomTime())
+  .timeZone("Asia/Seoul")
+  .onRun(async (context) => {
+    // 매일 랜덤한 시간에 실행되는 로직
+    const groupNo = "0"; // 알림을 보낼 그룹 번호
+    const title = "❗FLOG TIME입니다❗";
+    const body = "가족들은 지금 무엇을 하고 있을까요? 지금 당장 상태를 알리고 확인하세요!";
 
-// Express 앱을 Firebase Functions로 내보내기
-exports.api = functions.https.onRequest(app);
-
-exports.sendNotification = functions.https.onCall(async (data, context) => {
-    await admin.messaging().sendMulticast({
-    tokens: data.tokens,
-    notification: {
-        title: data.title,
-        body: data.body,
-        imageUrl: data.imageUrl,
-    },
-    });
-})
+    // 알림 전송 함수 호출
+    await groupNotification(groupNo, title, body);
+    console.log("Function triggered with changes!");
+    return null;
+  });

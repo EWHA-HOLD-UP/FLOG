@@ -18,6 +18,7 @@ module.exports = {
     "semi": "off",
     "max-len": "off",
     "no-var": 0,
+    "require-jsdoc": 0,
   },
   overrides: [
     {

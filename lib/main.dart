@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/providers/user_provider.dart';
 import 'package:flog/screen/floging/floging_screen.dart';
 import 'package:flog/screen/splash_screen.dart';
