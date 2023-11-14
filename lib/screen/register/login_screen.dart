@@ -41,7 +41,7 @@ class LoginScreen extends StatelessWidget {
               "assets/flog_name_3d.png",
               width: 180,
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             const Align(
               alignment: Alignment.centerLeft, // 좌측 정렬
               child: Padding(
