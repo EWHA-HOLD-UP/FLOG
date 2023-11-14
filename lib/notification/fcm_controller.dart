@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 final pushFcmUrl =
     'https://us-central1-flog-e708e.cloudfunctions.net/pushFcm'; // Firebase Functions 엔드포인트 변경
@@ -78,6 +79,8 @@ void sendNotification(String token, String title, String body) async {
 }
 
 void groupNotification(String group_no, String title, String body) async {
+  FirebaseMessaging.instance.unsubscribeFromTopic(group_no);
+      print("$group_no 알림구독취소");
   var headers = {
     'Content-Type': 'application/json',
     'Authorization':
