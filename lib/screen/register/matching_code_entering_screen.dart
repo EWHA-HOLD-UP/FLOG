@@ -45,14 +45,14 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 70),
+              const SizedBox(height: 20),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const SizedBox(width: 10),
-                Image.asset("assets/flog_logo.png", width: 40, height: 40),
-                const SizedBox(width: 5),
+                Image.asset("assets/profile/profile_0.png", width: 50, height: 50),
+                const SizedBox(width: 7),
                 const Text(
                   'FLOG 코드를 입력해서 가족을 연결해주세요.',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 )
               ]),
               const SizedBox(height: 20),
@@ -68,7 +68,7 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                           fontSize: 25,
                           fontStyle: FontStyle.italic),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF609966)),
+                        borderSide: BorderSide(color: Color(0xFF62BC1B)),
                       ),
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black26))),
@@ -76,6 +76,7 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
               ),
               const SizedBox(height: 50),
               ElevatedButton(
+
                 onPressed: () async {
                   String enteredFamilycode = codeController
                       .text; //텍스트 필드에 입력된 가족코드 받아서 저장 - 파이어베이스에 넣을듯
@@ -126,9 +127,10 @@ class _EnteringState extends State<MatchingCodeEnteringScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  backgroundColor: const Color(0xFF609966),
+                  elevation: 0,
+                  backgroundColor: const Color(0xFF62BC1B),
                   minimumSize: const Size(300, 50),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
