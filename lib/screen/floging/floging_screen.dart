@@ -1,5 +1,6 @@
 import 'package:flog/notification/fcm_controller.dart';
 import 'package:flog/screen/floging/shooting_screen_back.dart';
+import 'package:flog/widgets/blurred_flog_card.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/screen/floging/floging_detail_screen.dart';
@@ -502,7 +503,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                       final date = flogData['date'] as Timestamp;
                                       final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
                                       return flogDate.year == year && flogDate.month == month && flogDate.day == day;
-                                    }).isEmpty) {
+                                    }).isEmpty) { //오늘 아무도 안 올림
                                       return !isCurrentUser ? Column(
                                         children: [
                                           Container(
@@ -567,8 +568,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                         )
                                       );
 
-                                    } else {
-                                      if (currentUserUploaded) {
+                                    } else { // 누군가 올림
+                                      if (currentUserUploaded) { //나도 올림
                                         return ListView(
                                           scrollDirection: Axis.horizontal,
                                           children:
@@ -627,42 +628,37 @@ class FlogingScreenState extends State<FlogingScreen> {
                                           }).toList(),
                                         );
                                       } else {
-                                        return Column(
-                                          children: [
-                                            Container(
-                                              height: 200,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Color(0xffd9d9d9),
-                                                  borderRadius: BorderRadius.circular(12.0),
-                                                  border: Border.all(
-                                                    color: Color(0xFF62BC1B),
-                                                    width: 2.0,
-                                                  )
-                                              ),
-                                              child: Center(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      'button/hidden.png',
-                                                      width: 30,
-                                                      height: 30,
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      '플로깅 후 $userNickname의 상태를 확인하세요!',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                        return ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: flogDocuments.where((flogDoc) {
+                                            final flogData = flogDoc.data() as Map<String, dynamic>;
+                                            final date = flogData['date'] as Timestamp;
+                                            final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
+                                            return flogDate.year == year && flogDate.month == month && flogDate.day == day;
+                                          }).map((flogDoc) {
+                                            final flogData = flogDoc.data() as Map<String, dynamic>;
+                                            final flogingId = flogData['flogingId'];
+                                            final flogCode = flogData['flogCode'];
+                                            final date = flogData['date'];
+                                            final frontImageURL = flogData['downloadUrl_front'];
+                                            final backImageURL = flogData['downloadUrl_back'];
+                                            final uid = flogData['uid'];
+
+                                            return Row(
+                                                children: [
+                                                  BlurredFlogCard(
+                                                    date: date,
+                                                    frontImageURL:
+                                                    frontImageURL,
+                                                    backImageURL: backImageURL,
+                                                    flogCode: flogCode,
+                                                    flogingId: flogingId,
+                                                    uid: uid,
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                ],
+                                              );
+                                          }).toList(),
                                         );
                                       }
                                     }
