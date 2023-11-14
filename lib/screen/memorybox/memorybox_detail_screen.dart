@@ -78,7 +78,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
               style: GoogleFonts.balooBhaijaan2(
                 textStyle: TextStyle(
                   fontSize: 30,
-                  color: Color(0xFF609966),
+                  color: Color(0xFF62BC1B),
                   fontWeight: FontWeight.bold,
                 ),
               ),

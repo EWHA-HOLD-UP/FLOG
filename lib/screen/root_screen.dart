@@ -7,6 +7,7 @@ import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flog/screen/qpuzzle/qpuzzle_screen.dart';
 import 'package:flog/screen/memorybox/memorybox_screen.dart';
 import 'package:flog/screen/profile/profile_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class RootScreen extends StatefulWidget {
@@ -52,7 +53,14 @@ class _RootScreenState extends State<RootScreen> {
                 .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                  return Center(
+                    //로딩바 구현 부분
+                    child: SpinKitPumpingHeart(
+                      color: Colors.green.withOpacity(0.2),
+                      size: 50.0, //크기 설정
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -66,7 +74,7 @@ class _RootScreenState extends State<RootScreen> {
                   width: 70, // 원하는 너비
                   height: 70, // 원하는 높이
                   child: FloatingActionButton(
-                    backgroundColor: const Color(0xFF609966),
+                    backgroundColor: const Color(0xFF62BC1B),
                     onPressed: () { // 버튼 클릭 시 동작
                       Navigator.push(
                         context,
@@ -101,7 +109,7 @@ class _RootScreenState extends State<RootScreen> {
                                 "button/plus.png",
                                 width: 13,
                                 height: 13,
-                                color: Color(0xFF609966),
+                                color: Color(0xFF62BC1B),
                               ),
                             ),
                           ),
@@ -139,22 +147,22 @@ class BottomTabBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Image.asset('button/floging_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/floging_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
           label: 'Floging',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/qpuzzle_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/qpuzzle_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
           label: 'Qpuzzle',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/memorybox_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/memorybox_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
           label: 'memory box',
         ),
         BottomNavigationBarItem(
           icon: Image.asset('button/profile_line.png', width: 30, height: 30),
-          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30),
+          activeIcon: Image.asset('button/profile_fill.png', width: 30, height: 30, color: Color(0xFF62BC1B)),
           label: 'setting',
         ),
       ],

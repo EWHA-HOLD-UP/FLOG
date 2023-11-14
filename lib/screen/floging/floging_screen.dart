@@ -1,4 +1,5 @@
 import 'package:flog/notification/fcm_controller.dart';
+import 'package:flog/screen/floging/shooting_screen_back.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flog/screen/floging/floging_detail_screen.dart';
@@ -129,7 +130,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                     ),
                   ),
                   body: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.all(30.0),
                     child: ListView.builder(
                       itemCount: userDocuments.length,
                       itemBuilder: (context, index) {
@@ -138,12 +139,11 @@ class FlogingScreenState extends State<FlogingScreen> {
                         final userProfile = userData['profile'];
                         final userNickname = userData['nickname'];
                         final userToken = userData['token'];
-                        final isCurrentUser =
-                            userData['email'] == currentUser.email;
+                        final isCurrentUser = userData['email'] == currentUser.email;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Center(
+                            !isCurrentUser ? Center(
                               child: ListTile(
                                 leading: Hero(
                                   tag: "profile",
@@ -435,6 +435,27 @@ class FlogingScreenState extends State<FlogingScreen> {
                                         )
                                       )
                                     : SizedBox(), // 현재 사용자면 아무것도 표시하지 않음
+                              )
+                            ): RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '$userNickname',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF62BC1B), // Change color for the userNickname
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' 님, \n오늘도 가족과 함께하세요!',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black, // Set the default color
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(height: 20),
@@ -477,26 +498,19 @@ class FlogingScreenState extends State<FlogingScreen> {
                                   height: 200,
                                   child: (() {
                                     if (flogDocuments.where((flogDoc) {
-                                      final flogData = flogDoc.data()
-                                          as Map<String, dynamic>;
-                                      final date =
-                                          flogData['date'] as Timestamp;
-                                      final flogDate =
-                                          DateTime.fromMicrosecondsSinceEpoch(
-                                              date.microsecondsSinceEpoch);
-                                      return flogDate.year == year &&
-                                          flogDate.month == month &&
-                                          flogDate.day == day;
+                                      final flogData = flogDoc.data() as Map<String, dynamic>;
+                                      final date = flogData['date'] as Timestamp;
+                                      final flogDate = DateTime.fromMicrosecondsSinceEpoch(date.microsecondsSinceEpoch);
+                                      return flogDate.year == year && flogDate.month == month && flogDate.day == day;
                                     }).isEmpty) {
-                                      return Column(
+                                      return !isCurrentUser ? Column(
                                         children: [
                                           Container(
                                             height: 200,
                                             width: double.infinity,
                                             decoration: BoxDecoration(
-                                              color: Color(0xffd9d9d9),
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
+                                              border: Border.all(color: Color(0xFFD9D9D9), width: 2),
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
                                             child: Center(
                                               child: Column(
@@ -504,18 +518,19 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Image.asset(
-                                                    'button/padlock.png',
-                                                    width: 30,
-                                                    height: 30,
+                                                      'button/padlock.png',
+                                                      width: 30,
+                                                      height: 30,
+                                                      color: Color(0xFFD9D9D9)
                                                   ),
                                                   SizedBox(height: 10),
                                                   Text(
                                                     '아직 상태를 업로드하지 않았어요.',
                                                     style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                        color: Color(0xFF5C5C5C)
                                                     ),
                                                   ),
                                                 ],
@@ -523,7 +538,35 @@ class FlogingScreenState extends State<FlogingScreen> {
                                             ),
                                           ),
                                         ],
+                                      ) : Center(
+                                        child: Container(
+                                          height: 200,
+                                          width: 130,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Color(0xFFD9D9D9), width: 2),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: InkWell(
+                                              onTap: () async {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => const ShootingScreen(),
+                                                  ),
+                                                );
+                                              },
+                                              child: Image.asset(
+                                                "button/plus.png",
+                                                width: 30,
+                                                height: 30,
+                                                color: Color(0xFF62BC1B),
+                                              ),
+                                            ),
+                                          ),
+                                        )
                                       );
+
                                     } else {
                                       if (currentUserUploaded) {
                                         return ListView(

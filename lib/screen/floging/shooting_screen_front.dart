@@ -59,20 +59,21 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
     _faceDetector = FaceDetector(options: options);
   }
 
-  /*
-  void _updateGuide(List<Face> faces) {
+
+  void _updateDetectingState(List<Face> faces) {
     if (faces.isNotEmpty) {
       setState(() {
-        guide = '잘하고 있어요!';
+        //guide = '잘하고 있어요!';
         isFaceDetected = true;
       });
     } else {
       setState(() {
-        guide = '가족에게 얼굴을 보여주세요.';
+        //guide = '가족에게 얼굴을 보여주세요.';
+        isFaceDetected = false;
       });
     }
   }
-  */
+
 
 
   //카메라 컨트롤러 initalize
@@ -130,17 +131,16 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                 width: 300,
                 child: Center(
                     child: SizedBox(
-                  child: Text(
-                    message,
-                    style: GoogleFonts.nanumGothic(
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.black,
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                )),
+                    )
+                ),
               ),
             ),
           ],
@@ -173,7 +173,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
       final image = await _cameraController!.takePicture();
       final inputImage = InputImage.fromFilePath(image.path);
       final faces = await _faceDetector.processImage(inputImage);
-      //_updateGuide(faces);
+      _updateDetectingState(faces);
       setState(() {
         _tempFrontImagePath = image.path;
         _isProcessing = false;
@@ -401,7 +401,7 @@ class _ShootingScreenFrontState extends State<ShootingScreenFront> {
                                 Text(
                                   '촬영중!',
                                   style: TextStyle(
-                                    color: Color(0xFF609966),
+                                    color: Color(0xFF62BC1B),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )
