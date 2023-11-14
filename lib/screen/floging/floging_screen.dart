@@ -634,17 +634,15 @@ class FlogingScreenState extends State<FlogingScreen> {
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   color: Color(0xffd9d9d9),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
+                                                  borderRadius: BorderRadius.circular(12.0),
                                                   border: Border.all(
                                                     color: Color(0xFF62BC1B),
                                                     width: 2.0,
-                                                  )),
+                                                  )
+                                              ),
                                               child: Center(
                                                 child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Image.asset(
                                                       'button/hidden.png',

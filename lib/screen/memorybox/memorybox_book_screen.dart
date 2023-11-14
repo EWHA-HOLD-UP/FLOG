@@ -1,9 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MemoryBoxBookScreen extends StatelessWidget {
+class MemoryBoxBookScreen extends StatefulWidget {
   const MemoryBoxBookScreen({Key? key}) : super(key: key);
 
+  @override
+  MemoryBoxBookState createState() => MemoryBoxBookState();
+}
+class MemoryBoxBookState extends State<MemoryBoxBookScreen> {
+  bool isMaking = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  String currentUserFlogCode = ""; // 현재 로그인한 사용자의 flogCode
+  int memoryBookNo = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserFlogCode();
+    getisMaking();
+  }
+
+  //현재 로그인한 사용자의 flogCode를 Firestore에서 가져오는 함수
+  Future<void> getUserFlogCode() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(currentUser.email)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        currentUserFlogCode = userDoc.data()!['flogCode'];
+      });
+    }
+    print(currentUserFlogCode);
+  }
+  Future<void> getisMaking() async {
+    final groupDoc = await FirebaseFirestore.instance
+        .collection('Group')
+        .doc(currentUserFlogCode)
+        .get();
+
+    if (groupDoc.exists) {
+      setState(() {
+        isMaking = groupDoc.data()!['isMaking'];
+      });
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,23 +65,14 @@ class MemoryBoxBookScreen extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            const SizedBox(width: 35),
-            Image.asset(
-              "assets/flog_logo.png",
-              width: 30,
-              height: 30,
+        title: Text('Memory Box',
+            style: GoogleFonts.balooBhaijaan2(
+                textStyle: TextStyle(
+                  fontSize: 30,
+                  color: Color(0xFF62BC1B),
+                  fontWeight: FontWeight.bold,
+                ),
             ),
-            const SizedBox(width: 10),
-            Text('Memory Box',
-                style: GoogleFonts.balooBhaijaan2(
-                    textStyle: TextStyle(
-                      fontSize: 30,
-                      color: Color(0xFF62BC1B),
-                      fontWeight: FontWeight.bold,
-                    ))),
-          ],
         ),
         elevation: 0.0, //그림자 없음
         centerTitle: true,
@@ -44,56 +81,88 @@ class MemoryBoxBookScreen extends StatelessWidget {
         backgroundColor: Colors.white, //화면 배경색
         body: Column(
           children: [
-            SizedBox(height: 50),
+            SizedBox(height: 70),
             Center(
                 child: Text(
-                  '가족들의 소중한 사진을',
-                  style: GoogleFonts.inter(
-                      textStyle: TextStyle(
-                        fontSize: 30,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
-                )
-            ),
-            Center(
-                child: Text(
-                  '오프라인으로 만나보세요!',
-                  style: GoogleFonts.inter(
-                      textStyle: TextStyle(
-                        fontSize: 30,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
-                )
-            ),
-            SizedBox(height: 20),
-            Image.asset(
-              "assets/flog_logo.png",
-              width: 300, height: 300,
-            ),
-            ElevatedButton(
-              //추억북 신청하기 버튼을 누르면
-              onPressed: (){},
-              //추억북 신청하기 버튼 디자인
-              style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // 둥근 모서리 설정
+                  '가족들의 소중한 사진을\n오프라인으로 만나보세요!',
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                  fixedSize: const Size(270, 60),
-                  backgroundColor: const Color(0x86609966)
-              ),
-              child: Text(
-                '추억북 신청하기',
-                style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    )),
-              ),
+                  textAlign: TextAlign.center,
+                ),
             ),
+            SizedBox(height: 30),
+            Image.asset(
+              "assets/memory_book.png",
+              width: 250, height: 250,
+            ),
+            const SizedBox(height: 40),
+            StreamBuilder<QuerySnapshot> (
+                stream: FirebaseFirestore.instance.collection('Group').snapshots(),
+                builder: (context, snapshot) {
+                  if(snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return Center(
+                        //로딩바 구현 부분
+                        child: SpinKitPumpingHeart(
+                          color: Colors.green.withOpacity(0.2),
+                          size: 50.0, //크기 설정
+                          duration: Duration(seconds: 5),
+                        ),
+                    );
+                  }
+                  final documents = snapshot.data!.docs;
+                  final bookNos = documents
+                      .where((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    return data['flogCode'] == currentUserFlogCode;
+                  })
+                      .map((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    memoryBookNo = data['memoryBookNo'];
+                    isMaking = data['isMaking'];
+
+                  })
+                      .toList();
+                  return ElevatedButton(
+                    //추억북 신청하기 버튼을 누르면
+                    onPressed: !isMaking ? () async{
+
+                      setState(() {
+                        memoryBookNo = memoryBookNo + 1;
+                        isMaking = true;
+                        FirebaseFirestore.instance.collection('Group').doc(currentUserFlogCode).update({
+                          'memoryBookNo': memoryBookNo,
+                        });
+                        FirebaseFirestore.instance.collection('Group').doc(currentUserFlogCode).update({
+                          'isMaking': isMaking,
+                        });
+                      });
+                    } : null,
+                    //추억북 신청하기 버튼 디자인
+                    style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30), // 둥근 모서리 설정
+                        ),
+                        elevation: 0,
+                        fixedSize: const Size(270, 60),
+                        backgroundColor: const Color(0xFF62BC1B)
+                    ),
+                    child: Text(
+                      !isMaking? '${memoryBookNo+1}번째 추억북 신청하기' : '${memoryBookNo}번째 추억북 제작중 ...',
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }
+            )
           ],
         ),
     );

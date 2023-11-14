@@ -239,6 +239,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -271,7 +272,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         }
 
                                         if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return CircularProgressIndicator(); // 데이터가 로드될 때까지 로딩 표시기 표시
+                                          return Center(
+                                            //로딩바 구현 부분
+                                            child: SpinKitPumpingHeart(
+                                              color: Colors.green.withOpacity(0.2),
+                                              size: 50.0, //크기 설정
+                                              duration: Duration(seconds: 5),
+                                            ),
+                                          );
                                         } else if (snapshot.hasError) {
                                           return Text('Error: ${snapshot.error}');
                                         } else {
@@ -308,8 +316,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                 Stack(
                                   children: [
                                     Container(
-                                      width: 330,
-                                      height: 495,
+                                      width: 340,
+                                      height: 510,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(23),
                                         image: DecorationImage(
@@ -319,8 +327,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 330,
-                                      height: 495,
+                                      width: 340,
+                                      height: 510,
                                       child: Column(
                                         children: [
                                           for (int row = 0; row < 3; row++) //3행
@@ -336,9 +344,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                           .get();
                                                       answerController.clear();
 
-                                                      print('11ongoing: $ongoing');
                                                       ongoing = userSnapshot['ongoing'] as bool;
-                                                      print('ongoing: $ongoing');
+
                                                       isQuestionSheetShowed = userSnapshot['isQuestionSheetShowed'] as bool;
                                                       isAnswered = userSnapshot['isAnswered'] as bool;
                                                       if (ongoing == true) {
@@ -436,7 +443,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                           const SizedBox(height: 25),
                                                                           Center(
                                                                             child: Image.asset(
-                                                                              "assets/flog_logo.png",
+                                                                              "assets/profile/profile_0.png",
                                                                               width: 70,
                                                                               height: 70,
                                                                               alignment: Alignment.centerLeft,
@@ -477,11 +484,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                               final questionContent = questionData['questionContent']; // 질문 내용 가져오기
                                                                               return Center(
                                                                                 child: Padding(
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 30),
                                                                                   child: Text(
                                                                                     'Q${tempCellIndex + 1}. $questionContent', // 질문 내용을 표시
                                                                                     style: const TextStyle(
-                                                                                      fontSize: 22,
+                                                                                      fontSize: 18,
                                                                                       fontWeight: FontWeight.bold,
                                                                                     ),
                                                                                     textAlign: TextAlign.left,
@@ -681,8 +688,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                     },
                                                     child: Container(
                                                       //분할된 조각
-                                                      width: 165,
-                                                      height: 165,
+                                                      width: 170,
+                                                      height: 170,
                                                       decoration: BoxDecoration(
                                                         color: unlockStates[row * 2 + col]
                                                             ? Colors.transparent //unlock되면 투명해져서 사진이 드러남
@@ -745,8 +752,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                 )
                               else if (qpuzzleUrl == null) // qpuzzleUrl이 없을 때!! 회색 상자와 + 버튼 표시
                                 Container(
-                                  width: 330,
-                                  height: 495,
+                                  width: 340,
+                                  height: 510,
                                   decoration: BoxDecoration(
                                     color: Colors.grey[200], // 회색 상자
                                     borderRadius:
@@ -778,7 +785,14 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     }
                                     if (!snapshot.hasData) {
-                                      return CircularProgressIndicator();
+                                      return Center(
+                                        //로딩바 구현 부분
+                                        child: SpinKitPumpingHeart(
+                                          color: Colors.green.withOpacity(0.2),
+                                          size: 50.0, //크기 설정
+                                          duration: Duration(seconds: 5),
+                                        ),
+                                      );
                                     }
 
                                     final questionData = snapshot.data!.docs.isNotEmpty
@@ -788,7 +802,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       return Text(
                                         '조각이 선택되지 않았습니다.',
                                         style: const TextStyle(
-                                            fontSize: 22,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.center,
                                         softWrap: true, //자동 줄바꿈
@@ -797,19 +811,18 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     final questionContent =
                                     questionData['questionContent'];
                                     return Container(
-                                      width: 330,
+                                      width: 350,
                                       decoration: BoxDecoration(
                                           color: Colors.transparent,
-                                          borderRadius: BorderRadius.circular(10)),
+                                      ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         child: Column(
                                           children: [
                                             Text(
                                               'Q${selectedCellIndex + 1}. $questionContent',
                                               style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: 17,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -930,7 +943,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                       const SizedBox(height: 25),
                       Center(
                         child: Image.asset(
-                          "assets/flog_logo.png",
+                          "assets/profile/profile_0.png",
                           width: 70,
                           height: 70,
                           alignment: Alignment.centerLeft,
@@ -972,12 +985,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                             questionData['questionContent']; // 질문 내용 가져오기
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20), //왼쪽과 오른쪽 간격 지정
+                                padding: const EdgeInsets.symmetric(horizontal: 30), //왼쪽과 오른쪽 간격 지정
                                 child: Text(
                                   'Q${selectedCellIndex + 1}. $questionContent',
                                   style: const TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                   softWrap: true, //자동 줄바꿈
@@ -1021,7 +1033,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   );
                                 }
                                 final answerDocuments = answerSnapshot.data!.docs;
-                                String userAnswer = "답변을 작성한 후 확인하세요"; // 변수를 이 부분에서 선언하고 초기화
+                                String userAnswer = "답변을 작성한 후 확인하세요."; // 변수를 이 부분에서 선언하고 초기화
                                 if (isAnswered == true) {
                                   for (final answerDoc in answerDocuments) {
                                     final answers = answerDoc['answers'] as Map<String, dynamic>;
@@ -1033,7 +1045,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                   }
                                 }
                                 if (userData['email'] == currentUser.email && isAnswered == false)
-                                  userAnswer = "클릭하여 답변 작성하기";
+                                  userAnswer = "클릭하여 답변 쓰기...";
 
                                 return GestureDetector(
                                   onTap: () {
@@ -1052,8 +1064,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.transparent,
                                       ),
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 20),
+                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                       child: Row(
                                         children: [
                                           const SizedBox(width: 15),
@@ -1096,7 +1107,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               Text(
                                                 userNickname,
                                                 style: TextStyle(
-                                                  fontSize: 17,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
@@ -1107,10 +1118,10 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 child: Text(
                                                   isAnswered == false
                                                       ? userAnswer
-                                                      : "답변을 작성한 후 확인하세요",
+                                                      : "답변을 작성한 후 확인하세요.",
                                                   style: const TextStyle(
                                                     fontSize: 17,
-                                                    color: Colors.black,
+                                                    color: Color(0xFFA9A8A8)
                                                   ),
                                                   softWrap: true, //자동 줄바꿈
                                                 ),
@@ -1142,15 +1153,13 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
         ),
         builder: (BuildContext context) {
           return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
                 },
                 child: SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        0.7, //전체 화면의 70% 덮는 크기
+                    height: MediaQuery.of(context).size.height * 0.7, //전체 화면의 70% 덮는 크기
                     child: StreamBuilder<
                         DocumentSnapshot<Map<String, dynamic>>>(
                         stream: FirebaseFirestore.instance
@@ -1178,7 +1187,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                     return Text('Error: ${answerSnapshot.error}');
                                   }
                                   if (answerSnapshot.connectionState == ConnectionState.waiting) {
-                                    //return CircularProgressIndicator();
+
                                   }
 
                                   return ListView(
@@ -1447,7 +1456,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                           ),
                                           Center(
                                             child: Image.asset(
-                                              "assets/flog_logo.png",
+                                              "assets/profile/profile_0.png",
                                               width: 70,
                                               height: 70,
                                               alignment: Alignment.centerLeft,
@@ -1463,10 +1472,16 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               builder: (context, snapshot) {
                                                 if (snapshot.hasError) {
                                                   return Text(
-                                                      'Error: ${snapshot.error}');
+                                                  'Error: ${snapshot.error}');
                                                 }
                                                 if (!snapshot.hasData) {
-                                                  return CircularProgressIndicator();
+                                                  return Center( //로딩바 구현 부분
+                                                    child: SpinKitPumpingHeart(
+                                                      color: Colors.green.withOpacity(0.2),
+                                                      size: 50.0, //크기 설정
+                                                      duration: Duration(seconds: 5),
+                                                    ),
+                                                  );
                                                 }
 
                                                 final questionData = snapshot
@@ -1483,11 +1498,11 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                 final questionContent = questionData['questionContent']; // 질문 내용 가져오기
                                                 return Center(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20), //왼쪽과 오른쪽 간격 지정
+                                                    padding: const EdgeInsets.symmetric(horizontal: 30), //왼쪽과 오른쪽 간격 지정
                                                     child: Text(
                                                       'Q${selectedCellIndex + 1}. $questionContent',
                                                       style: const TextStyle(
-                                                          fontSize: 22,
+                                                          fontSize: 18,
                                                           fontWeight:
                                                           FontWeight.bold),
                                                       textAlign: TextAlign.left,
@@ -1546,7 +1561,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               maxLines: null,
                                               keyboardType: TextInputType.multiline,
                                               decoration: const InputDecoration(
-                                                  hintText: '클릭하여 답변 작성하기...', //힌트 문구
+                                                  hintText: '클릭하여 답변 쓰기...', //힌트 문구
                                                   hintStyle: TextStyle(color: Colors.grey),
                                                   border: OutlineInputBorder(borderSide: BorderSide.none)
                                               ),
@@ -1619,7 +1634,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                   controller: qpuzzleTitleController,
                   maxLength: 25,
                   decoration: InputDecoration(
-                      hintText: '클릭하여 작성하기...',
+                      hintText: '클릭하여 설명 쓰기...',
                       hintStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF62BC1B)),

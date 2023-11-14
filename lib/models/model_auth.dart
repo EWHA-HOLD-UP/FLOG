@@ -141,7 +141,10 @@ class FirebaseAuthProvider with ChangeNotifier {
           selectedIndex: -1,
           isAnyFamilyMemberOngoing: false,
           isAnyFamilyMemberShowedQsheet: false,
-          group_no: newGroupNumber.toString());
+          group_no: newGroupNumber.toString(),
+          memoryBookNo: 0,
+          isMaking: false,
+      );
       await _firestore.collection("Group").doc(flogCode).set(group.toJson());
       FirebaseMessaging.instance.subscribeToTopic(newGroupNumber.toString());
       print("$newGroupNumber 알림구독됨");
