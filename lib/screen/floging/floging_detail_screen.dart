@@ -244,12 +244,10 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                     TextSpan(
                       text:
                           '${flogData['date'].toDate().hour.toString().padLeft(2, '0')}:${flogData['date'].toDate().minute.toString().padLeft(2, '0')}',
-                      style: GoogleFonts.balooBhaijaan2(
-                        textStyle: TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF62BC1B),
-                          fontWeight: FontWeight.bold,
-                        ),
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF62BC1B),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
@@ -363,23 +361,36 @@ class _FlogingDetailScreenState extends State<FlogingDetailScreen> {
                         snapshot.data!.data() as Map<String, dynamic>;
                     rToken = userData['token']; //토큰 받아오기
                     return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        SizedBox(width: 30),
                         Image.asset(
                           "assets/profile/profile_${userData['profile']}.png",
                           width: 40,
                           height: 40,
                         ),
-                       SizedBox(width: 5),
-                       Text(
-                         caption,
-                         style: TextStyle(
-                           fontSize: 15,
-                           fontWeight: FontWeight.w700,
-                         ),
-                         textAlign: TextAlign.center,
-                         softWrap: true,
-                       ),
+                        Text(
+                          ': ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 35),
+                            child: Text(
+                              caption,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.center,
+                              softWrap: true,
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   }),

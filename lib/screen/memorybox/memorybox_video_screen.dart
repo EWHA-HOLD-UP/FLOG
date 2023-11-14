@@ -51,7 +51,7 @@ class MemoryBoxVideoState extends State<MemoryBoxVideoScreen> {
                 style: GoogleFonts.balooBhaijaan2(
                     textStyle: TextStyle(
                       fontSize: 30,
-                      color: Color(0xFF62BC1B),
+                      color: Color(0xFF609966),
                       fontWeight: FontWeight.bold,
                     ))),
           ],

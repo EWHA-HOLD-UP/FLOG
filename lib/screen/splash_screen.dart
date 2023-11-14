@@ -5,7 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/notification/local_notification.dart';
 import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
-import 'package:flog/screen/register/start_screen.dart';
 import 'package:flog/screen/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flog/models/model_auth.dart';
@@ -118,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       } else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => StartScreen()));
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       }
     });
   }
@@ -158,21 +157,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-
-  Widget build(BuildContext context) {
+  Widget build(Object context) {
     return Scaffold(
       appBar: null,
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/splash.png'),
-              fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
-            ),
-          ),
-        ),
+      body: Center(
+        child: Text('Splash Screen'),
       ),
     );
   }

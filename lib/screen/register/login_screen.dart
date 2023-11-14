@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
               Navigator.pop(context); // 뒤로가기 기능 추가
             },
           ),
-          title: Text(
+          title: const Text(
             '로그인',
             style: TextStyle(
               color: Colors.black,
@@ -103,17 +103,19 @@ class EmailInput extends StatelessWidget {
         decoration: const InputDecoration(
           hintText: 'Email', // Hint Text
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)), // 네모 상자의 모서리 둥글기 설정
+            borderRadius:
+                BorderRadius.all(Radius.circular(10.0)), // 네모 상자의 모서리 둥글기 설정
             borderSide: BorderSide(color: Colors.grey), // 테두리 색 설정
           ),
-          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12), // 내용 안의 패딩 조정
-          hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // 힌트 텍스트 스타일
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 12, horizontal: 12), // 내용 안의 패딩 조정
+          hintStyle: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold), // 힌트 텍스트 스타일
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            borderSide: BorderSide(color: Color(0xFF62BC1B), width: 2.0
-            ), // 선택됐을 때 테두리 색 변경
+            borderSide: BorderSide(
+                color: Color(0xFF609966), width: 2.0), // 선택됐을 때 테두리 색 변경
           ),
-
         ),
       ),
     );
@@ -148,7 +150,7 @@ class PasswordInput extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             borderSide: BorderSide(
-                color: Color(0xFF62BC1B), width: 2.0), // 선택됐을 때 테두리 색 변경
+                color: Color(0xFF609966), width: 2.0), // 선택됐을 때 테두리 색 변경
           ),
         ),
       ),
@@ -169,7 +171,7 @@ class LoginButton extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.05,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF62BC1B),
+          backgroundColor: const Color(0xff609966),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),

@@ -24,32 +24,32 @@ class _WaitingState extends State<WaitingForFamily>{
       ),
       body: SafeArea(
         child: Center(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/matching_screen_background.png"),
-                fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
+          child: Column(
+            children: [
+              const SizedBox(height: 70),
+              Image.asset(
+                  "assets/flog_logo.png",
+                  width: 40,
+                  height: 40
               ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 400),
-                const Text(
-                  'FLOG 코드를 가족에게 공유하여\n가족 그룹에 들어오라고 알려주세요!',
-                  style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  widget.familycode,
-                  style: const TextStyle(
-                      fontSize: 35, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
+              const SizedBox(height: 20),
+              const Text(
+                'FLOG 코드를 가족에게 공유하여',
+                style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                '가족 그룹에 들어오라고 알려주세요!',
+                style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                widget.familycode,
+                style: const TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold),
+              )
+            ],
           ),
         ),
       ),

@@ -34,7 +34,6 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // 세로 중간 정렬
               children: [
-                const SizedBox(height: 90),
                 Image.asset(
                   "assets/flog_name_3d.png",
                   width: 180,
@@ -56,14 +55,8 @@ class RegisterScreen extends StatelessWidget {
                 const EmailInput(),
                 const PasswordInput(),
                 const PasswordConfirmInput(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const BirthInput(),
-                    SizedBox(width: 10),
-                    const NicknameInput()
-                  ],
-                ),
+                const NicknameInput(),
+                const BirthInput(),
                 const SizedBox(height: 10),
                 const ReisterButton(),
                 const Align(
@@ -102,7 +95,7 @@ class EmailInput extends StatelessWidget {
         Provider.of<RegisterFieldModel>(context, listen: false);
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-      width: 340,
+      width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
         onChanged: (email) {
           registerField.setEmail(email);
@@ -168,7 +161,7 @@ class _PasswordInputState extends State<PasswordInput> {
         Provider.of<RegisterFieldModel>(context, listen: false);
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-      width: 340,
+      width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
         controller: _pwcontroller,
         onChanged: (password) {
@@ -211,7 +204,7 @@ class PasswordConfirmInput extends StatelessWidget {
         Provider.of<RegisterFieldModel>(context); // listen == true
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-      width: 340,
+      width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
         onChanged: (password) {
           registerField.setPasswordConfirm(password);
@@ -250,17 +243,18 @@ class NicknameInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final registerField = Provider.of<RegisterFieldModel>(context, listen: false);
+    final registerField =
+        Provider.of<RegisterFieldModel>(context, listen: false);
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
-      width: 165,
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+      width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
         onChanged: (nickname) {
           registerField.setNickname(nickname);
         },
         decoration: const InputDecoration(
           labelText: 'Nickname', // Hint Text
-          hintText: '닉네임을 입력',
+          hintText: '사용할 닉네임을 입력해주세요.',
           labelStyle: TextStyle(
             color: Colors.grey, // labelText 색상 변경
             fontWeight: FontWeight.bold,
@@ -317,8 +311,8 @@ class _BirthInputState extends State<BirthInput> {
     final registerField =
         Provider.of<RegisterFieldModel>(context, listen: false);
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 5, 0, 5),
-      width: 165,
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+      width: MediaQuery.of(context).size.width * 0.8,
       child: TextField(
         controller: _birthcontroller,
         onChanged: (birth) {
@@ -328,7 +322,7 @@ class _BirthInputState extends State<BirthInput> {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: 'Birth', // Hint Text
-          hintText: 'YYMMDD 형식',
+          hintText: '생일을 입력해주세요. (YYMMDD)',
           labelStyle: const TextStyle(
             color: Colors.grey, // labelText 색상 변경
             fontWeight: FontWeight.bold,
@@ -357,14 +351,16 @@ class ReisterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authClient = Provider.of<FirebaseAuthProvider>(context, listen: false);
-    final registerField = Provider.of<RegisterFieldModel>(context, listen: false);
+    final authClient =
+        Provider.of<FirebaseAuthProvider>(context, listen: false);
+    final registerField =
+        Provider.of<RegisterFieldModel>(context, listen: false);
     return SizedBox(
-      width: 300,
-      height: 45,
+      width: MediaQuery.of(context).size.width * 0.7,
+      height: MediaQuery.of(context).size.height * 0.05,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF62BC1B),
+            backgroundColor: const Color(0xff609966),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -390,14 +386,13 @@ class ReisterButton extends StatelessWidget {
               }
             });
           },
-          child: const Text(
-            '회원가입 하기',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.bold, // 굵게 설정
-            ),
-          ),
+          child: const Text('완료',
+                style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold, // 굵게 설정
+                ),
+                ),
       ),
     );
   }

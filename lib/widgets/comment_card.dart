@@ -37,19 +37,23 @@ class CommentCard extends StatelessWidget {
           title: Text(
             '댓글 삭제',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              color: Color(0xFF62BC1B),
-              fontWeight: FontWeight.bold,
+            style: GoogleFonts.nanumGothic(
+              textStyle: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF609966),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           content: Text(
-            '이 댓글을 삭제하시겠습니까?',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.black,
-            ),
+                  '이 댓글을 삭제하시겠습니까?',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nanumGothic(
+                    textStyle: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
+                 ),
           ),
           actions: <Widget>[
             Row(
@@ -58,9 +62,11 @@ class CommentCard extends StatelessWidget {
                 TextButton(
                   child: Text(
                     '취소',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    style: GoogleFonts.nanumGothic(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   style: ButtonStyle(
@@ -69,7 +75,7 @@ class CommentCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -78,9 +84,11 @@ class CommentCard extends StatelessWidget {
                 TextButton(
                   child: Text(
                     '삭제',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    style: GoogleFonts.nanumGothic(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   style: ButtonStyle(
@@ -89,7 +97,7 @@ class CommentCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF609966)),
                   ),
                   onPressed: () async {
                     try {
@@ -178,10 +186,12 @@ class CommentCard extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: userData['nickname'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.nanumGothic(
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           WidgetSpan(
@@ -189,10 +199,12 @@ class CommentCard extends StatelessWidget {
                           ),
                           TextSpan(
                             text: DateFormat('yy.MM.dd HH:mm').format(date.toDate()),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
+                            style: GoogleFonts.nanumGothic(
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ],
