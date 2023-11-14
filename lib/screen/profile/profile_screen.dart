@@ -408,30 +408,18 @@ class ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              userData['nickname'],
-                              style: const TextStyle(
+                        TextButton(
+                          child: Text(
+                            userData['nickname'],
+                            style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF62BC1B),
-                              ),
+                                color: Color(0xFF62BC1B)
                             ),
-                            const SizedBox(width: 5),
-                            GestureDetector(
-                              onTap: () => editField('nickname', userData['nickname']),
-                              child: Image.asset(
-                                'button/edit.png',
-                                width: 20,
-                                height: 20,
-                                color: const Color(0xFF62BC1B),
-                              ),
-                            ),
-                          ],
+                          ),
+                          onPressed: () =>
+                              editField('nickname', userData['nickname']),
                         ),
-                        const SizedBox(height: 5),
                         Text(
                             userData['email'],
                             style: const TextStyle(fontSize: 15)

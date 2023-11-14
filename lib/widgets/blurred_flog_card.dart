@@ -39,8 +39,8 @@ class BlurredFlogCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.0), // 반지름을 조절하여 원하는 만큼 둥글게 만듭니다.
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(color: Colors.black.withOpacity(0.3)
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Container(color: Colors.black.withOpacity(0.2)
                 ),
               ),
             )

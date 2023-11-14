@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../widgets/blurred_flog_card.dart';
 import '../../widgets/flog_card.dart';
 import 'package:flog/screen/floging/floging_detail_screen.dart';
 
@@ -16,7 +18,7 @@ class MemoryBoxDetailScreen extends StatefulWidget {
 class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser!;
-
+  late bool currentUserUploaded = false;
   String currentUserFlogCode = "";
 
   @override
@@ -30,6 +32,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
     if (userDoc.exists) {
       setState(() {
         currentUserFlogCode = userDoc.data()!['flogCode'];
+        currentUserUploaded = userDoc.data()!['isUpload'];
       });
     }
     //print(currentUserFlogCode);
@@ -50,6 +53,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         userSnapshot.data!.docs;
+
 
         return Scaffold(
           appBar: AppBar(
@@ -86,7 +90,13 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
                 return Text('Error: ${flogSnapshot.error}');
               }
               if (flogSnapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return Center(//로딩바 구현 부분
+                  child: SpinKitPumpingHeart(
+                    color: Colors.green.withOpacity(0.2),
+                    size: 50.0, //크기 설정
+                    duration: const Duration(seconds: 5),
+                  ),
+                );
               }
               final flogDocuments = flogSnapshot.data!.docs;
 
@@ -123,8 +133,19 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
 
                   if (index < selectedFlogDocs.length) {
                     final flogData = selectedFlogDocs[index].data() as Map<String, dynamic>;
+                    final isToday = DateTime.now().year % 100 == selectedYear &&
+                        DateTime.now().month == selectedMonth &&
+                        DateTime.now().day == selectedDay;
 
-                    return GestureDetector(
+                    return (isToday && !currentUserUploaded) ?
+                    BlurredFlogCard(
+                      date: flogData['date'],
+                      frontImageURL: flogData['downloadUrl_front'],
+                      backImageURL: flogData['downloadUrl_back'],
+                      flogCode: flogData['flogCode'],
+                      flogingId: flogData['flogingId'],
+                      uid: flogData['uid'],
+                    ) : GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -142,7 +163,7 @@ class MemoryBoxDetailState extends State<MemoryBoxDetailScreen> {
                         uid: flogData['uid'],
                       ),
                     );
-                  }
+                }
                   return Container();
                 },
               );
