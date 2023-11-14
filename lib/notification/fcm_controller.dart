@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 final pushFcmUrl =
     'https://us-central1-flog-e708e.cloudfunctions.net/pushFcm'; // Firebase Functions 엔드포인트 변경
@@ -78,6 +79,8 @@ void sendNotification(String token, String title, String body) async {
 }
 
 void groupNotification(String group_no, String title, String body) async {
+  FirebaseMessaging.instance.unsubscribeFromTopic(group_no);
+      print("$group_no 알림구독취소");
   var headers = {
     'Content-Type': 'application/json',
     'Authorization':
@@ -98,5 +101,21 @@ void groupNotification(String group_no, String title, String body) async {
     print(await response.stream.bytesToString());
   } else {
     print(response.reasonPhrase);
+  }
+}
+
+Future<void> callCloudFunction(String functionEndpoint) async {
+  try {
+    // Cloud Function에 POST 요청 보내기
+    final response = await http.post(Uri.parse(functionEndpoint));
+
+    // HTTP 응답 코드 확인
+    if (response.statusCode == 200) {
+      print('Cloud Function 호출 성공');
+    } else {
+      print('Cloud Function 호출 실패. 응답 코드: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Cloud Function 호출 중 오류 발생: $error');
   }
 }

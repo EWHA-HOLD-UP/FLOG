@@ -70,6 +70,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
       print(err);
     }
   }
+
   Future<void> getUserProfile() async {
     final userDoc = await FirebaseFirestore.instance
         .collection('User')
@@ -82,7 +83,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -141,15 +141,19 @@ class ShootingEditState extends State<ShootingEditScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 35, top:15),
+                          padding: const EdgeInsets.only(right: 35, top: 15),
                           child: Column(
                             children: [
                               Text(
-                                isCaptionExist?caption:"클릭하여 가족에게 한마디 작성하기....",
+                                isCaptionExist
+                                    ? caption
+                                    : "클릭하여 가족에게 한마디 작성하기....",
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
-                                  color: isCaptionExist?Colors.black:Colors.grey,
+                                  color: isCaptionExist
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                                 textAlign: TextAlign.center,
                                 softWrap: true,
@@ -254,100 +258,107 @@ class ShootingEditState extends State<ShootingEditScreen> {
           top: 20,
           left: 20,
           child: InkWell(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
-                    ),
-                    title: Text(
-                      '메인 화면으로 돌아가시겠습니까?',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color(0xFF62BC1B),
-                        fontWeight: FontWeight.bold,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // 모서리 둥글게
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    content: Text(
-                      '메인으로 돌아가면\n방금 찍은 사진들은 복구할 수 없어요!\n',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    actions: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 40, right: 40),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
-                                  ),
-                                ),
-                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
-                              ),
-                              child: Text(
-                                '취소',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                '확인',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
-                                  ),
-                                ),
-                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF62BC1B)),
-                              ),
-                            ),
-                          ],
+                      title: Text(
+                        '메인 화면으로 돌아가시겠습니까?',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xFF62BC1B),
+                          fontWeight: FontWeight.bold,
                         ),
-                      )
-                    ],
-                  );
-                },
-              );
-            },
-            child: Container(
-              color: Colors.transparent,
-              width: 30,
-              height: 30,
-              child: Image.asset(
-                "button/close.png",
-                width: 20,
-                height: 20,
-                color: Colors.white,
-              ),
-            )
-          ),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: Text(
+                        '메인으로 돌아가면\n방금 찍은 사진들은 복구할 수 없어요!\n',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      actions: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 40, right: 40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // 모서리를 둥글게 설정
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color(0xFF62BC1B)),
+                                ),
+                                child: Text(
+                                  '취소',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  '확인',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // 모서리를 둥글게 설정
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color(0xFF62BC1B)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Container(
+                color: Colors.transparent,
+                width: 30,
+                height: 30,
+                child: Image.asset(
+                  "button/close.png",
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
+              )),
         ),
         /*---텍스트 스티커, 플립, 이미지 스티커 버튼---*/
         Positioned(
@@ -445,8 +456,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   style: TextStyle(
                       fontSize: 10,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -484,7 +494,6 @@ class ShootingEditState extends State<ShootingEditScreen> {
 
   // 5️⃣ 스티커 뒤로가기 버튼
   Widget stickerUndoButton() {
-
     return InkWell(
       onTap: () {
         undoSticker(); //클릭 시 이미지 스티커 뒤로가기
@@ -553,8 +562,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 }
               }
               String nickname = userDocument.get('nickname');
-              FirebaseMessaging.instance.unsubscribeFromTopic(group_no);
-              print("$group_no 알림구독취소");
+              
               groupNotification(
                   group_no, "[FLOGing]", "$nickname님이 플로깅을 추가했습니다!");
               FirebaseMessaging.instance.subscribeToTopic(group_no);
