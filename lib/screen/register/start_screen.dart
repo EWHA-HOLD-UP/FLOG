@@ -18,13 +18,13 @@ class StartScreen extends StatelessWidget {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/start.png'),
+                    image: AssetImage('assets/splash.png'),
                     fit: BoxFit.cover, // 이미지를 화면에 꽉 채우도록 설정
                   ),
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 500),
+                    const SizedBox(height: 600),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -37,9 +37,12 @@ class StartScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
+
                         ),
+                        side: BorderSide(color: Color(0xff62BC1B),
+                        width: 4.0),
                         elevation: 0,
-                        backgroundColor: const Color(0xFF62BC1B),
+                        backgroundColor: Colors.transparent,
                         minimumSize: const Size(300, 50),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       ),
@@ -48,7 +51,7 @@ class StartScreen extends StatelessWidget {
                         style: GoogleFonts.balooBhaijaan2(
                           textStyle: const TextStyle(
                             fontSize: 25,
-                            color: Colors.white,
+                            color: Color(0xff62BC1B),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
