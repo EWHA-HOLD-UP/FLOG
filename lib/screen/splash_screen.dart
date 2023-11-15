@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flog/notification/local_notification.dart';
+import 'package:flog/screen/register/login_screen.dart';
 import 'package:flog/screen/register/matching_screen.dart';
 import 'package:flog/screen/register/start_screen.dart';
 import 'package:flog/screen/root_screen.dart';
@@ -12,23 +15,27 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../providers/user_provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
   @override
-  SplashScreenState createState() => SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
-  var messageString = "";
+class _SplashScreenState extends State<SplashScreen> {
+  var MessageString = "";
 
   void getMyDevicdeToken() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = await FirebaseMessaging.instance.getToken();
-    //print("내 디바이스 토큰: $token");
-    final CollectionReference userRef = firestore.collection('User');
+    print("내 디바이스 토큰: $token");
+    FirebaseMessaging.instance.requestPermission(
+      badge: true,
+      alert: true,
+      sound: true,
+    );
+    final CollectionReference userRef = _firestore.collection('User');
     await userRef.doc(prefs.getString('email')).update({'token': token});
   }
 
@@ -37,16 +44,16 @@ class SplashScreenState extends State<SplashScreen> {
     final authClient =
         Provider.of<FirebaseAuthProvider>(context, listen: false);
     bool isLogin = prefs.getBool('isLogin') ?? false;
-    //print("[*] 로그인 상태 : " + isLogin.toString());
+    print("[*] 로그인 상태 : " + isLogin.toString());
     if (isLogin) {
       String? email = prefs.getString('email');
       String? password = prefs.getString('password');
-      //print("[*] 저장된 정보로 로그인 재시도");
+      print("[*] 저장된 정보로 로그인 재시도");
       await authClient.loginWithEmail(email!, password!).then((loginStatus) {
         if (loginStatus == AuthStatus.loginSuccess) {
-          //print("[*] 로그인 성공");
+          print("[*] 로그인 성공");
         } else {
-          //print("[*] 로그인 실패");
+          print("[*] 로그인 실패");
           isLogin = false;
           prefs.setBool('isLogin', false);
         }
@@ -67,7 +74,7 @@ class SplashScreenState extends State<SplashScreen> {
 
         if (userDocument.exists) {
           String flogCode = userDocument.get('flogCode');
-          String groupNo = "";
+          String group_no = "";
           final CollectionReference groupRef =
               FirebaseFirestore.instance.collection('Group');
 
@@ -79,15 +86,15 @@ class SplashScreenState extends State<SplashScreen> {
             // 조회된 그룹이 있는 경우
             if (groupSnapshot.docs.isNotEmpty) {
               // 첫 번째로 조회된 그룹의 'group_no'를 반환합니다.
-              groupNo = groupSnapshot.docs.first.get('group_no').toString();
+              group_no = groupSnapshot.docs.first.get('group_no').toString();
             } else {
               // 일치하는 그룹이 없는 경우
-              //print('일치하는 그룹이 없습니다.');
+              print('일치하는 그룹이 없습니다.');
               return null;
             }
           } catch (e) {
             // 에러 처리
-            //print('그룹 조회 중 오류 발생: $e');
+            print('그룹 조회 중 오류 발생: $e');
             return null;
           }
           if (flogCode == "null") {
@@ -103,8 +110,8 @@ class SplashScreenState extends State<SplashScreen> {
                         nickname: prefs.getString('email')!)));
           } else {
             // flogCode가 있는경우(가족 등록된 기존 유저)
-            FirebaseMessaging.instance.subscribeToTopic(groupNo);
-            //print("$groupNo 알림구독됨");
+            FirebaseMessaging.instance.subscribeToTopic(group_no);
+            print("$group_no 알림구독됨");
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(
@@ -118,7 +125,7 @@ class SplashScreenState extends State<SplashScreen> {
         }
       } else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const StartScreen()));
+            context, MaterialPageRoute(builder: (context) => StartScreen()));
       }
     });
   }
@@ -139,15 +146,15 @@ class SplashScreenState extends State<SplashScreen> {
                     'high_importance_channel', 'high_importance_notification',
                     importance: Importance.max)));
         setState(() {
-          messageString = message.notification!.body!;
-          //print("Foreground 메시지 수신: $messageString");
+          MessageString = message.notification!.body!;
+          print("Foreground 메시지 수신: $MessageString");
         });
       }
     });
     Future.delayed(
         const Duration(seconds: 3), LocalNotification.requestPermission());
     super.initState();
-    Timer(const Duration(microseconds: 1500), () {
+    Timer(Duration(microseconds: 1500), () {
       moveScreen();
     });
   }
@@ -158,9 +165,8 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: null,
       body: SizedBox(
         width: double.infinity,

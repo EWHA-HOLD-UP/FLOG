@@ -44,8 +44,10 @@ class ShootingEditState extends State<ShootingEditScreen> {
   String? selectedId; //스티커 선택하여 붙일 때 사용할 스티커 아이디
 
   GlobalKey globalKey = GlobalKey(); //스티커 포함하여 캡처하기 위한 global key
-  Uint8List finalbackImage = Uint8List(0); //스티커까지 붙인 후면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
-  Uint8List finalfrontImage = Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
+  Uint8List finalbackImage =
+      Uint8List(0); //스티커까지 붙인 후면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
+  Uint8List finalfrontImage =
+      Uint8List(0); //스티커까지 붙인 전면 카메라 저장할 변수 초기화 (초기 크기가 0인 빈 Uint8List)
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -64,8 +66,10 @@ class ShootingEditState extends State<ShootingEditScreen> {
   }
 
   void postImage(String uid, String flogCode) async {
-    try { // upload to storage and db
-      await FireStoreMethods().uploadFloging(finalfrontImage, finalbackImage, uid, flogCode, caption);
+    try {
+      // upload to storage and db
+      await FireStoreMethods().uploadFloging(
+          finalfrontImage, finalbackImage, uid, flogCode, caption);
     } catch (err) {
       //print(err);
     }
@@ -86,7 +90,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope( //뒤로가기 방지
+    return WillPopScope(
+      //뒤로가기 방지
       onWillPop: () async => false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -154,11 +159,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                           child: Column(
                             children: [
                               Text(
-                                isCaptionExist ? caption : "클릭하여 가족에게 한마디 작성하기....",
+                                isCaptionExist
+                                    ? caption
+                                    : "클릭하여 가족에게 한마디 작성하기....",
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
-                                  color: isCaptionExist ? Colors.black : Colors.grey,
+                                  color: isCaptionExist
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                                 textAlign: TextAlign.center,
                                 softWrap: true,
@@ -200,14 +209,16 @@ class ShootingEditState extends State<ShootingEditScreen> {
           child: SizedBox(
             width: 345,
             height: 458,
-            child: RepaintBoundary( //스티커 포함하여 현재 화면 캡처
+            child: RepaintBoundary(
+              //스티커 포함하여 현재 화면 캡처
               key: globalKey,
               child: Stack(
                 children: [
                   Visibility(
                     visible: !isFrontImageVisible, //전면 사진이 안 보이게
                     child: Image.file(
-                      File(widget.backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
+                      File(widget
+                          .backImagePath), //Shooting_screen_back 화면에서 받아온 후면 사진 불러오기
                       width: 360,
                       height: 520,
                     ),
@@ -227,11 +238,13 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   ),
                   Visibility(
                     visible: isFrontImageVisible, //전면 사진이 보이게
-                    child: Transform( //좌우 반전
+                    child: Transform(
+                      //좌우 반전
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
                       child: Image.file(
-                        File(widget.frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
+                        File(widget
+                            .frontImagePath), //Shooting_screen_front 화면에서 받아온 후면 사진 불러오기
                         width: 360,
                         height: 520,
                       ),
@@ -295,12 +308,16 @@ class ShootingEditState extends State<ShootingEditScreen> {
                                   Navigator.of(context).pop();
                                 },
                                 style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // 모서리를 둥글게 설정
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          const Color(0xFF62BC1B)),
                                 ),
                                 child: const Text(
                                   '취소',
@@ -318,12 +335,16 @@ class ShootingEditState extends State<ShootingEditScreen> {
                                   Navigator.of(context).pop();
                                 },
                                 style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // 모서리를 둥글게 설정
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          const Color(0xFF62BC1B)),
                                 ),
                                 child: const Text(
                                   '확인',
@@ -351,35 +372,41 @@ class ShootingEditState extends State<ShootingEditScreen> {
                   height: 20,
                   color: Colors.white,
                 ),
-              )
-          ),
+              )),
         ),
       ],
     );
   }
 
-
   // 플립 버튼
   Widget flipButton() {
     return InkWell(
-      onTap: () async { //플립 버튼을 누르면
-        if (isFrontImageVisible == false) { //후면일 때만 (후면->전면 플립은 가능하지만 전면->후면 다시 넘어가서 꾸밀 수 없음)
+      onTap: () async {
+        //플립 버튼을 누르면
+        if (isFrontImageVisible == false) {
+          //후면일 때만 (후면->전면 플립은 가능하지만 전면->후면 다시 넘어가서 꾸밀 수 없음)
           setState(() {
             isFrontImageVisible = true; //후면->전면 (전면이 후면 위에 stack되어 보이도록)
             isSendingButtonEnabled = true; //전면으로 전환 후 비로소 상태 전송 버튼 활성화
           });
 
-          RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+          RenderRepaintBoundary boundary = globalKey.currentContext!
+              .findRenderObject() as RenderRepaintBoundary;
           ui.Image image = await boundary.toImage();
-          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+          ByteData? byteData =
+              await image.toByteData(format: ui.ImageByteFormat.png);
 
           if (byteData != null) {
-            Uint8List pngBytes = byteData.buffer.asUint8List(); //지금까지 꾸민 스티커와 후면카메라를 캡처하여 pngBytes에 임시 저장
-            finalbackImage = pngBytes; //최종적으로 finalbackImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+            Uint8List pngBytes = byteData.buffer
+                .asUint8List(); //지금까지 꾸민 스티커와 후면카메라를 캡처하여 pngBytes에 임시 저장
+            finalbackImage =
+                pngBytes; //최종적으로 finalbackImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
           }
         }
       },
-      child: isFrontImageVisible ? Image.asset( //전면카메라일 때
+      child: isFrontImageVisible
+          ? Image.asset(
+              //전면카메라일 때
               "button/flip.png",
               color: Colors.grey, // 비활성화된 버튼 이미지
               width: 30,
@@ -387,20 +414,19 @@ class ShootingEditState extends State<ShootingEditScreen> {
             )
           : Column(
               children: [
-                Image.asset(//후면카메라일 때
-                  "button/flip.png", // 활성화된 버튼 이미지
-                  width: 30,
-                  height: 30,
-                  color: const Color(0xFF62BC1B)
-                ),
+                Image.asset(
+                    //후면카메라일 때
+                    "button/flip.png", // 활성화된 버튼 이미지
+                    width: 30,
+                    height: 30,
+                    color: const Color(0xFF62BC1B)),
                 const Text(
                   '셀카 꾸미기',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 10,
                       color: const Color(0xFF62BC1B),
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -415,12 +441,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
       child: Column(
         children: [
-          Image.asset(
-            "button/sticker.png",
-            width: 30,
-            height: 30,
-            color: const Color(0xFF62BC1B)
-          ),
+          Image.asset("button/sticker.png",
+              width: 30, height: 30, color: const Color(0xFF62BC1B)),
           const SizedBox(height: 5),
           const Text(
             '스티커',
@@ -444,12 +466,8 @@ class ShootingEditState extends State<ShootingEditScreen> {
       },
       child: Column(
         children: [
-          Image.asset(
-            "button/back_sticker.png",
-            width: 25,
-            height: 25,
-            color: const Color(0xFF62BC1B)
-          ),
+          Image.asset("button/back_sticker.png",
+              width: 25, height: 25, color: const Color(0xFF62BC1B)),
           const SizedBox(height: 5),
           const Text(
             '되돌리기',
@@ -469,25 +487,35 @@ class ShootingEditState extends State<ShootingEditScreen> {
   Widget sendingButton() {
     return ElevatedButton(
       //상태 전송 버튼을 누르면
-      onPressed: isSendingButtonEnabled ? () async { //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
-              RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      onPressed: isSendingButtonEnabled
+          ? () async {
+              //상태 전송 버튼이 활성화 되어야 할 때 (=전면으로 바뀌었을 때)
+              RenderRepaintBoundary boundary = globalKey.currentContext!
+                  .findRenderObject() as RenderRepaintBoundary;
               ui.Image image = await boundary.toImage();
-              ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+              ByteData? byteData =
+                  await image.toByteData(format: ui.ImageByteFormat.png);
 
               if (byteData != null) {
-                Uint8List pngBytes = byteData.buffer.asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
-                finalfrontImage = pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
+                Uint8List pngBytes = byteData.buffer
+                    .asUint8List(); // 지금까지 꾸민 스티커와 전면카메라를 캡처하여 pngBytes에 임시 저장
+                finalfrontImage =
+                    pngBytes; //최종적으로 finalfrontImage에 저장 --> 이걸 파이어베이스에 넘기면 됨
               }
 
               final currentUser = FirebaseAuth.instance.currentUser!;
-              final usersCollection = FirebaseFirestore.instance.collection("User");
-              final groupCollection = FirebaseFirestore.instance.collection("Group");
-              DocumentSnapshot userDocument = await usersCollection.doc(currentUser.email).get();
+              final usersCollection =
+                  FirebaseFirestore.instance.collection("User");
+              final groupCollection =
+                  FirebaseFirestore.instance.collection("Group");
+              DocumentSnapshot userDocument =
+                  await usersCollection.doc(currentUser.email).get();
               if (userDocument.exists) {
                 String flogCode = userDocument.get('flogCode');
 
                 postImage(currentUser.email!, flogCode);
-                DocumentSnapshot groupDocument = await groupCollection.doc(flogCode).get();
+                DocumentSnapshot groupDocument =
+                    await groupCollection.doc(flogCode).get();
                 if (groupDocument.exists) {
                   int frog = groupDocument.get('frog');
                   groupNo = groupDocument.get('group_no');
@@ -496,8 +524,9 @@ class ShootingEditState extends State<ShootingEditScreen> {
                 }
               }
               String nickname = userDocument.get('nickname');
-              
-              groupNotification(groupNo, "[FLOGing]", "$nickname님이 플로깅을 추가했습니다!");
+
+              groupNotification_floging(
+                  groupNo, "[FLOGing]", "$nickname님이 플로깅을 추가했습니다!");
               FirebaseMessaging.instance.subscribeToTopic(groupNo);
               //print("$groupNo 알림재구독");
 
@@ -506,7 +535,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
               Navigator.pop(context);
               Navigator.pop(context);
             }
-            : null, //상태 전송 버튼이 활성화 되지 않았을 때 (=후면 사진이 나타나있을 때) 버튼을 눌러도 아무것도 x
+          : null, //상태 전송 버튼이 활성화 되지 않았을 때 (=후면 사진이 나타나있을 때) 버튼을 눌러도 아무것도 x
 
       //상태 전송 버튼 디자인
       style: ElevatedButton.styleFrom(
@@ -579,15 +608,19 @@ class ShootingEditState extends State<ShootingEditScreen> {
   //이미지 스티커 목록에서 스티커를 눌렀을 때 붙인 스티커 목록에 스티커 추가함
   void onStickerTap(int index) async {
     setState(() {
-      if (isFrontImageVisible) { //전면 카메라가 보일 때
-        frontImageStickers.add( //전면 카메라에 붙인 스티커 목록에 해당 스티커 추가
+      if (isFrontImageVisible) {
+        //전면 카메라가 보일 때
+        frontImageStickers.add(
+          //전면 카메라에 붙인 스티커 목록에 해당 스티커 추가
           StickerModel(
             id: const Uuid().v4(),
             imgPath: 'assets/emoticons/emoticon_$index.png',
           ),
         );
-      } else { //후면 카메라가 보일 때
-        backImageStickers.add( //후면 카메라에 붙인 스티커 목록에 해당 스티커 추가
+      } else {
+        //후면 카메라가 보일 때
+        backImageStickers.add(
+          //후면 카메라에 붙인 스티커 목록에 해당 스티커 추가
           StickerModel(
             id: const Uuid().v4(),
             imgPath: 'assets/emoticons/emoticon_$index.png',
@@ -610,13 +643,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
       setState(() {
         StickerModel lastStickerback = backImageStickers.last;
         backImageStickers.remove(lastStickerback);
-        backImageStickers.removeWhere((sticker) => sticker.id == lastStickerback.id);
+        backImageStickers
+            .removeWhere((sticker) => sticker.id == lastStickerback.id);
       });
     } else if (isFrontImageVisible && frontImageStickers.isNotEmpty) {
       setState(() {
         StickerModel lastStickerfront = frontImageStickers.last;
         frontImageStickers.remove(lastStickerfront);
-        frontImageStickers.removeWhere((sticker) => sticker.id == lastStickerfront.id);
+        frontImageStickers
+            .removeWhere((sticker) => sticker.id == lastStickerfront.id);
       });
     }
   }
@@ -649,8 +684,7 @@ class ShootingEditState extends State<ShootingEditScreen> {
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Color(0xFF62BC1B)),
                         borderRadius: BorderRadius.circular(10),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -665,12 +699,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                            borderRadius:
+                                BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFF62BC1B)),
                       ),
                       child: Text(
                         '확인',
@@ -687,12 +724,15 @@ class ShootingEditState extends State<ShootingEditScreen> {
                         Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0), // 모서리를 둥글게 설정
+                            borderRadius:
+                                BorderRadius.circular(15.0), // 모서리를 둥글게 설정
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF62BC1B)),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFF62BC1B)),
                       ),
                       child: Text(
                         '취소',

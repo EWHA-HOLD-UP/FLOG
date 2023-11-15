@@ -78,9 +78,34 @@ void sendNotification(String token, String title, String body) async {
   }
 }
 
-void groupNotification(String group_no, String title, String body) async {
+void groupNotification_floging(
+    String group_no, String title, String body) async {
   FirebaseMessaging.instance.unsubscribeFromTopic(group_no);
-      print("$group_no 알림구독취소");
+  print("$group_no 알림구독취소");
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization':
+        'key=AAAAT-_37n8:APA91bG1SGAS3DipkjSH4C3pFveprmKolT4xC8LKR8Lk7w7ghcMdOZMzVSVCqCjcF847-x3aYHV4YDLZaIzXTOE7cvRssSG9lIJwE9IVqYJZi34MkHkMR9LYYAXmC5hI3r3hMzzo2dyU'
+  };
+  var request =
+      http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
+  request.body = json.encode({
+    "to": "/topics/$group_no",
+    "notification": {"title": title, "body": body},
+    "data": {"KEY": "VALUE"}
+  });
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  } else {
+    print(response.reasonPhrase);
+  }
+}
+
+void groupNotification(String group_no, String title, String body) async {
   var headers = {
     'Content-Type': 'application/json',
     'Authorization':
