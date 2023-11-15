@@ -596,7 +596,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                                                                                 ),
                                                                                                 const SizedBox(height: 7),
                                                                                                 SizedBox(
-                                                                                                  width: 280,
                                                                                                   child: Text(
                                                                                                     userAnswer,
                                                                                                     style: const TextStyle(
@@ -1053,7 +1052,7 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                       showAnswerSheet(context); //답변 작성 탭 나타남
                                     }
                                   },
-                                  child: Container(
+                                  child:Container(
                                     //구성원 각각의 답변 상태 or 답변이 나타나는 상자
                                       width: double.infinity,
                                       height: 110,
@@ -1112,7 +1111,6 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                               ),
                                               const SizedBox(height: 7),
                                               SizedBox(
-                                                width: 280,
                                                 child: Text(
                                                   isAnswered == false
                                                       ? userAnswer
@@ -1127,7 +1125,8 @@ class _QpuzzleScreenState extends State<QpuzzleScreen> {
                                             ],
                                           )
                                         ],
-                                      )),
+                                      ),
+                                  ),
                                 );
                               });
                         },
