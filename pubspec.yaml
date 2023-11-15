@@ -99,6 +99,10 @@ flutter:
     - assets/memory_book.png
     - assets/splash.png
     - assets/start.png
+    - assets/curious.png
+    - assets/hands.png
+    - assets/heart.png
+    - assets/sad.png
     - assets/emoticons/
     - assets/profile/
     - button/

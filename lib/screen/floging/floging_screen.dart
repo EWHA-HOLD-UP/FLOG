@@ -243,7 +243,8 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: [
-                                                            Container(
+                                                            Expanded(
+                                                              child:Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
                                                                 borderRadius: BorderRadius.circular(10.0),
@@ -260,9 +261,9 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 child: Column(
                                                                   children: [
                                                                     Image.asset(
-                                                                      "assets/emoticons/emoticon_5.png",
-                                                                      width: 50,
-                                                                      height: 50,
+                                                                      "assets/curious.png",
+                                                                      width: 40,
+                                                                      height: 40,
                                                                     ),
                                                                     const SizedBox(height: 8),
                                                                     const Text(
@@ -283,8 +284,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 },
                                                               ),
                                                             ),
+                                                            ),
                                                             const SizedBox(width: 10),
-                                                            Container(
+                                                            Expanded(
+                                                              child: Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
                                                                 borderRadius: BorderRadius.circular(10.0),
@@ -301,9 +304,9 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 child: Column(
                                                                   children: [
                                                                     Image.asset(
-                                                                      "assets/emoticons/emoticon_3.png",
-                                                                      width: 50,
-                                                                      height: 50,
+                                                                      "assets/heart.png",
+                                                                      width: 40,
+                                                                      height: 40,
                                                                     ),
                                                                     const SizedBox(height: 8),
                                                                     const Text(
@@ -324,8 +327,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 },
                                                               ),
                                                             ),
+                                                            ),
                                                             const SizedBox(width: 10),
-                                                            Container(
+                                                            Expanded(
+                                                              child: Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
                                                                 borderRadius: BorderRadius.circular(10.0),
@@ -342,9 +347,9 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 child: Column(
                                                                   children: [
                                                                     Image.asset(
-                                                                      "assets/emoticons/emoticon_10.png",
-                                                                      width: 50,
-                                                                      height: 50,
+                                                                      "assets/hands.png",
+                                                                      width: 40,
+                                                                      height: 40,
                                                                     ),
                                                                     const SizedBox(height: 8),
                                                                     const Text(
@@ -365,8 +370,10 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 },
                                                               ),
                                                             ),
+                                                            ),
                                                             const SizedBox(width: 10),
-                                                            Container(
+                                                            Expanded(
+                                                              child: Container(
                                                               decoration: BoxDecoration(
                                                                 color: Colors.white,
                                                                 borderRadius: BorderRadius.circular(10.0),
@@ -383,9 +390,9 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                 child: Column(
                                                                   children: [
                                                                     Image.asset(
-                                                                      "assets/emoticons/emoticon_4.png",
-                                                                      width: 50,
-                                                                      height: 50,
+                                                                      "assets/sad.png",
+                                                                      width: 40,
+                                                                      height: 40,
                                                                     ),
                                                                     const SizedBox(height: 8),
                                                                     const Text(
@@ -405,6 +412,7 @@ class FlogingScreenState extends State<FlogingScreen> {
                                                                   Navigator.of(context).pop(); // 팝업 창 닫기
                                                                 },
                                                               ),
+                                                            ),
                                                             ),
                                                           ],
                                                         ),
