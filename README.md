@@ -47,13 +47,13 @@ https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/dcd72d5b-09fb-42bb-9495-73
 </br></br>
 
 # :frog: Project
-#### 홀업(Hold Up) Organization 
+#### :frog: 홀업(Hold Up) Organization 
 https://github.com/EWHA-HOLD-UP
 
-#### 실행방법 및 제출 파일
+#### :file_folder: 실행방법 및 제출 파일
 Android Studio를 통해 실행 
 
-#### 사용 기술
+#### :computer: 사용 기술
 <img src="https://img.shields.io/badge/Android-green?style=for-the-badge&logo=Android&logoColor=black"/></a>
 <img src="https://img.shields.io/badge/IOS-black?style=for-the-badge&logo=IOS&logoColor=white">
 <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/></a>
@@ -63,29 +63,26 @@ Android Studio를 통해 실행
 <img src="https://img.shields.io/badge/OpenAI-412991.svg?style=for-the-badge&logo=OpenAI&logoColor=white" alt="OpenAI"/></a>
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 
-#### 프로젝트 목적
+#### :computer: 핵심 AI 기술
+1. 안면(표정) 인식 AI : 전면 카메라의 안면 유무를 판단하여 얼굴 사진 촬영 독려
+2. 생성형 AI : ChatGPT를 프롬프트 엔지니어링하여 높은 질의 미션&질문 무한 생성 + 개발자 웹과 연결하여 ChatGPT 취약성 극복
+3. 영상 자동 생성 AI : OpenCV 를 통해 한 달 주기로 가족들의 모든 날을 모아 영상 제공
+
+#### :frog: 프로젝트 목적
 대부분의 별거가족이 연락하고자하는 의지는 있으나 이를 실천할 실행력과 대화소재가 부족하다. 이 문제를 소프트웨어적으로 해결하기 위해 팝업을 통해 서로의 상태를 사진으로 공유하고, <Q-Puzzle>을 맞추며 함께 질문에 답변하는 가족 추억 저장소 앱을 제작하고자 한다. 
 
 "어느샌가 가족 간의 연락을 미루고 있진 않았나요? 혹시 의무적으로, 매번 똑같은 연락을 주고 받고 있지는 않나요? 이 애플리케이션은 당신과 가족의 상태를 부담없이 공유할 수 있게 해주며 소중한 이야깃거리를 제공해줄 것입니다." 
   
 
-#### 핵심 AI 기술
-1. 안면(표정) 인식 AI : 전면 카메라의 안면 유무를 판단하여 얼굴 사진 촬영 독려
-2. 생성형 AI : ChatGPT를 프롬프트 엔지니어링하여 높은 질의 미션&질문 무한 생성 + 개발자 웹과 연결하여 ChatGPT 취약성 극복
-3. 영상 자동 생성 AI : OpenCV 를 통해 한 달 주기로 가족들의 모든 날을 모아 영상 제공
+#### :frog: 세부 사용자 시나리오
+##### - Flow Chart
 
-#### 세부 사용자 시나리오
-### Flow Chart
-<img width="300" alt="F-LOG  Flow Chart-Qpuzzle" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/5d7198ad-7ebd-47ec-ac67-aee928631ed9">
+<img width="260" alt="F-LOG  Flow Chart - FLOGing" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/be955865-06d5-478c-91af-8346240e782f">
+<img width="350" alt="F-LOG  Flow Chart-Qpuzzle" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/5d7198ad-7ebd-47ec-ac67-aee928631ed9">
+<img width="400" alt="F-LOG  Flow Chart-MemoryBox" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/a128ecab-2cba-4a96-be45-c5126ff761af">
+<img width="250" alt="F-LOG  Flow Chart-회원가입,로그인,그룹화" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/93d9ccd8-b909-4e48-8780-06dab1c81288">
 
-<img width="300" alt="F-LOG  Flow Chart - FLOGing" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/be955865-06d5-478c-91af-8346240e782f">
-
-<img width="300" alt="F-LOG  Flow Chart-회원가입,로그인,그룹화" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/93d9ccd8-b909-4e48-8780-06dab1c81288">
-
-<img width="300" alt="F-LOG  Flow Chart-MemoryBox" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/634b81f0-374c-4e7d-87ba-395a24aa1172">
-
-  
-#### 팀원 기술 블로그
+#### :bulb: 팀원 기술 블로그
 * https://mingorithm.tistory.com/2
 * https://yes-im-on.tistory.com/2
 * https://tocsony.tistory.com/2
