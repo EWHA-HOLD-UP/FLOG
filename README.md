@@ -76,7 +76,14 @@ Android Studio를 통해 실행
 
 #### 세부 사용자 시나리오
 ### Flow Chart
-https://www.figma.com/file/Ag1st2N7YRFNfhyvhOB7QB/%5BF-LOG%5D-Flow-Chart?type=whiteboard&node-id=0%3A1&t=3dUkSUqvx126WGxV-1
+<img width="300" alt="F-LOG  Flow Chart-Qpuzzle" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/5d7198ad-7ebd-47ec-ac67-aee928631ed9">
+
+<img width="300" alt="F-LOG  Flow Chart - FLOGing" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/be955865-06d5-478c-91af-8346240e782f">
+
+<img width="300" alt="F-LOG  Flow Chart-회원가입,로그인,그룹화" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/93d9ccd8-b909-4e48-8780-06dab1c81288">
+
+<img width="300" alt="F-LOG  Flow Chart-MemoryBox" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/634b81f0-374c-4e7d-87ba-395a24aa1172">
+
   
 #### 팀원 기술 블로그
 * https://mingorithm.tistory.com/2
