@@ -1,11 +1,9 @@
 ![header](https://capsule-render.vercel.app/api?type=soft&color=9dcc8a&height=350&section=header&text=Flog&fontSize=90&fontColor=017e33&animation=twinkling&fontAlign=50&stroke=ffffff&desc=2023%20Ewha%20Capstone%20Design%20and%20Startup%20Project%20Team%2007%20HoldUp&descAlignY=70&descAlign=50)
 
 # FLOG :frog:
-### 시현영상 링크
-https://youtu.be/p3PQZcT9WBE
+### :movie_camera:시연영상 
+[[2023 캡스톤 그로쓰 07팀] 홀업 - FLOG 시연 영상](https://youtu.be/z8o-Xko50OM?si=-uHVwicfwFMA6eCx)
 
-### 프로토타입 링크
-https://www.figma.com/proto/1uk3RLNrL9NZUwv6QBGHRZ/F-log?type=design&node-id=15-6&scaling=scale-down&page-id=0%3A1&starting-point-node-id=15%3A6&show-proto-sidebar=1
 
 # Project
 ### 홀업(Hold Up) Organization
