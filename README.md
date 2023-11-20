@@ -4,6 +4,8 @@
 ### :movie_camera:시연영상 
 [[2023 캡스톤 그로쓰 07팀] 홀업 - FLOG 시연 영상](https://youtu.be/z8o-Xko50OM?si=-uHVwicfwFMA6eCx)
 
+### 포스터
+![그로쓰07_홀업_최종포스터_1](https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/5e2d3e3f-53e6-4bfe-99f1-2b737b0d3d88)
 
 # Project
 ### 홀업(Hold Up) Organization
