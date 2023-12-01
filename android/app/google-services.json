@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "343328419455",
+    "project_id": "flog-e708e",
+    "storage_bucket": "flog-e708e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343328419455:android:a94768986f92a27782594a",
+        "android_client_info": {
+          "package_name": "com.example.flog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343328419455-fv6b1o9ee29hk9t4q880qrqqq9asp0je.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA76nVqqV6GL2_3VkafLEmXXShCEXoJ-BU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343328419455-fv6b1o9ee29hk9t4q880qrqqq9asp0je.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "343328419455-fjb8fsi7vi3madjbb53gnl1c3knqt1in.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flog"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
