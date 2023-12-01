@@ -35,7 +35,9 @@ https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/9f713f91-32b0-4998-8f4a-3c
 ## :five: Developer's web
 - 질문 관리 : ChatGPT와 연동
 - 추억북 관리 : 신청 / 제작 현황
-  
+- :link: **css/html 코드 구현 레포지토리 :** https://github.com/EWHA-HOLD-UP/developer-web </br>
+- https://www.netlify.com/ 을 이용하여 배포 </br>
+
 https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/dcd72d5b-09fb-42bb-9495-739dc83a9eb7
 
 ## :movie_camera: 주요 기능 시연 영상
@@ -49,11 +51,28 @@ https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/dcd72d5b-09fb-42bb-9495-73
 # :frog: Project
 #### :frog: 홀업(Hold Up) Organization 
 https://github.com/EWHA-HOLD-UP
-
-#### :file_folder: 실행방법 및 제출 파일
-Android Studio를 통해 실행 
-
-#### :computer: 사용 기술
+#### :frog: 홀업(Hold Up) 어플리케이션
+https://github.com/EWHA-HOLD-UP
+#### :frog: 홀업(Hold Up) 개발자 웹
+https://github.com/EWHA-HOLD-UP/developer-web
+#### :file_folder: 실행 및 테스트 방법
+**1) Android Studio를 통해 실행** </br>
+![image](https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/9cb61687-9c9f-48cf-b2e6-100fc35beede) </br>
+</br>
+**2) apk 파일을 다운받아 실행** </br>
+https://drive.google.com/file/d/1rQOIsTxdqac4e-HJNCi90lCW14MNPR_t/view?usp=drive_link </br></br>
+✨ 테스트용 아이디 - 그룹으로 묶여있음 </br>
+<구성원 1> </br>
+ID ) abc@gmail.com </br>
+PW ) 00000000 </br>
+<구성원 2> </br>
+ID ) def@gmail.com </br>
+PW ) 00000000 </br>
+<구성원 3> </br>
+ID ) ghi@gmail.com </br>
+PW ) 00000000 </br>
+   
+#### :computer: 사용 기술 (오픈소스)
 <img src="https://img.shields.io/badge/Android-green?style=for-the-badge&logo=Android&logoColor=black"/></a>
 <img src="https://img.shields.io/badge/IOS-black?style=for-the-badge&logo=IOS&logoColor=white">
 <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/></a>
@@ -62,12 +81,21 @@ Android Studio를 통해 실행
 <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=OpenCV&logoColor=black"/></a>
 <img src="https://img.shields.io/badge/OpenAI-412991.svg?style=for-the-badge&logo=OpenAI&logoColor=white" alt="OpenAI"/></a>
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+![image](https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/8d787479-b2f8-430a-9369-2caeb7260459)
 
 #### :computer: 핵심 AI 기술
-1. 안면(표정) 인식 AI : 전면 카메라의 안면 유무를 판단하여 얼굴 사진 촬영 독려
-2. 생성형 AI : ChatGPT를 프롬프트 엔지니어링하여 높은 질의 미션&질문 무한 생성 + 개발자 웹과 연결하여 ChatGPT 취약성 극복
-3. 영상 자동 생성 AI : OpenCV 를 통해 한 달 주기로 가족들의 모든 날을 모아 영상 제공
+**1) 안면(표정) 인식 AI** : 전면 카메라의 안면 유무를 판단하여 얼굴 사진 촬영 독려
+- 안면 인식을 위해 google_mlkit 패키지 사용 </br>
+https://pub.dev/packages/google_ml_kit </br></br>
 
+**2) 생성형 AI** : ChatGPT를 프롬프트 엔지니어링하여 높은 질의 미션&질문 무한 생성 + 개발자 웹과 연결하여 ChatGPT 취약성 극복
+- 질문 생성을 위해 ChatGPT api 이용 </br>
+https://platform.openai.com/api-keys </br></br>
+
+**3) 영상 자동 생성 AI** : OpenCV 를 통해 한 달 주기로 가족들의 모든 날을 모아 영상 제공
+- 자동 영상 생성을 위해 openCV 패키지 사용 </br>
+https://pub.dev/packages/opencv_4 </br></br>
+  
 #### :frog: 프로젝트 목적
 대부분의 별거가족이 연락하고자하는 의지는 있으나 이를 실천할 실행력과 대화소재가 부족하다. 이 문제를 소프트웨어적으로 해결하기 위해 팝업을 통해 서로의 상태를 사진으로 공유하고, <Q-Puzzle>을 맞추며 함께 질문에 답변하는 가족 추억 저장소 앱을 제작하고자 한다. 
 
@@ -83,6 +111,6 @@ Android Studio를 통해 실행
 <img width="250" alt="F-LOG  Flow Chart-회원가입,로그인,그룹화" src="https://github.com/EWHA-HOLD-UP/FLOG/assets/128064550/93d9ccd8-b909-4e48-8780-06dab1c81288">
 
 #### :bulb: 팀원 기술 블로그
-* https://mingorithm.tistory.com/2
-* https://yes-im-on.tistory.com/2
-* https://tocsony.tistory.com/2
+* https://mingorithm.tistory.com/
+* https://yes-im-on.tistory.com/
+* https://tocsony.tistory.com/
